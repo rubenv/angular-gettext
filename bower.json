@@ -1,0 +1,15 @@
+{
+  "name": "angular-gettext",
+  "version": "0.0.0",
+  "main": "dist/angular-gettext.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "PatternConsulting/bower-angular#~1.1.5"
+  }
+}

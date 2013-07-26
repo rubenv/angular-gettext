@@ -1,0 +1,58 @@
+assert = chai.assert
+
+describe 'Catalog', ->
+    catalog = null
+
+    beforeEach module('gettext')
+
+    beforeEach inject (gettextCatalog) ->
+        catalog = gettextCatalog
+
+    it 'Can set strings', ->
+        strings = { 'Hello': 'Hallo' }
+        assert.deepEqual(catalog.strings, {})
+        catalog.setStrings('nl', strings)
+        assert.deepEqual(catalog.strings, { nl: strings })
+
+    it 'Can retrieve strings', ->
+        strings = { 'Hello': 'Hallo' }
+        catalog.setStrings('nl', strings)
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getString('Hello'), 'Hallo')
+
+    it 'Should return original for unknown strings', ->
+        strings = { 'Hello': 'Hallo' }
+        catalog.setStrings('nl', strings)
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getString('Bye'), 'Bye')
+
+    it 'Should return original for unknown languages', ->
+        catalog.currentLanguage = 'fr'
+        assert.equal(catalog.getString('Hello'), 'Hello')
+
+    it 'Should add prefix for untranslated strings when in debug', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'fr'
+        assert.equal(catalog.getString('Hello'), '[MISSING]: Hello')
+
+    it 'Should return singular for unknown singular strings', ->
+        assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), 'Bird')
+
+    it 'Should return plural for unknown plural strings', ->
+        assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), 'Birds')
+
+    it 'Should return singular for singular strings', ->
+        catalog.currentLanguage = 'nl'
+        catalog.setStrings('nl', {
+            _plurals:
+                'Bird': [ 'Vogel', 'Vogels' ]
+        })
+        assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), 'Vogel')
+
+    it 'Should return plural for plural strings', ->
+        catalog.currentLanguage = 'nl'
+        catalog.setStrings('nl', {
+            _plurals:
+                'Bird': [ 'Vogel', 'Vogels' ]
+        })
+        assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), 'Vogels')

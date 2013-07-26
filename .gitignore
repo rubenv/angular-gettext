@@ -1,0 +1,4 @@
+.*.swp
+/node_modules
+/bower_components
+/libpeerconnection.log
