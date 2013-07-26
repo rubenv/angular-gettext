@@ -34,7 +34,14 @@ angular.module('gettext').directive('translate', [
       compile: function (element, attrs) {
         var input, translated;
         input = element.html();
-        translated = gettextCatalog.getString(input);
+        if (attrs.translatePlural && attrs.translateN === null) {
+          throw new Error('You should add a translate-plural attribute whenever you add a translate-n attribute.');
+        }
+        if (!attrs.translatePlural) {
+          translated = gettextCatalog.getString(input);
+        } else {
+          translated = gettextCatalog.getPlural(attrs.translateN, input, attrs.translatePlural);
+        }
         return element.html(translated);
       }
     };
