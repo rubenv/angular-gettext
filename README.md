@@ -4,7 +4,104 @@
 
 [![Build Status](https://travis-ci.org/rubenv/angular-gettext.png?branch=master)](https://travis-ci.org/rubenv/angular-gettext)
 
-Documentation: TODO
+## Getting started
+
+Add angular-gettext to your project:
+
+1. Grab the files, either by copying the files from the `dist` folder or (preferably) through bower: `bower install --save angular-gettext`.
+2. Include the angular-gettext source files in your app:
+   
+   ```
+   <script src="bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
+   ```
+   
+3. Add a dependency to angular-gettext in your Angular app:
+
+   ```
+   angular.module('myApp', ['gettext']);
+   ```
+   
+You can now start using the `translate` directive to mark strings as translatable.
+
+Next steps:
+
+* Annotate strings with the `translate` directive.
+* Extract strings from the source code.
+* Translate strings
+* Integrate translated strings back into the application.
+* Set the correct language for translations.
+
+## Using the `translate` directive
+
+Strings are marked as translatable using the `translate` directive. Here's a simple example:
+
+```
+ <div translate>Hello!</div>
+```
+
+This div will automatically be translated using the translated strings (which we'll define later on). For instance, in Dutch, it might read `Hallo!`.
+
+### Plurals
+
+Plural strings can be annotated using two extra attributes: `translate-n` and `translate-plural`:
+
+```
+ <div translate translate-n="count" translate-plural="{{count}} boats">One boat</div>
+```
+
+The general format is:
+
+```
+ <div translate translate-n="COUNTEXPR" translate-plural="PLURALSTR">SINGULARSTR</div>
+```
+
+Depending on the value of `COUNTEXPR`, either the singular string or the plural string will be selected.
+
+### Interpolation
+
+Full interpolation support is available in translated strings, so the following will work as expected:
+
+```
+ <div translate>Hello {{name}}!</div>
+```
+
+## Extracting strings
+
+TODO (module being built)
+
+## Translate strings
+
+Use a tool like [poedit](http://www.poedit.net/), [Pootle](http://pootle.translatehouse.org/) or [Transifex](https://www.transifex.com/) to translate the strings.
+
+## Setting translated strings
+
+You can set translated strings by injecting the `gettextCatalog` and using the `setStrings` method.
+
+As an example, you may have the following code in your application:
+
+```
+angular.module('myApp').run(function (gettextCatalog) {
+    // Load the strings automatically during initialization.
+    gettextCatalog.setStrings('nl', {
+        'Hello': 'Hallo',
+        'One boat': ['Een boot', '{{count}} boats']
+    });
+});
+```
+
+Converting translated `.po` files into angular-compatible JavaScript files can be done automatically using the `grunt-angular-gettext` module.
+
+## Setting the language
+
+Set the language by setting a language code on the catalog:
+
+```
+angular.module('myApp').run(function (gettextCatalog) {
+    gettextCatalog.currentLanguage = 'nl';
+});
+```
+
+You can do this anywhere in your application, the use of a `run` block above is just an example.
 
 ## Contributing
 All code lives in the `src` folder and is written in CoffeeScript. Try to stick to the style conventions used in existing code.
