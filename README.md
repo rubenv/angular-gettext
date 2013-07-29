@@ -11,13 +11,13 @@ Add angular-gettext to your project:
 1. Grab the files, either by copying the files from the `dist` folder or (preferably) through bower: `bower install --save angular-gettext`.
 2. Include the angular-gettext source files in your app:
    
-   ```
+   ```html
    <script src="bower_components/angular-gettext/dist/angular-gettext.min.js"></script>
    ```
    
 3. Add a dependency to angular-gettext in your Angular app:
 
-   ```
+   ```js
    angular.module('myApp', ['gettext']);
    ```
    
@@ -35,7 +35,7 @@ Next steps:
 
 Strings are marked as translatable using the `translate` directive. Here's a simple example:
 
-```
+```html
  <h1 translate>Hello!</h1>
 ```
 
@@ -45,13 +45,13 @@ This div will automatically be translated using the translated strings (which we
 
 Plural strings can be annotated using two extra attributes: `translate-n` and `translate-plural`:
 
-```
+```html
  <div translate translate-n="count" translate-plural="{{count}} boats">One boat</div>
 ```
 
 The general format is:
 
-```
+```html
  <div translate translate-n="COUNTEXPR" translate-plural="PLURALSTR">SINGULARSTR</div>
 ```
 
@@ -61,13 +61,13 @@ Depending on the value of `COUNTEXPR`, either the singular string or the plural 
 
 Full interpolation support is available in translated strings, so the following will work as expected:
 
-```
+```html
  <div translate>Hello {{name}}!</div>
 ```
 
 ## Extracting strings
 
-TODO (module being built)
+Use [`grunt-angular-gettext`](https://github.com/rubenv/grunt-angular-gettext) to extract strings from your HTML templates into a `.pot` catalog.
 
 ## Translate strings
 
@@ -79,7 +79,7 @@ You can set translated strings by injecting the `gettextCatalog` and using the `
 
 As an example, you may have the following code in your application:
 
-```
+```js
 angular.module('myApp').run(function (gettextCatalog) {
     // Load the strings automatically during initialization.
     gettextCatalog.setStrings('nl', {
@@ -89,13 +89,13 @@ angular.module('myApp').run(function (gettextCatalog) {
 });
 ```
 
-Converting translated `.po` files into angular-compatible JavaScript files can be done automatically using the `grunt-angular-gettext` module.
+Converting translated `.po` files into angular-compatible JavaScript files can be done automatically using the [`grunt-angular-gettext`](https://github.com/rubenv/grunt-angular-gettext) module.
 
 ## Setting the language
 
 Set the language by setting a language code on the catalog:
 
-```
+```js
 angular.module('myApp').run(function (gettextCatalog) {
     gettextCatalog.currentLanguage = 'nl';
 });
