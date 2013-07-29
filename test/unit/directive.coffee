@@ -14,8 +14,7 @@ describe 'Directive', ->
         catalog.setStrings 'nl',
             'Hello': 'Hallo'
             'Hello {{name}}!': 'Hallo {{name}}!'
-            _plurals:
-                'One boat': [ 'Een boot', '{{count}} boten' ]
+            'One boat': [ 'Een boot', '{{count}} boten' ]
 
     it 'Should return string unchanged when no translation is available', ->
         el = $compile('<div translate>Hello!</div>')($rootScope)

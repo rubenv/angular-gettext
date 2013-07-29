@@ -4,23 +4,42 @@ angular.module('gettext').factory('gettextCatalog', [
   function (gettextPlurals) {
     var Catalog;
     Catalog = function () {
+      var prefixDebug;
       function Catalog() {
         this.debug = false;
         this.strings = {};
         this.currentLanguage = 'en';
       }
+      prefixDebug = function (debug, string) {
+        if (debug) {
+          return '[MISSING]: ' + string;
+        } else {
+          return string;
+        }
+      };
       Catalog.prototype.setStrings = function (language, strings) {
-        return this.strings[language] = strings;
+        var key, val, _results;
+        this.strings[language] = {};
+        _results = [];
+        for (key in strings) {
+          val = strings[key];
+          if (typeof val === 'string') {
+            _results.push(this.strings[language][key] = [val]);
+          } else {
+            _results.push(this.strings[language][key] = val);
+          }
+        }
+        return _results;
       };
       Catalog.prototype.getString = function (string) {
-        var _ref;
-        return ((_ref = this.strings[this.currentLanguage]) != null ? _ref[string] : void 0) || (this.debug ? '[MISSING]: ' + string : string);
+        var _ref, _ref1;
+        return ((_ref = this.strings[this.currentLanguage]) != null ? (_ref1 = _ref[string]) != null ? _ref1[0] : void 0 : void 0) || prefixDebug(this.debug, string);
       };
       Catalog.prototype.getPlural = function (n, string, stringPlural) {
-        var form, plurals, _ref, _ref1;
+        var form, plurals, _ref;
         form = gettextPlurals(this.currentLanguage, n);
-        plurals = ((_ref = this.strings[this.currentLanguage]) != null ? (_ref1 = _ref['_plurals']) != null ? _ref1[string] : void 0 : void 0) || [];
-        return plurals[form] || (n === 1 ? string : stringPlural);
+        plurals = ((_ref = this.strings[this.currentLanguage]) != null ? _ref[string] : void 0) || [];
+        return plurals[form] || prefixDebug(this.debug, n === 1 ? string : stringPlural);
       };
       return Catalog;
     }();

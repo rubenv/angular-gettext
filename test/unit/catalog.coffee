@@ -12,7 +12,7 @@ describe 'Catalog', ->
         strings = { 'Hello': 'Hallo' }
         assert.deepEqual(catalog.strings, {})
         catalog.setStrings('nl', strings)
-        assert.deepEqual(catalog.strings, { nl: strings })
+        assert.deepEqual(catalog.strings.nl.Hello[0], 'Hallo')
 
     it 'Can retrieve strings', ->
         strings = { 'Hello': 'Hallo' }
@@ -44,15 +44,23 @@ describe 'Catalog', ->
     it 'Should return singular for singular strings', ->
         catalog.currentLanguage = 'nl'
         catalog.setStrings('nl', {
-            _plurals:
-                'Bird': [ 'Vogel', 'Vogels' ]
+            'Bird': [ 'Vogel', 'Vogels' ]
         })
         assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), 'Vogel')
 
     it 'Should return plural for plural strings', ->
         catalog.currentLanguage = 'nl'
         catalog.setStrings('nl', {
-            _plurals:
-                'Bird': [ 'Vogel', 'Vogels' ]
+            'Bird': [ 'Vogel', 'Vogels' ]
         })
         assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), 'Vogels')
+
+    it 'Should add prefix for untranslated plural strings when in debug (single)', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), '[MISSING]: Bird')
+
+    it 'Should add prefix for untranslated plural strings when in debug', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), '[MISSING]: Birds')
