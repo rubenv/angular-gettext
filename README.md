@@ -2,6 +2,8 @@
 
 > Translate your Angular.JS applications with gettext.
 
+[![Build Status](https://travis-ci.org/rubenv/angular-gettext.png?branch=master)](https://travis-ci.org/rubenv/angular-gettext)
+
 Documentation: TODO
 
 ## Contributing
