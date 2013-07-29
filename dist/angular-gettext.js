@@ -29,20 +29,41 @@ angular.module('gettext').factory('gettextCatalog', [
 ]);
 angular.module('gettext').directive('translate', [
   'gettextCatalog',
-  function (gettextCatalog) {
+  '$interpolate',
+  '$parse',
+  function (gettextCatalog, $interpolate, $parse) {
     return {
       compile: function (element, attrs) {
-        var input, translated;
+        var err, input;
+        err = function (missing, found) {
+          throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+        };
+        if (attrs.translatePlural && !attrs.translateN) {
+          err('translate-n', 'translate-plural');
+        }
+        if (attrs.translateN && !attrs.translatePlural) {
+          err('translate-plural', 'translate-n');
+        }
         input = element.html();
-        if (attrs.translatePlural && attrs.translateN === null) {
-          throw new Error('You should add a translate-plural attribute whenever you add a translate-n attribute.');
-        }
-        if (!attrs.translatePlural) {
-          translated = gettextCatalog.getString(input);
-        } else {
-          translated = gettextCatalog.getPlural(attrs.translateN, input, attrs.translatePlural);
-        }
-        return element.html(translated);
+        return function (scope) {
+          var countFn, process;
+          countFn = $parse(attrs.translateN);
+          process = function () {
+            var interpolated, prev, translated;
+            prev = element.html();
+            if (attrs.translatePlural) {
+              translated = gettextCatalog.getPlural(countFn(scope), input, attrs.translatePlural);
+            } else {
+              translated = gettextCatalog.getString(input);
+            }
+            interpolated = $interpolate(translated)(scope);
+            if (prev === interpolated) {
+              return;
+            }
+            return element.html(interpolated);
+          };
+          return scope.$watch(process);
+        };
       }
     };
   }

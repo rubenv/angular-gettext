@@ -10,6 +10,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "PatternConsulting/bower-angular#~1.1.5"
+    "angular": "PatternConsulting/bower-angular#~1.1.5",
+    "jquery": "~2.0.3"
   }
 }
