@@ -30,5 +30,6 @@
     "grunt-karma": "~0.4.5",
     "chai": "~1.7.2",
     "grunt-contrib-concat": "~0.3.0"
-  }
+  },
+  "repository": "git://github.com/rubenv/node-systemd.git"
 }
