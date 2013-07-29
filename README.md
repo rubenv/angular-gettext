@@ -36,7 +36,7 @@ Next steps:
 Strings are marked as translatable using the `translate` directive. Here's a simple example:
 
 ```
- <div translate>Hello!</div>
+ <h1 translate>Hello!</h1>
 ```
 
 This div will automatically be translated using the translated strings (which we'll define later on). For instance, in Dutch, it might read `Hallo!`.

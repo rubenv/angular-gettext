@@ -17,13 +17,13 @@ describe 'Directive', ->
             'One boat': [ 'Een boot', '{{count}} boten' ]
 
     it 'Should return string unchanged when no translation is available', ->
-        el = $compile('<div translate>Hello!</div>')($rootScope)
+        el = $compile('<h1 translate>Hello!</h1>')($rootScope)
         $rootScope.$digest()
         assert.equal(el.text(), 'Hello!')
 
     it 'Should translate known strings', ->
         catalog.currentLanguage = 'nl'
-        el = $compile('<div translate>Hello</div>')($rootScope)
+        el = $compile('<h1 translate>Hello</h1>')($rootScope)
         $rootScope.$digest()
         assert.equal(el.text(), 'Hallo')
 
