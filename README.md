@@ -103,6 +103,17 @@ angular.module('myApp').run(function (gettextCatalog) {
 
 You can do this anywhere in your application, the use of a `run` block above is just an example.
 
+## Highlighting untranslated strings
+
+You can enable a debugging mode to clearly indicate untranslated strings:
+
+```js
+angular.module('myApp').run(function (gettextCatalog) {
+        gettextCatalog.debug = true;
+});
+
+This will prepend `[MISSING]:` to each untranslated string.
+
 ## Contributing
 All code lives in the `src` folder and is written in CoffeeScript. Try to stick to the style conventions used in existing code.
 
