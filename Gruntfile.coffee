@@ -47,11 +47,16 @@ module.exports = (grunt) ->
                 configFile: 'test/configs/unit.conf.coffee'
                 browsers: ['Chrome']
                 background: true
-            unitci_chrome:
-                configFile: 'test/configs/unit-ci.conf.coffee'
-                browsers: ['Chrome']
+            unitci_firefox:
+                configFile: 'test/configs/unit.conf.coffee'
+                browsers: ['Firefox']
+                singleRun: true
+                reporters: ['dots', 'junit']
+                junitReporter:
+                    outputFile: 'test-results.xml'
 
     @registerTask 'default', ['test']
     @registerTask 'build', ['clean', 'coffee', 'concat', 'ngmin', 'uglify']
     @registerTask 'package', ['build', 'release']
     @registerTask 'test', ['build', 'karma:unit', 'watch']
+    @registerTask 'ci', ['build', 'karma:unitci_firefox']
