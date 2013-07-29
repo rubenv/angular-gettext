@@ -19,7 +19,9 @@ angular.module('gettext').factory('gettextCatalog', [
       };
       Catalog.prototype.setStrings = function (language, strings) {
         var key, val, _results;
-        this.strings[language] = {};
+        if (!this.strings[language]) {
+          this.strings[language] = {};
+        }
         _results = [];
         for (key in strings) {
           val = strings[key];

@@ -9,7 +9,7 @@ angular.module('gettext').factory 'gettextCatalog', (gettextPlurals) ->
             if debug then "[MISSING]: #{string}" else string
 
         setStrings: (language, strings) ->
-            @strings[language] = {}
+            @strings[language] = {} if !@strings[language]
             for key, val of strings
                 if typeof val == 'string'
                     @strings[language][key] = [val]
