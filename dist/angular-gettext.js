@@ -89,6 +89,16 @@ angular.module('gettext').directive('translate', [
     };
   }
 ]);
+angular.module('gettext').filter('translate', [
+  'gettextCatalog',
+  '$interpolate',
+  '$parse',
+  function (gettextCatalog, $interpolate, $parse) {
+    return function (input) {
+      return gettextCatalog.getString(input);
+    };
+  }
+]);
 angular.module('gettext').factory('gettextPlurals', function () {
   return function (langCode, n) {
     switch (langCode) {

@@ -65,6 +65,14 @@ Full interpolation support is available in translated strings, so the following 
  <div translate>Hello {{name}}!</div>
 ```
 
+## Using the `translate` filter
+
+There's also a filter available. This filter does not support plural strings:
+
+```html
+ <input type="text" placeholder="{{'Username'|translate}}" />
+```
+
 ## Extracting strings
 
 Use [`grunt-angular-gettext`](https://github.com/rubenv/grunt-angular-gettext) to extract strings from your HTML templates into a `.pot` catalog.
