@@ -119,6 +119,7 @@ You can enable a debugging mode to clearly indicate untranslated strings:
 angular.module('myApp').run(function (gettextCatalog) {
         gettextCatalog.debug = true;
 });
+```
 
 This will prepend `[MISSING]:` to each untranslated string.
 
