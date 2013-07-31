@@ -1,4 +1,9 @@
 angular.module('gettext', []);
+angular.module('gettext').factory('gettext', function () {
+  return function (str) {
+    return str;
+  };
+});
 angular.module('gettext').factory('gettextCatalog', [
   'gettextPlurals',
   function (gettextPlurals) {
