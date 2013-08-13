@@ -129,7 +129,7 @@ You can enable a debugging mode to clearly indicate untranslated strings:
 
 ```js
 angular.module('myApp').run(function (gettextCatalog) {
-        gettextCatalog.debug = true;
+    gettextCatalog.debug = true;
 });
 ```
 
