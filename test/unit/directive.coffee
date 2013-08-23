@@ -139,7 +139,7 @@ describe 'Directive', ->
             $compile('<div translate translate-n="count">Hello {{name}} (one message)!</div>')($rootScope)
         , 'You should add a translate-plural attribute whenever you add a translate-n attribute.'
 
-    it 'Translates inside an ngIf directive', ->
+    it.skip 'Translates inside an ngIf directive', ->
         $rootScope.flag = true
         catalog.currentLanguage = 'nl'
         el = $compile('<div><div ng-if="flag"><div translate>Hello</div></div></div>')($rootScope)

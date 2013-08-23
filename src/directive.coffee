@@ -1,29 +1,25 @@
 angular.module('gettext').directive 'translate', (gettextCatalog, $interpolate, $parse) ->
     return {
-        transclude: 'element'
-        compile: (element, attrs, transclude) ->
-            return ($scope, $element) ->
-                err = (missing, found) ->
-                    throw new Error("You should add a #{missing} attribute whenever you add a #{found} attribute.")
-                err('translate-n', 'translate-plural') if attrs.translatePlural && !attrs.translateN
-                err('translate-plural', 'translate-n') if attrs.translateN && !attrs.translatePlural
+        compile: (element, attrs) ->
+            err = (missing, found) ->
+                throw new Error("You should add a #{missing} attribute whenever you add a #{found} attribute.")
+            err('translate-n', 'translate-plural') if attrs.translatePlural && !attrs.translateN
+            err('translate-plural', 'translate-n') if attrs.translateN && !attrs.translatePlural
 
+            input = element.html()
+
+            return (scope) ->
                 countFn = $parse(attrs.translateN)
 
-                transclude $scope, (clone) ->
-                    input = clone.html()
-                    clone.removeAttr('translate')
-                    $element.replaceWith(clone)
+                process = () ->
+                    prev = element.html()
+                    if attrs.translatePlural
+                        translated = gettextCatalog.getPlural(countFn(scope), input, attrs.translatePlural)
+                    else
+                        translated = gettextCatalog.getString(input)
+                    interpolated = $interpolate(translated)(scope)
+                    return if prev == interpolated # Skip DOM change
+                    element.html(interpolated)
 
-                    process = () ->
-                        prev = clone.html()
-                        if attrs.translatePlural
-                            translated = gettextCatalog.getPlural(countFn($scope), input, attrs.translatePlural)
-                        else
-                            translated = gettextCatalog.getString(input)
-                        interpolated = $interpolate(translated)($scope)
-                        return if prev == interpolated # Skip DOM change
-                        clone.html(interpolated)
-
-                    $scope.$watch(process)
+                scope.$watch(process)
     }
