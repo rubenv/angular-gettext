@@ -2,6 +2,7 @@ module.exports = (grunt) ->
     @loadNpmTasks('grunt-contrib-clean')
     @loadNpmTasks('grunt-contrib-coffee')
     @loadNpmTasks('grunt-contrib-concat')
+    @loadNpmTasks('grunt-contrib-connect')
     @loadNpmTasks('grunt-contrib-uglify')
     @loadNpmTasks('grunt-contrib-watch')
     @loadNpmTasks('grunt-karma')
@@ -41,6 +42,16 @@ module.exports = (grunt) ->
             dist:
                 files:
                     'dist/angular-gettext.js': 'dist/angular-gettext.js'
+
+        connect:
+            e2e:
+                options:
+                    port: 9000
+                    hostname: '0.0.0.0'
+                    middleware: (connect) ->
+                        return [
+                            connect.static(__dirname)
+                        ]
 
         karma:
             unit:
