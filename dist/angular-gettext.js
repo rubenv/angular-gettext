@@ -60,6 +60,7 @@ angular.module('gettext').directive('translate', [
   function (gettextCatalog, $interpolate, $parse) {
     return {
       transclude: 'element',
+      priority: 900,
       compile: function (element, attrs, transclude) {
         return function ($scope, $element) {
           var countFn, err;

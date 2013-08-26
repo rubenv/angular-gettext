@@ -1,6 +1,7 @@
 angular.module('gettext').directive 'translate', (gettextCatalog, $interpolate, $parse) ->
     return {
         transclude: 'element'
+        priority: 900
         compile: (element, attrs, transclude) ->
             return ($scope, $element) ->
                 err = (missing, found) ->
