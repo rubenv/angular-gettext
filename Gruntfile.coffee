@@ -35,8 +35,14 @@ module.exports = (grunt) ->
             options:
                 livereload: true
             all:
-                files: ['src/**.coffee', 'test/*{,/*}.coffee']
+                files: ['src/**.coffee', 'test/*/*']
+                tasks: ['build', 'karma:unit:run', 'karma:e2e:run']
+            unit:
+                files: ['src/**.coffee', 'test/unit/*']
                 tasks: ['build', 'karma:unit:run']
+            e2e:
+                files: ['src/**.coffee', 'test/{e2e,fixtures}/*']
+                tasks: ['build', 'karma:e2e:run']
 
         ngmin:
             dist:
@@ -64,10 +70,23 @@ module.exports = (grunt) ->
                 singleRun: true
                 reporters: ['dots', 'junit']
                 junitReporter:
-                    outputFile: 'test-results.xml'
+                    outputFile: 'unit-results.xml'
+            e2e:
+                configFile: 'test/configs/e2e.conf.coffee'
+                browsers: ['Chrome']
+                background: true
+            e2eci_firefox:
+                configFile: 'test/configs/e2e.conf.coffee'
+                browsers: ['Firefox']
+                singleRun: true
+                reporters: ['dots', 'junit']
+                junitReporter:
+                    outputFile: 'e2e-results.xml'
 
     @registerTask 'default', ['test']
     @registerTask 'build', ['clean', 'coffee', 'concat', 'ngmin', 'uglify']
     @registerTask 'package', ['build', 'release']
-    @registerTask 'test', ['build', 'karma:unit', 'watch']
-    @registerTask 'ci', ['build', 'karma:unitci_firefox']
+    @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:e2e', 'watch:all']
+    @registerTask 'test_unit', ['build', 'karma:unit', 'watch:unit']
+    @registerTask 'test_e2e', ['build', 'connect:e2e', 'karma:e2e', 'watch:e2e']
+    @registerTask 'ci', ['build', 'karma:unitci_firefox', 'connect:e2e', 'karma:e2eci_firefox']

@@ -15,3 +15,5 @@ module.exports = (config) ->
 
         preprocessors:
             '**/*.coffee': 'coffee'
+
+        port: 9877

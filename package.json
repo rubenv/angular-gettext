@@ -31,8 +31,10 @@
     "grunt-karma": "~0.7.0",
     "grunt-ngmin": "0.0.3",
     "grunt-release": "~0.3.5",
+    "karma-firefox-launcher": "~0.1.0",
     "karma-junit-reporter": "~0.1.0",
-    "karma-mocha": "~0.1.0"
+    "karma-mocha": "~0.1.0",
+    "karma-ng-scenario": "~0.1.0"
   },
   "repository": {
     "type": "git",
