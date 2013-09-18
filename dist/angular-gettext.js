@@ -63,8 +63,7 @@ angular.module('gettext').directive('translate', [
       priority: 900,
       compile: function (element, attrs, transclude) {
         return function ($scope, $element) {
-          var countFn, err;
-          err = function (missing, found) {
+          var err = function (missing, found) {
             throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
           };
           if (attrs.translatePlural && !attrs.translateN) {
@@ -73,27 +72,25 @@ angular.module('gettext').directive('translate', [
           if (attrs.translateN && !attrs.translatePlural) {
             err('translate-plural', 'translate-n');
           }
-          countFn = $parse(attrs.translateN);
-          return transclude($scope, function (clone) {
-            var input, process;
-            input = clone.html();
+          var countFn = $parse(attrs.translateN);
+          transclude($scope, function (clone) {
+            var input = clone.html();
             clone.removeAttr('translate');
             $element.replaceWith(clone);
-            process = function () {
-              var interpolated, prev, translated;
-              prev = clone.html();
+            return $scope.$watch(function () {
+              var prev = clone.html();
+              var translated;
               if (attrs.translatePlural) {
                 translated = gettextCatalog.getPlural(countFn($scope), input, attrs.translatePlural);
               } else {
                 translated = gettextCatalog.getString(input);
               }
-              interpolated = $interpolate(translated)($scope);
+              var interpolated = $interpolate(translated)($scope);
               if (prev === interpolated) {
                 return;
               }
               return clone.html(interpolated);
-            };
-            return $scope.$watch(process);
+            });
           });
         };
       }

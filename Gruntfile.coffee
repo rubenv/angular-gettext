@@ -3,6 +3,7 @@ module.exports = (grunt) ->
     @loadNpmTasks('grunt-contrib-coffee')
     @loadNpmTasks('grunt-contrib-concat')
     @loadNpmTasks('grunt-contrib-connect')
+    @loadNpmTasks('grunt-contrib-jshint')
     @loadNpmTasks('grunt-contrib-uglify')
     @loadNpmTasks('grunt-contrib-watch')
     @loadNpmTasks('grunt-karma')
@@ -15,13 +16,17 @@ module.exports = (grunt) ->
                 options:
                     bare: true
                 files:
-                    'dist/angular-gettext.js': ['src/index.coffee', 'src/*.coffee']
+                    'dist/angular-gettext.js': ['src/*.coffee']
 
+        jshint:
+            all: [ 'src/*.js', '!src/plural.js' ]
+            options:
+                jshintrc: '.jshintrc'
 
         concat:
             dist:
                 files:
-                    'dist/angular-gettext.js': ['dist/angular-gettext.js', 'src/plural.js']
+                    'dist/angular-gettext.js': ['src/index.js', 'dist/angular-gettext.js', 'src/*.js']
 
         uglify:
             dist:
@@ -35,7 +40,7 @@ module.exports = (grunt) ->
             options:
                 livereload: true
             all:
-                files: ['src/**.coffee', 'test/*/*']
+                files: ['src/**.coffee', 'src/**.js', 'test/*/*']
                 tasks: ['build', 'karma:unit:run', 'karma:e2e:run']
             unit:
                 files: ['src/**.coffee', 'test/unit/*']
@@ -84,7 +89,7 @@ module.exports = (grunt) ->
                     outputFile: 'e2e-results.xml'
 
     @registerTask 'default', ['test']
-    @registerTask 'build', ['clean', 'coffee', 'concat', 'ngmin', 'uglify']
+    @registerTask 'build', ['clean', 'coffee', 'jshint', 'concat', 'ngmin', 'uglify']
     @registerTask 'package', ['build', 'release']
     @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:e2e', 'watch:all']
     @registerTask 'test_unit', ['build', 'karma:unit', 'watch:unit']
