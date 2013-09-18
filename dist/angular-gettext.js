@@ -7,50 +7,46 @@ angular.module('gettext').factory('gettext', function () {
 angular.module('gettext').factory('gettextCatalog', [
   'gettextPlurals',
   function (gettextPlurals) {
-    var Catalog;
-    Catalog = function () {
-      var prefixDebug;
-      function Catalog() {
-        this.debug = false;
-        this.strings = {};
-        this.currentLanguage = 'en';
+    var catalog;
+    var prefixDebug = function (string) {
+      if (catalog.debug) {
+        return '[MISSING]: ' + string;
+      } else {
+        return string;
       }
-      prefixDebug = function (debug, string) {
-        if (debug) {
-          return '[MISSING]: ' + string;
-        } else {
-          return string;
-        }
-      };
-      Catalog.prototype.setStrings = function (language, strings) {
+    };
+    catalog = {
+      debug: false,
+      strings: {},
+      currentLanguage: 'en',
+      setStrings: function (language, strings) {
         var key, val, _results;
         if (!this.strings[language]) {
           this.strings[language] = {};
         }
-        _results = [];
         for (key in strings) {
           val = strings[key];
           if (typeof val === 'string') {
-            _results.push(this.strings[language][key] = [val]);
+            this.strings[language][key] = [val];
           } else {
-            _results.push(this.strings[language][key] = val);
+            this.strings[language][key] = val;
           }
         }
-        return _results;
-      };
-      Catalog.prototype.getString = function (string) {
-        var _ref, _ref1;
-        return ((_ref = this.strings[this.currentLanguage]) != null ? (_ref1 = _ref[string]) != null ? _ref1[0] : void 0 : void 0) || prefixDebug(this.debug, string);
-      };
-      Catalog.prototype.getPlural = function (n, string, stringPlural) {
-        var form, plurals, _ref;
-        form = gettextPlurals(this.currentLanguage, n);
-        plurals = ((_ref = this.strings[this.currentLanguage]) != null ? _ref[string] : void 0) || [];
-        return plurals[form] || prefixDebug(this.debug, n === 1 ? string : stringPlural);
-      };
-      return Catalog;
-    }();
-    return new Catalog();
+      },
+      getStringForm: function (string, n) {
+        var stringTable = this.strings[this.currentLanguage] || {};
+        var plurals = stringTable[string] || [];
+        return plurals[n];
+      },
+      getString: function (string) {
+        return this.getStringForm(string, 0) || prefixDebug(string);
+      },
+      getPlural: function (n, string, stringPlural) {
+        var form = gettextPlurals(this.currentLanguage, n);
+        return this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+      }
+    };
+    return catalog;
   }
 ]);
 angular.module('gettext').directive('translate', [
