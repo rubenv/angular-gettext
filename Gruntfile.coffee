@@ -59,22 +59,22 @@ module.exports = (grunt) ->
         karma:
             unit:
                 configFile: 'test/configs/unit.conf.coffee'
-                browsers: ['Chrome']
+                browsers: ['PhantomJS']
                 background: true
             unitci_firefox:
                 configFile: 'test/configs/unit.conf.coffee'
-                browsers: ['Firefox']
+                browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
                 junitReporter:
                     outputFile: 'unit-results.xml'
             e2e:
                 configFile: 'test/configs/e2e.conf.coffee'
-                browsers: ['Chrome']
+                browsers: ['PhantomJS']
                 background: true
             e2eci_firefox:
                 configFile: 'test/configs/e2e.conf.coffee'
-                browsers: ['Firefox']
+                browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
                 junitReporter:
