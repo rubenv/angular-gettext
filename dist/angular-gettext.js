@@ -154,6 +154,7 @@ angular.module('gettext').factory('gettextPlurals', function () {
     case 'mg':
     case 'mi':
     case 'oc':
+    case 'pt_BR':
     case 'tg':
     case 'ti':
     case 'tr':
