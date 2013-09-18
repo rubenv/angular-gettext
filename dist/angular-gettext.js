@@ -59,15 +59,13 @@ angular.module('gettext').directive('translate', [
       priority: 900,
       compile: function (element, attrs, transclude) {
         return function ($scope, $element) {
-          var err = function (missing, found) {
-            throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+          var assert = function (condition, missing, found) {
+            if (!condition) {
+              throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+            }
           };
-          if (attrs.translatePlural && !attrs.translateN) {
-            err('translate-n', 'translate-plural');
-          }
-          if (attrs.translateN && !attrs.translatePlural) {
-            err('translate-plural', 'translate-n');
-          }
+          assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
+          assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
           var countFn = $parse(attrs.translateN);
           transclude($scope, function (clone) {
             var input = clone.html();
