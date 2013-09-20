@@ -1,6 +1,6 @@
 {
   "name": "angular-gettext",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Gettext support for Angular.js",
   "main": "index.js",
   "directories": {
