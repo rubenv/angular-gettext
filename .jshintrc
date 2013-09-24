@@ -12,6 +12,7 @@
   "node": true,
   "white": true,
   "predef": [
+    "$",
     "angular",
     "describe",
     "it",

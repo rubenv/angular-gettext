@@ -71,7 +71,7 @@ angular.module('gettext').directive('translate', [
           assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
           var countFn = $parse(attrs.translateN);
           transclude($scope, function (clone) {
-            var input = clone.html();
+            var input = $.trim(clone.html());
             clone.removeAttr('translate');
             $element.replaceWith(clone);
             return $scope.$watch(function () {
