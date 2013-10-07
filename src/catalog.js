@@ -2,7 +2,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals) {
     var catalog;
 
     var prefixDebug = function (string) {
-        if (catalog.debug) {
+        if (catalog.debug && catalog.currentLanguage !== 'en') {
             return "[MISSING]: " + string;
         } else {
             return string;

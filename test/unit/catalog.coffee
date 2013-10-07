@@ -35,6 +35,11 @@ describe 'Catalog', ->
         catalog.currentLanguage = 'fr'
         assert.equal(catalog.getString('Hello'), '[MISSING]: Hello')
 
+    it 'Should not add prefix for untranslated strings in English', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'en'
+        assert.equal(catalog.getString('Hello'), 'Hello')
+
     it 'Should return singular for unknown singular strings', ->
         assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), 'Bird')
 
