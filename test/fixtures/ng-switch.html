@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>ng-switch test</title>
+    </head>
+    <body ng-controller="TestCtrl">
+        <h1>ng-switch test</h1>
+        <div ng-switch="switchVal">
+            <p id="visibleSwitchContent" ng-switch-when="0" translate>Hello</p>
+            <p id="hiddenSwitchContent" ng-switch-when="1" translate>Goodbye</p>
+            <button id="goodbyeBtn" ng-click="goodbye()">Farewell</button>
+        </div>
+
+        <script src="/bower_components/jquery/jquery.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/dist/angular-gettext.js"></script>
+        <script>
+            var app = angular.module('myApp', ['gettext']);
+
+            app.run(function (gettextCatalog) {
+                gettextCatalog.currentLanguage = 'nl';
+                gettextCatalog.setStrings('nl', {
+                    'Hello': 'Hallo',
+                    'Goodbye': 'Vaarwel'
+                });
+            })
+
+            app.controller('TestCtrl', ['$scope', function($scope) {
+                $scope.switchVal = 0;
+
+                $scope.goodbye = function() {
+                    $scope.switchVal = 1;
+                };
+            }]);
+        </script>
+    </body>
+</html>
