@@ -69,6 +69,7 @@ angular.module("gettext").factory("gettextPlurals", function () {
             case "bs":  // Bosnian
             case "hr":  // Croatian
             case "ru":  // Russian
+            case "me":  // Montenegrin
             case "sr":  // Serbian
             case "uk":  // Ukrainian
                 // 3 forms
