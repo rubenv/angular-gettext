@@ -18,6 +18,7 @@
     "email": "ruben@savanne.be",
     "url": "http://savanne.be/"
   },
+  "homepage": "http://angular-gettext.rocketeer.be/",
   "license": "MIT",
   "devDependencies": {
     "chai": "~1.7.2",
