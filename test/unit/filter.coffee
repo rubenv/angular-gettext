@@ -14,7 +14,7 @@ describe 'Filter', ->
         catalog.setStrings 'nl',
             'Hello': 'Hallo'
             'Hello {{name}}!': 'Hallo {{name}}!'
-            'One boat': [ 'Een boot', '{{count}} boten' ]
+            'One boat': [ 'Een boot', '%d boten' ]
 
     it 'Should have a translate filter', ->
         el = $compile('<h1>{{"Hello!"|translate}}</h1>')($rootScope)

@@ -14,6 +14,8 @@ describe 'Directive', ->
         catalog.setStrings 'nl',
             'Hello': 'Hallo'
             'Hello {{name}}!': 'Hallo {{name}}!'
+            'Hello %s!': 'Hallo %s!'
+            'Hello %(name)s!': 'Hallo %(name)s!'
             'One boat': [ 'Een boot', '{{count}} boten' ]
 
     it 'Should return string unchanged when no translation is available', ->
@@ -31,6 +33,18 @@ describe 'Directive', ->
         $rootScope.name = 'Ruben'
         catalog.currentLanguage = 'nl'
         el = $compile('<div><div translate>Hello {{name}}!</div></div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), 'Hallo Ruben!')
+
+    it 'Support printf format interpolation with array arguments', ->
+        catalog.currentLanguage = 'nl'
+        el = $compile('<div><div translate translate-args="[\'Ruben\']">Hello %s!</div></div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), 'Hallo Ruben!')
+
+    it 'Support printf format interpolation with object arguments', ->
+        catalog.currentLanguage = 'nl'
+        el = $compile('<div><div translate translate-args="{name: \'Ruben\'}">Hello %(name)s!</div></div>')($rootScope)
         $rootScope.$digest()
         assert.equal(el.text(), 'Hallo Ruben!')
 
