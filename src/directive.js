@@ -14,8 +14,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
                 assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
 
-                var countFn = $parse(attrs.translateN);
-
+                var countFn = $parse(attrs.translateN),
+                    sprintfArgsFn = $parse(attrs.translateArgs),
+                    sprintfArgs = sprintfArgsFn($scope);
                 transclude($scope, function (clone) {
                     var input = $.trim(clone.html());
                     clone.removeAttr('translate');
@@ -31,13 +32,21 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         } else {
                             translated = gettextCatalog.getString(input);
                         }
+                        // apply sprintf formatting
+                        if ($.isArray(sprintfArgs)) {
+                            translated = vsprintf(translated, sprintfArgs);
+                        }
+                        var argsType = typeof(sprintfArgs);
+                        if (argsType === "string" ||
+                            argsType === "object" && sprintfArgs !== null) {
+                            translated = sprintf(translated, sprintfArgs);
+                        }
 
                         // Interpolate with scope.
                         var interpolated = $interpolate(translated)($scope);
                         if (prev === interpolated) {
                             return; // Skip DOM change.
                         }
-
                         return clone.html(interpolated);
                     });
                 });

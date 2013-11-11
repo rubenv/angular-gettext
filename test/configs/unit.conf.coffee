@@ -6,6 +6,7 @@ module.exports = (config) ->
 
         files: [
             'bower_components/jquery/jquery.js'
+            'bower_components/sprintf/src/sprintf.min.js'
             'bower_components/angular/angular.js'
             'bower_components/angular/angular-mocks.js'
             'node_modules/chai/chai.js'

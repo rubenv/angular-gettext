@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "angular": "PatternConsulting/bower-angular#~1.1.5",
-    "jquery": ">=1.8.0"
+    "jquery": ">=1.8.0",
+    "sprintf": "*"
   }
 }

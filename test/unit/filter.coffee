@@ -14,7 +14,9 @@ describe 'Filter', ->
         catalog.setStrings 'nl',
             'Hello': 'Hallo'
             'Hello {{name}}!': 'Hallo {{name}}!'
-            'One boat': [ 'Een boot', '{{count}} boten' ]
+            'One boat': [ 'Een boot', '%d boten' ]
+        catalog.setStrings 'de',
+            'One boat': [ 'Een boot', '%(count)d boten' ]
 
     it 'Should have a translate filter', ->
         el = $compile('<h1>{{"Hello!"|translate}}</h1>')($rootScope)
@@ -32,3 +34,24 @@ describe 'Filter', ->
         el = $compile('<input type="text" placeholder="{{\'Hello\'|translate}}" />')($rootScope)
         $rootScope.$digest()
         assert.equal(el.attr('placeholder'), 'Hallo')
+
+    it 'Can use plural filter inside tag', ->
+        catalog.currentLanguage = 'nl'
+        $rootScope.count = 3
+        el = $compile('<div>{{"One boat"|translateN: count:"%d boats":count}}</div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), '3 boten')
+
+    it 'Can use plural filter without arguments', ->
+        catalog.currentLanguage = 'nl'
+        $rootScope.count = 1
+        el = $compile('<div>{{"One boat"|translateN: count:"%d boats"}}</div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), 'Een boot')
+
+    it 'Can use object as one argument', ->
+        catalog.currentLanguage = 'de'
+        $rootScope.count = 3
+        el = $compile('<div>{{"One boat"|translateN: count:"%(count)d boats":this}}</div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), '3 boten')
