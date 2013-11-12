@@ -7,7 +7,7 @@ module.exports = (config) ->
         files: [
             'bower_components/jquery/jquery.js'
             'bower_components/angular/angular.js'
-            'bower_components/angular/angular-mocks.js'
+            'bower_components/angular-mocks/angular-mocks.js'
             'node_modules/chai/chai.js'
             'dist/angular-gettext.js'
             'test/unit/**/*.coffee'

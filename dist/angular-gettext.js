@@ -69,6 +69,8 @@ angular.module('gettext').directive('translate', [
           };
           assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
           assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
+          assert(!attrs.ngIf, 'ng-if', 'translate');
+          assert(!attrs.ngSwitchWhen, 'ng-switch-when', 'translate');
           var countFn = $parse(attrs.translateN);
           transclude($scope, function (clone) {
             var input = $.trim(clone.html());

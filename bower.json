@@ -1,5 +1,6 @@
 {
   "name": "angular-gettext",
+  "version": "0.2.0",
   "main": "dist/angular-gettext.js",
   "ignore": [
     "**/.*",
@@ -11,7 +12,10 @@
     "Gruntfile.coffee"
   ],
   "dependencies": {
-    "angular": "PatternConsulting/bower-angular#~1.1.5",
-    "jquery": ">=1.8.0"
+    "jquery": ">=1.8.0",
+    "angular": "~1.2.0"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.0"
   }
 }
