@@ -19,7 +19,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 var countFn = $parse(attrs.translateN);
 
                 transclude($scope, function (clone) {
-                    var input = $.trim(clone.html());
+                    var input = clone.html().trim();
                     clone.removeAttr('translate');
                     $element.replaceWith(clone);
 

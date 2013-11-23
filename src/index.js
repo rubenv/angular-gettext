@@ -1,5 +1,8 @@
-if (typeof jQuery === 'undefined') { 
-    throw new Error('Angular-gettext depends on jQuery, be sure to include it!');
+//Trim fallback for old browsers(instead of jQuery)
+if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, '');
+    };
 }
 
 angular.module('gettext', []);
