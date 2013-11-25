@@ -1,10 +1,3 @@
-//Trim fallback for old browsers(instead of jQuery)
-if (!String.prototype.trim) {
-    String.prototype.trim = function () {
-        return this.replace(/^\s+|\s+$/g, '');
-    };
-}
-
 angular.module('gettext', []);
 
 angular.module('gettext').factory('gettext', function () {
