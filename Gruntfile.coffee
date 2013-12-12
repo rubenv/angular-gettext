@@ -18,7 +18,7 @@ module.exports = (grunt) ->
         concat:
             dist:
                 files:
-                    'dist/angular-gettext.js': ['src/index.js', 'dist/angular-gettext.js', 'src/*.js']
+                    'dist/angular-gettext.js': ['src/index.js', 'src/*.js']
 
         uglify:
             dist:
