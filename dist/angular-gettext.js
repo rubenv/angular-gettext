@@ -54,17 +54,14 @@ angular.module('gettext').directive('translate', [
   '$interpolate',
   '$parse',
   function (gettextCatalog, $interpolate, $parse) {
-    function isString(value) {
-      return typeof value === 'string';
-    }
     var trim = function () {
         if (!String.prototype.trim) {
           return function (value) {
-            return isString(value) ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
+            return typeof value === 'string' ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
           };
         }
         return function (value) {
-          return isString(value) ? value.trim() : value;
+          return typeof value === 'string' ? value.trim() : value;
         };
       }();
     return {
