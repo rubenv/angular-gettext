@@ -12,7 +12,6 @@
     "Gruntfile.coffee"
   ],
   "dependencies": {
-    "jquery": ">=1.8.0",
     "angular": "~1.2.0"
   },
   "devDependencies": {
