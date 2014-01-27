@@ -1,4 +1,5 @@
 module.exports = (grunt) ->
+    @loadNpmTasks('grunt-bump')
     @loadNpmTasks('grunt-contrib-clean')
     @loadNpmTasks('grunt-contrib-concat')
     @loadNpmTasks('grunt-contrib-connect')
@@ -79,6 +80,12 @@ module.exports = (grunt) ->
                 reporters: ['dots', 'junit']
                 junitReporter:
                     outputFile: 'e2e-results.xml'
+
+        bump:
+            options:
+                files: ['package.json', 'bower.json']
+                commitFiles: ['-a']
+                pushTo: 'origin'
 
     @registerTask 'default', ['test']
     @registerTask 'build', ['clean', 'jshint', 'concat', 'ngmin', 'uglify']
