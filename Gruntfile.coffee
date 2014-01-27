@@ -7,7 +7,6 @@ module.exports = (grunt) ->
     @loadNpmTasks('grunt-contrib-uglify')
     @loadNpmTasks('grunt-contrib-watch')
     @loadNpmTasks('grunt-karma')
-    @loadNpmTasks('grunt-release')
     @loadNpmTasks('grunt-ngmin')
 
     @initConfig
@@ -89,7 +88,6 @@ module.exports = (grunt) ->
 
     @registerTask 'default', ['test']
     @registerTask 'build', ['clean', 'jshint', 'concat', 'ngmin', 'uglify']
-    @registerTask 'package', ['build', 'release']
     @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:e2e', 'watch:all']
     @registerTask 'test_unit', ['build', 'karma:unit', 'watch:unit']
     @registerTask 'test_e2e', ['build', 'connect:e2e', 'karma:e2e', 'watch:e2e']
