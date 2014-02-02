@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals) {
+angular.module('gettext').factory('gettextCatalog', '$interpolate', function (gettextPlurals, $interpolate) {
     var catalog;
 
     var prefixDebug = function (string) {
@@ -36,8 +36,13 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals) {
             return plurals[n];
         },
 
-        getString: function (string) {
-            return this.getStringForm(string, 0) || prefixDebug(string);
+        getString: function (string, dataObject) {
+            var text = this.getStringForm(string, 0) || prefixDebug(string);
+            if (angular.isObject(dataObject)) {
+                return $interpolate(text)(dataObject);
+            } else {
+                return text;
+            }
         },
 
         getPlural: function (n, string, stringPlural) {
