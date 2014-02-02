@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', '$interpolate', function (gettextPlurals, $interpolate) {
+angular.module('gettext').factory('gettextCatalog', ['gettextPlurals', '$interpolate', function (gettextPlurals, $interpolate) {
     var catalog;
 
     var prefixDebug = function (string) {
@@ -52,4 +52,4 @@ angular.module('gettext').factory('gettextCatalog', '$interpolate', function (ge
     };
 
     return catalog;
-});
+}]);
