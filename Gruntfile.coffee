@@ -33,10 +33,10 @@ module.exports = (grunt) ->
                 livereload: true
             all:
                 files: ['src/**.js', 'test/*/*']
-                tasks: ['build', 'karma:unit:run', 'karma:e2e:run']
+                tasks: ['build', 'karma:unit:run', 'karma:unit_nojquery:run', 'karma:e2e:run']
             unit:
                 files: ['src/**.js', 'test/unit/*']
-                tasks: ['build', 'karma:unit:run']
+                tasks: ['build', 'karma:unit:run', 'karma:unit_nojquery:run']
             e2e:
                 files: ['src/**.js', 'test/{e2e,fixtures}/*']
                 tasks: ['build', 'karma:e2e:run']
@@ -61,8 +61,19 @@ module.exports = (grunt) ->
                 configFile: 'test/configs/unit.conf.coffee'
                 browsers: ['PhantomJS']
                 background: true
-            unitci_firefox:
+            unit_nojquery:
+                configFile: 'test/configs/unit-nojquery.conf.coffee'
+                browsers: ['PhantomJS']
+                background: true
+            unitci:
                 configFile: 'test/configs/unit.conf.coffee'
+                browsers: ['Firefox', 'PhantomJS']
+                singleRun: true
+                reporters: ['dots', 'junit']
+                junitReporter:
+                    outputFile: 'unit-results.xml'
+            unitci_nojquery:
+                configFile: 'test/configs/unit-nojquery.conf.coffee'
                 browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
@@ -72,7 +83,7 @@ module.exports = (grunt) ->
                 configFile: 'test/configs/e2e.conf.coffee'
                 browsers: ['PhantomJS']
                 background: true
-            e2eci_firefox:
+            e2eci:
                 configFile: 'test/configs/e2e.conf.coffee'
                 browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
@@ -88,7 +99,7 @@ module.exports = (grunt) ->
 
     @registerTask 'default', ['test']
     @registerTask 'build', ['clean', 'jshint', 'concat', 'ngmin', 'uglify']
-    @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:e2e', 'watch:all']
-    @registerTask 'test_unit', ['build', 'karma:unit', 'watch:unit']
+    @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:unit_nojquery', 'karma:e2e', 'watch:all']
+    @registerTask 'test_unit', ['build', 'karma:unit', 'karma:unit_nojquery', 'watch:unit']
     @registerTask 'test_e2e', ['build', 'connect:e2e', 'karma:e2e', 'watch:e2e']
-    @registerTask 'ci', ['build', 'karma:unitci_firefox', 'connect:e2e', 'karma:e2eci_firefox']
+    @registerTask 'ci', ['build', 'karma:unitci', 'karma:unitci_nojquery', 'connect:e2e', 'karma:e2eci']
