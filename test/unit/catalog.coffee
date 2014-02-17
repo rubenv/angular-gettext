@@ -40,6 +40,23 @@ describe 'Catalog', ->
         catalog.currentLanguage = 'en'
         assert.equal(catalog.getString('Hello'), 'Hello')
 
+    it 'Should interpolate untranslated strings without adding prefix in English', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'en'
+        assert.equal(catalog.getString('Hello {{ value }}', { value: 'World!'}), 'Hello World!')
+
+    it 'Should interpolate translated strings', ->
+        catalog.debug = true
+        strings = { 'Hello {{ value }}!': 'Hallo {{ value }} !' }
+        catalog.setStrings('nl', strings)
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getString('Hello {{ value }}!', { value: 'Martin'}), 'Hallo Martin !')
+
+    it 'Should add prefix before untranslated strings and interpolate them', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getString('Hello {{ value }}', { value: 'World!'}), '[MISSING]: Hello World!')
+
     it 'Should return singular for unknown singular strings', ->
         assert.equal(catalog.getPlural(1, 'Bird', 'Birds'), 'Bird')
 
@@ -69,3 +86,7 @@ describe 'Catalog', ->
         catalog.debug = true
         catalog.currentLanguage = 'nl'
         assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), '[MISSING]: Birds')
+
+
+
+
