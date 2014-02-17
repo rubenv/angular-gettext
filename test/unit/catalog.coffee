@@ -87,6 +87,31 @@ describe 'Catalog', ->
         catalog.currentLanguage = 'nl'
         assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), '[MISSING]: Birds')
 
+    it 'Should return singular for singular strings with interpolation', ->
+        catalog.currentLanguage = 'nl'
+        catalog.setStrings('nl', {
+            '{{ count }} bird': [ '{{ count }} vogel', '{{ count }} vogels' ]
+        })
+        assert.equal(catalog.getPlural(1, '{{ count }} bird', '{{ count }} birds', { count: 1 }), '1 vogel')
+
+    it 'Should return plural for plural strings with interpolation', ->
+        catalog.currentLanguage = 'nl'
+        catalog.setStrings('nl', {
+            '{{ count }} bird': [ '{{ count }} vogel', '{{ count }} vogels' ]
+        })
+        assert.equal(catalog.getPlural(2, '{{ count }} bird', '{{ count }} birds', { count: 2 }), '2 vogels')
+
+    it 'Should add prefix for untranslated plural strings when in debug (single)', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getPlural(1, '{{ count }} bird', '{{ count }} birds', { count: 1 }), '[MISSING]: 1 bird')
+
+    it 'Should add prefix for untranslated plural strings when in debug', ->
+        catalog.debug = true
+        catalog.currentLanguage = 'nl'
+        assert.equal(catalog.getPlural(2, '{{ count }} bird', '{{ count }} birds', { count: 2 }), '[MISSING]: 2 birds')
+
+
 
 
 

@@ -30,24 +30,27 @@ angular.module('gettext').factory('gettextCatalog', ['gettextPlurals', '$interpo
             }
         },
 
-        getStringForm: function (string, n) {
+        getStringForm: function (string, n, dataObject) {
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
             return plurals[n];
         },
 
         getString: function (string, dataObject) {
-            var text = this.getStringForm(string, 0) || prefixDebug(string);
+            var text = this.getStringForm(string, 0, dataObject) || prefixDebug(string);
             if (angular.isObject(dataObject)) {
                 return $interpolate(text)(dataObject);
-            } else {
-                return text;
             }
+            return text;
         },
 
-        getPlural: function (n, string, stringPlural) {
+        getPlural: function (n, string, stringPlural, dataObject) {
             var form = gettextPlurals(this.currentLanguage, n);
-            return this.getStringForm(string, form) || prefixDebug((n === 1 ? string : stringPlural));
+            var text = this.getStringForm(string, form, dataObject) || prefixDebug((n === 1 ? string : stringPlural));
+            if (angular.isObject(dataObject)) {
+                return $interpolate(text)(dataObject);
+            }
+            return text;
         }
     };
 
