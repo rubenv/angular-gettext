@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Click test</title>
+    </head>
+    <body>
+        <h1>Click test</h1>
+        <button id="test1" translate ng-click="value = 'Success'">Test 1</button>
+        <button id="test2" translate ng-click="value = 'Success'">Hello</button>
+        <div id="field" ng-bind="value" />
+
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/dist/angular-gettext.js"></script>
+        <script>
+            angular.module('myApp', ['gettext']);
+
+            angular.module('myApp').run(function (gettextCatalog) {
+                gettextCatalog.currentLanguage = 'nl';
+                gettextCatalog.setStrings('nl', {
+                    'Hello': 'Hallo'
+                });
+            });
+        </script>
+    </body>
+</html>
