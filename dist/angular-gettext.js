@@ -4,7 +4,9 @@ angular.module('gettext').constant('gettext', function (str) {
 });
 angular.module('gettext').factory('gettextCatalog', [
   'gettextPlurals',
-  function (gettextPlurals) {
+  '$http',
+  '$cacheFactory',
+  function (gettextPlurals, $http, $cacheFactory) {
     var catalog;
     var prefixDebug = function (string) {
       if (catalog.debug && catalog.currentLanguage !== 'en') {
@@ -17,6 +19,7 @@ angular.module('gettext').factory('gettextCatalog', [
       debug: false,
       strings: {},
       currentLanguage: 'en',
+      cache: $cacheFactory('strings'),
       setStrings: function (language, strings) {
         var key, val, _results;
         if (!this.strings[language]) {
@@ -42,6 +45,17 @@ angular.module('gettext').factory('gettextCatalog', [
       getPlural: function (n, string, stringPlural) {
         var form = gettextPlurals(this.currentLanguage, n);
         return this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+      },
+      loadRemote: function (url) {
+        return $http({
+          method: 'GET',
+          url: url,
+          cache: catalog.cache
+        }).success(function (data) {
+          for (var lang in data) {
+            catalog.setStrings(lang, data[lang]);
+          }
+        });
       }
     };
     return catalog;
