@@ -7,6 +7,7 @@
         <h1>Click test</h1>
         <button id="test1" translate ng-click="value = 'Success'">Test 1</button>
         <button id="test2" translate ng-click="value = 'Success'">Hello</button>
+        <span id="test3" translate>Compile <button ng-click="value = 'Success'">this</button></span>
         <div id="field" ng-bind="value" />
 
         <script src="/bower_components/jquery/dist/jquery.js"></script>
@@ -18,7 +19,8 @@
             angular.module('myApp').run(function (gettextCatalog) {
                 gettextCatalog.currentLanguage = 'nl';
                 gettextCatalog.setStrings('nl', {
-                    'Hello': 'Hallo'
+                    'Hello': 'Hallo',
+                    'Compile <button ng-click="value = \'Success\'">this</button>': 'Compileren <button ng-click="value = \'Success\'">deze</button>'
                 });
             });
         </script>
