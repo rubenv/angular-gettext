@@ -14,6 +14,11 @@ describe 'Click', ->
         element('#test3 button').click()
         expect(element('#field').text()).toBe('Success')
 
+    it 'Should not compile ng-click', ->
+        browser().navigateTo("/test/fixtures/click-nojquery.html")
+        element('#test4 button').click()
+        expect(element('#field').text()).toBe('')
+
 describe 'Click (no jQuery)', ->
     it 'Should not break ng-click', ->
         browser().navigateTo("/test/fixtures/click-nojquery.html")
@@ -29,3 +34,8 @@ describe 'Click (no jQuery)', ->
         browser().navigateTo("/test/fixtures/click-nojquery.html")
         element('#test3 button').click()
         expect(element('#field').text()).toBe('Success')
+
+    it 'Should not compile ng-click', ->
+        browser().navigateTo("/test/fixtures/click-nojquery.html")
+        element('#test4 button').click()
+        expect(element('#field').text()).toBe('')

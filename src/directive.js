@@ -55,7 +55,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                             return; // Skip DOM change.
                         }
                         clone.html(interpolated);
-                        $compile(clone.contents())($scope);
+                        if (attrs.translateCompile !== undefined) {
+                            $compile(clone.contents())($scope);
+                        }
                         return clone;
 
                     });
