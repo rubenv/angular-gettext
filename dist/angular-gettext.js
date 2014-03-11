@@ -65,7 +65,8 @@ angular.module('gettext').directive('translate', [
   'gettextCatalog',
   '$interpolate',
   '$parse',
-  function (gettextCatalog, $interpolate, $parse) {
+  '$compile',
+  function (gettextCatalog, $interpolate, $parse, $compile) {
     var trim = function () {
         if (!String.prototype.trim) {
           return function (value) {
@@ -107,7 +108,11 @@ angular.module('gettext').directive('translate', [
               if (prev === interpolated) {
                 return;
               }
-              return clone.html(interpolated);
+              clone.html(interpolated);
+              if (attrs.translateCompile !== undefined) {
+                $compile(clone.contents())($scope);
+              }
+              return clone;
             });
           });
         };
