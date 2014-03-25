@@ -15,3 +15,7 @@ module.exports = (config) ->
             '**/*.coffee': 'coffee'
 
         port: 9876
+
+        client:
+            mocha:
+                timeout: 5000
