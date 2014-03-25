@@ -100,6 +100,7 @@ angular.module('gettext').directive('translate', [
           };
           assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
           assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
+          // See https://github.com/angular/angular.js/issues/4852
           if (attrs.ngIf) {
             throw new Error('You should not combine translate with ng-if, this will lead to problems.');
           }
