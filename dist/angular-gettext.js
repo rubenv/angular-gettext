@@ -100,8 +100,12 @@ angular.module('gettext').directive('translate', [
           };
           assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
           assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
-          assert(!attrs.ngIf, 'ng-if', 'translate');
-          assert(!attrs.ngSwitchWhen, 'ng-switch-when', 'translate');
+          if (attrs.ngIf) {
+            throw new Error('You should not combine translate with ng-if, this will lead to problems.');
+          }
+          if (attrs.ngSwitchWhen) {
+            throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
+          }
           var countFn = $parse(attrs.translateN);
           transclude($scope, function (clone) {
             var input = trim(clone.html());
