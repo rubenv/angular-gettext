@@ -64,3 +64,4 @@ describe 'String loading', ->
         $httpBackend.flush()
 
         catalog.loadRemote('/strings/nl.json')
+        $httpBackend.verifyNoOutstandingRequest()
