@@ -15,7 +15,7 @@ angular.module('gettext').factory('gettextCatalog', [
   function (gettextPlurals, $http, $cacheFactory) {
     var catalog;
     var prefixDebug = function (string) {
-      if (catalog.debug && catalog.currentLanguage !== 'en') {
+      if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
         return '[MISSING]: ' + string;
       } else {
         return string;
@@ -24,6 +24,7 @@ angular.module('gettext').factory('gettextCatalog', [
     catalog = {
       debug: false,
       strings: {},
+      baseLanguage: 'en',
       currentLanguage: 'en',
       cache: $cacheFactory('strings'),
       setStrings: function (language, strings) {
