@@ -40,12 +40,12 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 var countFn = $parse(attrs.translateN);
 
                 transclude($scope, function (clone) {
-                    var input = trim(clone.html());
                     clone.removeAttr('translate');
                     $element.replaceWith(clone);
 
                     return $scope.$watch(function () {
-                        var prev = clone.html();
+                        var prev = clone.html(),
+                            input = trim(prev);
 
                         // Fetch correct translated string.
                         var translated;
