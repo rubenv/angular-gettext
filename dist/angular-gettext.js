@@ -68,6 +68,22 @@ angular.module('gettext').factory('gettextCatalog', [
     return catalog;
   }
 ]);
+/**
+ * @ngdoc directive
+ * @name translate
+ *
+ * @description
+ * The `translate` directive translates text inside.
+ *
+ * It also translate plurals if attributes translate-n and translate-plural are defined
+ *
+ * Special properties are exposed on the local scope of each template instance, including:
+ *
+ * | Variable  | Type            | Details                                                                     |
+ * |-----------|-----------------|-----------------------------------------------------------------------------|
+ * | `$count`  | {@type number}  | number of elements form translate-N attribute                               |
+ *
+ **/
 angular.module('gettext').directive('translate', [
   'gettextCatalog',
   '$interpolate',
@@ -109,6 +125,7 @@ angular.module('gettext').directive('translate', [
             throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
           }
           var countFn = $parse(attrs.translateN);
+          var $extendedScope = $scope.$new();
           transclude($scope, function (clone) {
             var input = trim(clone.html());
             clone.removeAttr('translate');
@@ -118,12 +135,13 @@ angular.module('gettext').directive('translate', [
               // Fetch correct translated string.
               var translated;
               if (attrs.translatePlural) {
-                translated = gettextCatalog.getPlural(countFn($scope), input, attrs.translatePlural);
+                $extendedScope.$count = countFn($scope);
+                translated = gettextCatalog.getPlural($extendedScope.$count, input, attrs.translatePlural);
               } else {
                 translated = gettextCatalog.getString(input);
               }
               // Interpolate with scope.
-              var interpolated = $interpolate(translated)($scope);
+              var interpolated = $interpolate(translated)($extendedScope);
               if (prev === interpolated) {
                 return;  // Skip DOM change.
               }
