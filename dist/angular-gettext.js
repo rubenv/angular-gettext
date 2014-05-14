@@ -125,7 +125,7 @@ angular.module('gettext').directive('translate', [
             throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
           }
           var countFn = $parse(attrs.translateN);
-          var $extendedScope = $scope.$new();
+          var newScope = null;
           transclude($scope, function (clone) {
             var input = trim(clone.html());
             clone.removeAttr('translate');
@@ -135,13 +135,14 @@ angular.module('gettext').directive('translate', [
               // Fetch correct translated string.
               var translated;
               if (attrs.translatePlural) {
-                $extendedScope.$count = countFn($scope);
-                translated = gettextCatalog.getPlural($extendedScope.$count, input, attrs.translatePlural);
+                $scope = newScope || (newScope = $scope.$new());
+                $scope.$count = countFn($scope);
+                translated = gettextCatalog.getPlural($scope.$count, input, attrs.translatePlural);
               } else {
                 translated = gettextCatalog.getString(input);
               }
               // Interpolate with scope.
-              var interpolated = $interpolate(translated)($extendedScope);
+              var interpolated = $interpolate(translated)($scope);
               if (prev === interpolated) {
                 return;  // Skip DOM change.
               }
