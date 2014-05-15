@@ -72,6 +72,12 @@ describe 'Directive', ->
         $rootScope.$digest()
         assert.equal(el.text(), '3 boats')
 
+    it 'Can provide plural value and string, should translate with injected $count', ->
+        $rootScope.some = {'custom': {'elements': {'length': 6}}}
+        el = $compile('<div><div translate translate-n="some.custom.elements.length" translate-plural="{{$count}} boats">One boat</div></div>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), '6 boats')
+
     it 'Changing the scope should update the translation, fixed count', ->
         $rootScope.count = 3
         el = $compile('<div><div translate translate-n="count" translate-plural="{{count}} boats">One boat</div></div>')($rootScope)
