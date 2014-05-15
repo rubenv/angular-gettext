@@ -54,7 +54,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 }
 
                 var countFn = $parse(attrs.translateN);
-                var newScope = null;
+                var pluralScope = null;
                 transclude($scope, function (clone) {
                     var input = trim(clone.html());
                     clone.removeAttr('translate');
@@ -66,7 +66,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         // Fetch correct translated string.
                         var translated;
                         if (attrs.translatePlural) {
-                            $scope = newScope || (newScope = $scope.$new());
+                            $scope = pluralScope || (pluralScope = $scope.$new());
                             $scope.$count = countFn($scope);
                             translated = gettextCatalog.getPlural($scope.$count, input, attrs.translatePlural);
                         } else {
