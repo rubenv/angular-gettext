@@ -1,19 +1,3 @@
-/**
- * @ngdoc directive
- * @name translate
- *
- * @description
- * The `translate` directive translates text inside.
- *
- * It also translate plurals if attributes translate-n and translate-plural are defined
- *
- * Special properties are exposed on the local scope of each template instance, including:
- *
- * | Variable  | Type            | Details                                                                     |
- * |-----------|-----------------|-----------------------------------------------------------------------------|
- * | `$count`  | {@type number}  | number of elements form translate-N attribute                               |
- *
- **/
 angular.module('gettext').directive('translate', function (gettextCatalog, $interpolate, $parse, $compile) {
     /**
      * Trim fallback for old browsers(instead of jQuery)

@@ -68,22 +68,6 @@ angular.module('gettext').factory('gettextCatalog', [
     return catalog;
   }
 ]);
-/**
- * @ngdoc directive
- * @name translate
- *
- * @description
- * The `translate` directive translates text inside.
- *
- * It also translate plurals if attributes translate-n and translate-plural are defined
- *
- * Special properties are exposed on the local scope of each template instance, including:
- *
- * | Variable  | Type            | Details                                                                     |
- * |-----------|-----------------|-----------------------------------------------------------------------------|
- * | `$count`  | {@type number}  | number of elements form translate-N attribute                               |
- *
- **/
 angular.module('gettext').directive('translate', [
   'gettextCatalog',
   '$interpolate',
@@ -125,7 +109,7 @@ angular.module('gettext').directive('translate', [
             throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
           }
           var countFn = $parse(attrs.translateN);
-          var newScope = null;
+          var pluralScope = null;
           transclude($scope, function (clone) {
             var input = trim(clone.html());
             clone.removeAttr('translate');
@@ -135,7 +119,7 @@ angular.module('gettext').directive('translate', [
               // Fetch correct translated string.
               var translated;
               if (attrs.translatePlural) {
-                $scope = newScope || (newScope = $scope.$new());
+                $scope = pluralScope || (pluralScope = $scope.$new());
                 $scope.$count = countFn($scope);
                 translated = gettextCatalog.getPlural($scope.$count, input, attrs.translatePlural);
               } else {
