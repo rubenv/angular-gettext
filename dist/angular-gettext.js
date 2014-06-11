@@ -12,7 +12,8 @@ angular.module('gettext').factory('gettextCatalog', [
   'gettextPlurals',
   '$http',
   '$cacheFactory',
-  function (gettextPlurals, $http, $cacheFactory) {
+  '$interpolate',
+  function (gettextPlurals, $http, $cacheFactory, $interpolate) {
     var catalog;
     var prefixDebug = function (string) {
       if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -46,8 +47,14 @@ angular.module('gettext').factory('gettextCatalog', [
         var plurals = stringTable[string] || [];
         return plurals[n];
       },
+      getInterpolatedString: function (string, context) {
+        return $interpolate(this.getString(string))(context);
+      },
       getString: function (string) {
         return this.getStringForm(string, 0) || prefixDebug(string);
+      },
+      getInterpolatedPlural: function (n, string, stringPlural, context) {
+        return $interpolate(this.getPlural(n, string, stringPlural))(context);
       },
       getPlural: function (n, string, stringPlural) {
         var form = gettextPlurals(this.currentLanguage, n);

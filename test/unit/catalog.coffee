@@ -74,3 +74,19 @@ describe 'Catalog', ->
         catalog.debug = true
         catalog.currentLanguage = 'nl'
         assert.equal(catalog.getPlural(2, 'Bird', 'Birds'), '[MISSING]: Birds')
+
+    it 'Can return an interpolated string', ->
+      strings = { 'Hello {{name}}!': 'Hallo {{name}}!' }
+      assert.deepEqual(catalog.strings, {})
+      catalog.currentLanguage = 'nl'
+      catalog.setStrings('nl', strings)
+      assert.equal(catalog.getInterpolatedString('Hello {{name}}!', {name: 'Andrew'}), 'Hallo Andrew!')
+
+    it 'Can return an interpolated plural string', ->
+      assert.deepEqual(catalog.strings, {})
+      catalog.currentLanguage = 'gb'
+      catalog.setStrings('gb', {
+        'There is {{count}} bird': [ 'There is {{count}} bird', 'There are {{count}} birds' ]
+      })
+      assert.equal(catalog.getInterpolatedPlural(2, 'There is {{count}} bird', 'There are {{count}} birds', { count: 2}), 'There are 2 birds')
+      assert.equal(catalog.getInterpolatedPlural(1, 'There is {{count}} bird', 'There are {{count}} birds', { count: 1}), 'There is 1 bird')

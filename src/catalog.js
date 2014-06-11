@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate) {
     var catalog;
 
     var prefixDebug = function (string) {
@@ -38,8 +38,16 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             return plurals[n];
         },
 
+        getInterpolatedString: function (string, context) {
+            return $interpolate(this.getString(string))(context);
+        },
+
         getString: function (string) {
             return this.getStringForm(string, 0) || prefixDebug(string);
+        },
+
+        getInterpolatedPlural: function (n, string, stringPlural, context) {
+            return $interpolate(this.getPlural(n, string, stringPlural))(context);
         },
 
         getPlural: function (n, string, stringPlural) {
