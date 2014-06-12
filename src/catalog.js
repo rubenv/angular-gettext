@@ -57,7 +57,17 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                     catalog.setStrings(lang, data[lang]);
                 }
             });
-        }
+        },
+		
+		getAvailableLanguages: function () {
+			var languages = [];
+
+			for (var lang in catalog.strings) {
+				languages.push(lang);
+			}
+			return languages;
+		}
+		
     };
 
     return catalog;
