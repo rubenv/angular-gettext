@@ -47,18 +47,14 @@ angular.module('gettext').factory('gettextCatalog', [
         var plurals = stringTable[string] || [];
         return plurals[n];
       },
-      getInterpolatedString: function (string, context) {
-        return $interpolate(this.getString(string))(context);
+      getString: function (string, context) {
+        string = this.getStringForm(string, 0) || prefixDebug(string);
+        return context ? $interpolate(string)(context) : string;
       },
-      getString: function (string) {
-        return this.getStringForm(string, 0) || prefixDebug(string);
-      },
-      getInterpolatedPlural: function (n, string, stringPlural, context) {
-        return $interpolate(this.getPlural(n, string, stringPlural))(context);
-      },
-      getPlural: function (n, string, stringPlural) {
+      getPlural: function (n, string, stringPlural, context) {
         var form = gettextPlurals(this.currentLanguage, n);
-        return this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+        string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+        return context ? $interpolate(string)(context) : string;
       },
       loadRemote: function (url) {
         return $http({
