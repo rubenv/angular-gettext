@@ -3,7 +3,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
-            return "[MISSING]: " + string;
+            return '[MISSING]: ' + string;
         } else {
             return string;
         }
@@ -17,13 +17,12 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         cache: $cacheFactory('strings'),
 
         setStrings: function (language, strings) {
-            var key, val, _results;
             if (!this.strings[language]) {
                 this.strings[language] = {};
             }
 
-            for (key in strings) {
-                val = strings[key];
+            for (var key in strings) {
+                var val = strings[key];
                 if (typeof val === 'string') {
                     this.strings[language][key] = [val];
                 } else {

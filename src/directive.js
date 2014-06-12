@@ -22,7 +22,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 // Validate attributes
                 var assert = function (condition, missing, found) {
                     if (!condition) {
-                        throw new Error("You should add a " + missing + " attribute whenever you add a " + found + " attribute.");
+                        throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
                     }
                 };
 
@@ -31,10 +31,10 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
 
                 // See https://github.com/angular/angular.js/issues/4852
                 if (attrs.ngIf) {
-                    throw new Error("You should not combine translate with ng-if, this will lead to problems.");
+                    throw new Error('You should not combine translate with ng-if, this will lead to problems.');
                 }
                 if (attrs.ngSwitchWhen) {
-                    throw new Error("You should not combine translate with ng-switch-when, this will lead to problems.");
+                    throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
                 }
 
                 var countFn = $parse(attrs.translateN);

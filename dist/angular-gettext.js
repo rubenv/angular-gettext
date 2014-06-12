@@ -2,7 +2,7 @@ angular.module('gettext', []);
 angular.module('gettext').constant('gettext', function (str) {
   /*
      * Does nothing, simply returns the input string.
-     * 
+     *
      * This function serves as a marker for `grunt-angular-gettext` to know that
      * this string should be extracted for translations.
      */
@@ -28,12 +28,11 @@ angular.module('gettext').factory('gettextCatalog', [
       currentLanguage: 'en',
       cache: $cacheFactory('strings'),
       setStrings: function (language, strings) {
-        var key, val, _results;
         if (!this.strings[language]) {
           this.strings[language] = {};
         }
-        for (key in strings) {
-          val = strings[key];
+        for (var key in strings) {
+          var val = strings[key];
           if (typeof val === 'string') {
             this.strings[language][key] = [val];
           } else {
@@ -144,9 +143,7 @@ angular.module('gettext').directive('translate', [
 ]);
 angular.module('gettext').filter('translate', [
   'gettextCatalog',
-  '$interpolate',
-  '$parse',
-  function (gettextCatalog, $interpolate, $parse) {
+  function (gettextCatalog) {
     return function (input) {
       return gettextCatalog.getString(input);
     };

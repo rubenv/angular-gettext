@@ -6,6 +6,7 @@ module.exports = (grunt) ->
     @loadNpmTasks('grunt-contrib-jshint')
     @loadNpmTasks('grunt-contrib-uglify')
     @loadNpmTasks('grunt-contrib-watch')
+    @loadNpmTasks('grunt-jscs-checker')
     @loadNpmTasks('grunt-karma')
     @loadNpmTasks('grunt-ngmin')
 
@@ -14,6 +15,13 @@ module.exports = (grunt) ->
             all: [ 'src/*.js', '!src/plural.js' ]
             options:
                 jshintrc: '.jshintrc'
+
+        jscs:
+            src:
+                options:
+                    config: '.jscs.json'
+                files:
+                    src: [ 'src/*.js', '!src/plural.js' ]
 
         concat:
             dist:
@@ -98,7 +106,7 @@ module.exports = (grunt) ->
                 pushTo: 'origin'
 
     @registerTask 'default', ['test']
-    @registerTask 'build', ['clean', 'jshint', 'concat', 'ngmin', 'uglify']
+    @registerTask 'build', ['clean', 'jshint', 'jscs', 'concat', 'ngmin', 'uglify']
     @registerTask 'test', ['build', 'connect:e2e', 'karma:unit', 'karma:unit_nojquery', 'karma:e2e', 'watch:all']
     @registerTask 'test_unit', ['build', 'karma:unit', 'karma:unit_nojquery', 'watch:unit']
     @registerTask 'test_e2e', ['build', 'connect:e2e', 'karma:e2e', 'watch:e2e']
