@@ -62,7 +62,11 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         if (prev === interpolated) {
                             return; // Skip DOM change.
                         }
-                        clone.html(interpolated);
+                        if (navigator.userAgent.match(/MSIE/)) {
+                          clone.empty().append(interpolated);
+                        } else {
+                          clone.html(interpolated);
+                        }
                         if (attrs.translateCompile !== undefined) {
                             $compile(clone.contents())($scope);
                         }
