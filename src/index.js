@@ -1,11 +1,14 @@
 angular.module('gettext', []);
 
-angular.module('gettext').constant('gettext', function (str) {
+angular.module('gettext').factory('gettext', ['$filter', function ($filter) {
     /*
-     * Does nothing, simply returns the input string.
+     * This returns translated string in JavaScript.
+     * Example usage; $scope.title = gettext("MYAPP_TITLE");
      *
-     * This function serves as a marker for `grunt-angular-gettext` to know that
-     * this string should be extracted for translations.
+     * This function also serves as a marker for `grunt-angular-gettext`
+     * to know that this string should be extracted for translations.
      */
-    return str;
-});
+    return function (str) {
+        return $filter('translate')(str);
+    };
+}]);

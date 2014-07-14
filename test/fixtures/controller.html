@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Controller test</title>
+    </head>
+    <body>
+        <h1>Controller test</h1>
+        <script src="/bower_components/jquery/dist/jquery.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/dist/angular-gettext.js"></script>
+        <script>
+            angular.module('myApp', ['gettext']);
+            
+            angular.module('myApp').controller('TitleController', ['$scope', 'gettext', function ($scope, gettext) {
+                $scope.title = gettext('LAZY_DOG');
+            }]);
+            
+            angular.module('myApp').run(function (gettextCatalog) {
+                gettextCatalog.currentLanguage = 'nl';
+                gettextCatalog.setStrings('nl', {
+                    'LAZY_DOG': 'The quick brown fox jumps over the lazy dog'
+                });
+            });
+        </script>
+        
+        <div ng-controller="TitleController">
+            <h1 id="test1" ng-bind="title"></h1>
+        </div>
+    </body>
+</html>
