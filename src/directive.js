@@ -1,19 +1,4 @@
-angular.module('gettext').directive('translate', function (gettextCatalog, $interpolate, $parse, $compile) {
-    /**
-     * Trim fallback for old browsers(instead of jQuery)
-     * Based on AngularJS-v1.2.2 (angular.js#620)
-     */
-    var trim = (function () {
-        if (!String.prototype.trim) {
-            return function (value) {
-                return (typeof value === 'string') ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
-            };
-        }
-        return function (value) {
-            return (typeof value === 'string') ? value.trim() : value;
-        };
-    })();
-
+angular.module('gettext').directive('translate', function (gettextCatalog, $interpolate, $filter, $parse, $compile) {
     return {
         transclude: 'element',
         priority: 499,
@@ -40,7 +25,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                 var countFn = $parse(attrs.translateN);
                 var pluralScope = null;
                 transclude($scope, function (clone) {
-                    var input = trim(clone.html());
+                    var input = $filter('trim')(clone.html());
                     clone.removeAttr('translate');
                     $element.replaceWith(clone);
 

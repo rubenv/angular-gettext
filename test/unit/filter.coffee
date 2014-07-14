@@ -32,3 +32,13 @@ describe 'Filter', ->
         el = $compile('<input type="text" placeholder="{{\'Hello\'|translate}}" />')($rootScope)
         $rootScope.$digest()
         assert.equal(el.attr('placeholder'), 'Hallo')
+
+    it 'Should remove excess spaces around the text', ->
+        el = $compile('<span>{{"  Hallo     "|trim}}</span>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), 'Hallo')
+
+    it 'Should not remove excess spaces around the text when no filter present', ->
+        el = $compile('<span>{{"  Hallo     "}}</span>')($rootScope)
+        $rootScope.$digest()
+        assert.equal(el.text(), '  Hallo     ')
