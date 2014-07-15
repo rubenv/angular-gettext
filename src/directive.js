@@ -62,7 +62,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         if (prev === interpolated) {
                             return; // Skip DOM change.
                         }
-                        if (navigator.userAgent.match(/MSIE/)) {
+                        if (navigator.userAgent.match(/MSIE|Trident/)) {
                           clone.empty().append(interpolated);
                         } else {
                           clone.html(interpolated);
