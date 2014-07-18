@@ -1,4 +1,4 @@
-angular.module('gettext').directive('translate', function (gettextCatalog, $interpolate, $parse, $compile, $window) {
+angular.module('gettext').directive('translate', function (gettextCatalog, $interpolate, $parse, $compile) {
     /**
      * Trim fallback for old browsers(instead of jQuery)
      * Based on AngularJS-v1.2.2 (angular.js#620)
@@ -62,10 +62,10 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         if (prev === interpolated) {
                             return; // Skip DOM change.
                         }
-                        if ($window.navigator.userAgent.match(/MSIE|Trident/)) {
-                            clone.empty().append(interpolated);
-                        } else {
+                        try {
                             clone.html(interpolated);
+                        } catch(e) {
+                            clone.empty().append(interpolated);
                         }
                         if (attrs.translateCompile !== undefined) {
                             $compile(clone.contents())($scope);
