@@ -63,9 +63,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                             return; // Skip DOM change.
                         }
                         if ($window.navigator.userAgent.match(/MSIE|Trident/)) {
-                          clone.empty().append(interpolated);
+                            clone.empty().append(interpolated);
                         } else {
-                          clone.html(interpolated);
+                            clone.html(interpolated);
                         }
                         if (attrs.translateCompile !== undefined) {
                             $compile(clone.contents())($scope);
