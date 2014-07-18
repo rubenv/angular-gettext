@@ -64,7 +64,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         }
                         try {
                             clone.html(interpolated);
-                        } catch(e) {
+                        } catch (e) {
                             clone.empty().append(interpolated);
                         }
                         if (attrs.translateCompile !== undefined) {
