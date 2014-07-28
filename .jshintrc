@@ -17,11 +17,14 @@
     "predef": [
         "$",
         "angular",
+        "browser",
         "describe",
+        "element",
         "it",
         "before",
         "beforeEach",
         "after",
-        "afterEach"
+        "afterEach",
+        "expect"
     ]
 }

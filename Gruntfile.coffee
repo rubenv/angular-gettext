@@ -12,7 +12,7 @@ module.exports = (grunt) ->
 
     @initConfig
         jshint:
-            all: [ 'src/*.js', '!src/plural.js' ]
+            all: [ '{src,test}/**/*.js', '!src/plural.js' ]
             options:
                 jshintrc: '.jshintrc'
 
@@ -21,7 +21,7 @@ module.exports = (grunt) ->
                 options:
                     config: '.jscs.json'
                 files:
-                    src: [ 'src/*.js', '!src/plural.js' ]
+                    src: [ '{src,test}/**/*.js', '!src/plural.js' ]
 
         concat:
             dist:
@@ -66,33 +66,33 @@ module.exports = (grunt) ->
 
         karma:
             unit:
-                configFile: 'test/configs/unit.conf.coffee'
+                configFile: 'test/configs/unit.conf.js'
                 browsers: ['PhantomJS']
                 background: true
             unit_nojquery:
-                configFile: 'test/configs/unit-nojquery.conf.coffee'
+                configFile: 'test/configs/unit-nojquery.conf.js'
                 browsers: ['PhantomJS']
                 background: true
             unitci:
-                configFile: 'test/configs/unit.conf.coffee'
+                configFile: 'test/configs/unit.conf.js'
                 browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
                 junitReporter:
                     outputFile: 'unit-results.xml'
             unitci_nojquery:
-                configFile: 'test/configs/unit-nojquery.conf.coffee'
+                configFile: 'test/configs/unit-nojquery.conf.js'
                 browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
                 junitReporter:
                     outputFile: 'unit-results.xml'
             e2e:
-                configFile: 'test/configs/e2e.conf.coffee'
+                configFile: 'test/configs/e2e.conf.js'
                 browsers: ['PhantomJS']
                 background: true
             e2eci:
-                configFile: 'test/configs/e2e.conf.coffee'
+                configFile: 'test/configs/e2e.conf.js'
                 browsers: ['Firefox', 'PhantomJS']
                 singleRun: true
                 reporters: ['dots', 'junit']
