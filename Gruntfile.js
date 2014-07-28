@@ -12,7 +12,7 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         jshint: {
-            all: ["{src,test}/**/*.js", "!src/plural.js"],
+            all: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"],
             options: {
                 jshintrc: ".jshintrc"
             }
@@ -24,7 +24,7 @@ module.exports = function (grunt) {
                     config: ".jscs.json"
                 },
                 files: {
-                    src: ["{src,test}/**/*.js", "!src/plural.js"]
+                    src: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"]
                 }
             }
         },
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
                     hostname: "0.0.0.0",
                     middleware: function (connect) {
                         return [
-                            connect.static(__dirname)
+                            connect["static"](__dirname)
                         ];
                     }
                 }
@@ -149,4 +149,4 @@ module.exports = function (grunt) {
     grunt.registerTask("test_unit", ["build", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
     grunt.registerTask("test_e2e", ["build", "connect:e2e", "karma:e2e", "watch:e2e"]);
     grunt.registerTask("ci", ["build", "karma:unitci", "karma:unitci_nojquery", "connect:e2e", "karma:e2eci"]);
-});
+};
