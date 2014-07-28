@@ -2,7 +2,7 @@ var tests = {
     "Should not allow XSS": function (file) {
         return function () {
             browser().navigateTo("/test/fixtures/xss" + file + ".html");
-            expect(element("body").text()).toBe("fail");
+            expect(element("body").text()).not().toBe("fail");
         };
     }
 };
