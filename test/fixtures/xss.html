@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>XSS test</title>
+    </head>
+    <body>
+        <h1>XSS test</h1>
+        <p>expression: {{ value }}</p>
+        <p translate>translate directive: {{ value }}</p>
+
+        <script src="/bower_components/jquery/dist/jquery.js"></script>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/dist/angular-gettext.js"></script>
+        <script>
+            angular.module("myApp", ["gettext"]);
+
+            angular.module("myApp").run(function ($rootScope) {
+                $rootScope.value = "<script>document.write('fa' + 'il');</sc" + "ript>";
+            });
+        </script>
+    </body>
+</html>
