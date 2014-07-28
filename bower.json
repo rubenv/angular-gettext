@@ -9,7 +9,7 @@
     "bower_components",
     "test",
     "genplurals.py",
-    "Gruntfile.coffee"
+    "Gruntfile.js"
   ],
   "dependencies": {
     "angular": "~1.2.0"
