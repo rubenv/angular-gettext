@@ -16,15 +16,17 @@
     "unused": true,
     "predef": [
         "$",
+        "after",
+        "afterEach",
         "angular",
+        "assert",
+        "before",
+        "beforeEach",
         "browser",
         "describe",
         "element",
-        "it",
-        "before",
-        "beforeEach",
-        "after",
-        "afterEach",
-        "expect"
+        "expect",
+        "inject",
+        "it"
     ]
 }
