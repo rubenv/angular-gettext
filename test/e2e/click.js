@@ -21,14 +21,6 @@ var tests = {
             element("#test3 button").click();
             expect(element("#field").text()).toBe("Success");
         };
-    },
-
-    "Should not compile ng-click": function (file) {
-        return function () {
-            browser().navigateTo("/test/fixtures/click" + file + ".html");
-            element("#test4 button").click();
-            expect(element("#field").text()).toBe("");
-        };
     }
 };
 

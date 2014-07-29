@@ -13,7 +13,8 @@ angular.module('gettext').factory('gettextCatalog', [
   '$http',
   '$cacheFactory',
   '$interpolate',
-  function (gettextPlurals, $http, $cacheFactory, $interpolate) {
+  '$rootScope',
+  function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var prefixDebug = function (string) {
       if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -28,6 +29,10 @@ angular.module('gettext').factory('gettextCatalog', [
       baseLanguage: 'en',
       currentLanguage: 'en',
       cache: $cacheFactory('strings'),
+      setCurrentLanguage: function (lang) {
+        this.currentLanguage = lang;
+        $rootScope.$broadcast('gettextLanguageChanged');
+      },
       setStrings: function (language, strings) {
         if (!this.strings[language]) {
           this.strings[language] = {};
@@ -72,14 +77,11 @@ angular.module('gettext').factory('gettextCatalog', [
 ]);
 angular.module('gettext').directive('translate', [
   'gettextCatalog',
-  '$interpolate',
   '$parse',
-  '$compile',
-  function (gettextCatalog, $interpolate, $parse, $compile) {
-    /**
-     * Trim fallback for old browsers(instead of jQuery)
-     * Based on AngularJS-v1.2.2 (angular.js#620)
-     */
+  '$animate',
+  function (gettextCatalog, $parse, $animate) {
+    // Trim polyfill for old browsers (instead of jQuery)
+    // Based on AngularJS-v1.2.2 (angular.js#620)
     var trim = function () {
         if (!String.prototype.trim) {
           return function (value) {
@@ -90,56 +92,63 @@ angular.module('gettext').directive('translate', [
           return typeof value === 'string' ? value.trim() : value;
         };
       }();
+    function assert(condition, missing, found) {
+      if (!condition) {
+        throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+      }
+    }
     return {
+      restrict: 'A',
+      terminal: true,
+      priority: 350,
       transclude: 'element',
-      priority: 499,
-      compile: function (element, attrs, transclude) {
-        return function ($scope, $element) {
-          // Validate attributes
-          var assert = function (condition, missing, found) {
-            if (!condition) {
-              throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+      link: function (scope, element, attrs, ctrl, transclude) {
+        // Validate attributes
+        assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
+        assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
+        var currentEl = null;
+        var countFn = $parse(attrs.translateN);
+        var pluralScope = null;
+        function update() {
+          var prevEl = currentEl;
+          currentEl = transclude(scope, function (clone) {
+            var msgid = trim(clone.html());
+            // Fetch correct translated string.
+            var translated;
+            if (attrs.translatePlural) {
+              scope = pluralScope || (pluralScope = scope.$new());
+              scope.$count = countFn(scope);
+              translated = gettextCatalog.getPlural(scope.$count, msgid, attrs.translatePlural);
+            } else {
+              translated = gettextCatalog.getString(msgid);
             }
-          };
-          assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
-          assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
-          // See https://github.com/angular/angular.js/issues/4852
-          if (attrs.ngIf) {
-            throw new Error('You should not combine translate with ng-if, this will lead to problems.');
-          }
-          if (attrs.ngSwitchWhen) {
-            throw new Error('You should not combine translate with ng-switch-when, this will lead to problems.');
-          }
-          var countFn = $parse(attrs.translateN);
-          var pluralScope = null;
-          transclude($scope, function (clone) {
-            var input = trim(clone.html());
-            clone.removeAttr('translate');
-            $element.replaceWith(clone);
-            return $scope.$watch(function () {
-              var prev = clone.html();
-              // Fetch correct translated string.
-              var translated;
-              if (attrs.translatePlural) {
-                $scope = pluralScope || (pluralScope = $scope.$new());
-                $scope.$count = countFn($scope);
-                translated = gettextCatalog.getPlural($scope.$count, input, attrs.translatePlural);
-              } else {
-                translated = gettextCatalog.getString(input);
-              }
-              // Interpolate with scope.
-              var interpolated = $interpolate(translated)($scope);
-              if (prev === interpolated) {
-                return;  // Skip DOM change.
-              }
-              clone.html(interpolated);
-              if (attrs.translateCompile !== undefined) {
-                $compile(clone.contents())($scope);
-              }
-              return clone;
-            });
+            clone.prop('__msgstr', translated);
+            $animate.enter(clone, null, element);
+            if (prevEl !== null) {
+              $animate.leave(prevEl, function () {
+                prevEl = null;
+              });
+            }
           });
-        };
+        }
+        if (attrs.translateN) {
+          scope.$watch(attrs.translateN, update);
+        }
+        scope.$on('gettextLanguageChanged', update);
+        update();
+      }
+    };
+  }
+]).directive('translate', [
+  '$compile',
+  function ($compile) {
+    return {
+      restrict: 'A',
+      priority: -350,
+      link: function (scope, element) {
+        var msgstr = element.prop('__msgstr');
+        element.html(msgstr);
+        $compile(element.contents())(scope);
       }
     };
   }

@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
 
     var prefixDebug = function (string) {
@@ -15,6 +15,11 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         baseLanguage: 'en',
         currentLanguage: 'en',
         cache: $cacheFactory('strings'),
+
+        setCurrentLanguage: function (lang) {
+            this.currentLanguage = lang;
+            $rootScope.$broadcast('gettextLanguageChanged');
+        },
 
         setStrings: function (language, strings) {
             if (!this.strings[language]) {

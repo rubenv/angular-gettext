@@ -131,7 +131,7 @@ describe 'Directive', ->
         $rootScope.$digest()
         assert.equal(el.text(), 'Hallo')
 
-        catalog.currentLanguage = 'en'
+        catalog.setCurrentLanguage('en')
         $rootScope.$digest()
         assert.equal(el.text(), 'Hello')
 
