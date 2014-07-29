@@ -62,7 +62,11 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $inte
                         if (prev === interpolated) {
                             return; // Skip DOM change.
                         }
-                        clone.html(interpolated);
+                        try {
+                            clone.html(interpolated);
+                        } catch (e) {
+                            clone.empty().append(interpolated);
+                        }
                         if (attrs.translateCompile !== undefined) {
                             $compile(clone.contents())($scope);
                         }
