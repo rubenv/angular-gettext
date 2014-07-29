@@ -8,13 +8,8 @@ module.exports = function (config) {
             "bower_components/angular/angular.js",
             "bower_components/angular-mocks/angular-mocks.js",
             "dist/angular-gettext.js",
-            "test/unit/**/*.js",
-            "test/unit/**/*.coffee"
+            "test/unit/**/*.js"
         ],
-
-        preprocessors: {
-            "**/*.coffee": "coffee"
-        },
 
         port: 9876,
 
