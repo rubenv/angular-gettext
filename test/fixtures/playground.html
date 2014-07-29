@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Click test</title>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/src/index.js"></script>
+        <script src="/src/catalog.js"></script>
+        <script src="/src/directive.js"></script>
+        <script src="/src/plural.js"></script>
+        <script>
+            angular.module('myApp', ['gettext']);
+
+            angular.module('myApp').run(function (gettextCatalog, $rootScope) {
+                gettextCatalog.currentLanguage = 'nl';
+                gettextCatalog.setStrings('nl', {
+                    'Hello': 'Hallo',
+                    'Hello {{name}}': 'Hallo {{name}}',
+                    "There is {{count}} bird": ["Er is {{count}} vogel", "Er zijn {{count}} vogels"]
+                });
+
+                $rootScope.name = 'test';
+                $rootScope.count = 1;
+
+                $rootScope.action = function () {
+                    alert('Yup');
+                };
+
+                $rootScope.change = function () {
+                    if ($rootScope.count == 1) {
+                        $rootScope.name = 'world';
+                        $rootScope.count = 2;
+                    } else if ($rootScope.count == 2) {
+                        $rootScope.count = 3;
+                    } else {
+                        $rootScope.name = 'test';
+                        $rootScope.count = 1;
+                    }
+                };
+
+                $rootScope.language = function () {
+                    if (gettextCatalog.currentLanguage == 'nl') {
+                        gettextCatalog.setCurrentLanguage('en');
+                    } else {
+                        gettextCatalog.setCurrentLanguage('nl');
+                    }
+                }
+            });
+        </script>
+    </head>
+    <body>
+        <p>Plain string: <span translate>Hello</span></p>
+        <p>With var: <span translate>Hello {{name}}</span></p>
+        <p>Action: <button translate ng-click="action()">Hello</button></p>
+        <p>Action with var: <button translate ng-click="action()">Hello {{name}}</button></p>
+        <p>Plural: <span translate translate-plural="There are {{count}} birds" translate-n="count">There is {{count}} bird</span></p>
+        <p>With ng-if: <span translate ng-if="count == 1">Hello</span></p>
+        <hr />
+        <p><button ng-click="change()">Change it!</button></p>
+        <p><button ng-click="language()">Language</button></p>
+    </body>
+</html>
+
