@@ -104,4 +104,33 @@ describe("Catalog", function () {
         assert.equal(catalog.getPlural(2, "There is {{count}} bird", "There are {{count}} birds", { count: 2 }), "There are 2 birds");
         assert.equal(catalog.getPlural(1, "There is {{count}} bird", "There are {{count}} birds", { count: 1 }), "There is 1 bird");
     });
+
+    it("Can retrieve strings for country specific language", function () {
+        var strings = { Hello: "Hallo" };
+        catalog.setStrings("nl", strings);
+        catalog.currentLanguage = "nl-NL";
+        assert.equal(catalog.getString("Hello"), "Hallo");
+    });
+
+    it("Should return singular for singular strings for country specific language", function () {
+        catalog.currentLanguage = "nl-NL";
+        catalog.setStrings("nl", {
+            Bird: ["Vogel", "Vogels"]
+        });
+        assert.equal(catalog.getPlural(1, "Bird", "Birds"), "Vogel");
+    });
+
+    it("Should return plural for plural strings for country specific language", function () {
+        catalog.currentLanguage = "nl-NL";
+        catalog.setStrings("nl", {
+            Bird: ["Vogel", "Vogels"]
+        });
+        assert.equal(catalog.getPlural(2, "Bird", "Birds"), "Vogels");
+    });
+
+    it("Should not add prefix for country specific base language", function () {
+        catalog.baseLanguage = "en";
+        catalog.currentLanguage = "en-US";
+        assert.equal(catalog.getString("Hello"), "Hello");
+    });
 });
