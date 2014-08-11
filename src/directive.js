@@ -78,7 +78,7 @@ angular.module('gettext')
             priority: -350,
             link: function (scope, element) {
                 var msgstr = element.prop('__msgstr');
-                element.html(msgstr);
+                element.empty().append(msgstr);
                 $compile(element.contents())(scope);
             }
         };
