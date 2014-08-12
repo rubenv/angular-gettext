@@ -2,11 +2,36 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
     var catalog;
 
     var prefixDebug = function (string) {
-        if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
+        if (catalog.debug && catalog.getActiveLanguage() !== catalog.baseLanguage) {
             return '[MISSING]: ' + string;
         } else {
             return string;
         }
+    };
+
+    var safeLanguage = function (language, originalLanguage) {
+        if (typeof(originalLanguage) === 'undefined') {
+            originalLanguage = language;
+        }
+
+        if (language === catalog.baseLanguage) {
+            return language;
+        }
+
+        if (typeof(catalog.strings[language]) !== 'undefined') {
+            return language;
+        }
+
+        var parentExpr = /(\S+)[-_]/;
+        var matches = parentExpr.exec(language);
+
+        if (matches && matches.length > 1) {
+            var parentLanguage = matches[1];
+
+            return safeLanguage(parentLanguage, originalLanguage);
+        }
+
+        return originalLanguage;
     };
 
     catalog = {
@@ -37,7 +62,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getStringForm: function (string, n) {
-            var stringTable = this.strings[this.currentLanguage] || {};
+            var stringTable = this.strings[this.getActiveLanguage()] || {};
             var plurals = stringTable[string] || [];
             return plurals[n];
         },
@@ -48,7 +73,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getPlural: function (n, string, stringPlural, context) {
-            var form = gettextPlurals(this.currentLanguage, n);
+            var form = gettextPlurals(this.getActiveLanguage(), n);
             string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
             return context ? $interpolate(string)(context) : string;
         },
@@ -63,6 +88,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                     catalog.setStrings(lang, data[lang]);
                 }
             });
+        },
+
+        getActiveLanguage: function () {
+            return safeLanguage(this.currentLanguage);
         }
     };
 
