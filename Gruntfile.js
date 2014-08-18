@@ -93,7 +93,7 @@ module.exports = function (grunt) {
             unit: {
                 configFile: "test/configs/unit.conf.js",
                 browsers: ["PhantomJS"],
-                background: false
+                background: true
             },
             unit_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
