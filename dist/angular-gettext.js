@@ -115,7 +115,10 @@ angular.module('gettext').directive('translate', [
             // Strip the ng-binding class
             var ngBindings = clone[0].querySelectorAll('.ng-binding');
             for (var idx = 0; idx < ngBindings.length; idx++) {
-              ngBindings[idx].className = ngBindings[idx].className.replace(/\bng-binding\b/, '').trim() || null;
+              ngBindings[idx].className = ngBindings[idx].className.replace(/\bng-binding\b/, '').trim();
+              if (!ngBindings[idx].className) {
+                delete ngBindings[idx].className;
+              }
             }
             var msgid = trim(clone.html());
             // Fetch correct translated string.
