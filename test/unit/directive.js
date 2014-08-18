@@ -13,7 +13,7 @@ describe("Directive", function () {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
             "One boat": ["Een boot", "{{count}} boten"],
-            "This link: <a ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
+            "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
         });
     }));
 
@@ -194,7 +194,7 @@ describe("Directive", function () {
     it("Should strip the ng-binding class", function () {
         $rootScope.url = "http://google.com";
         catalog.currentLanguage = "nl";
-        var el = $compile("<div><p translate>This link: <a ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.</p></div>")($rootScope);
+        var el = $compile("<div><p translate>This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.</p></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Die skakel: http://google.com sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat.");
     });
