@@ -38,7 +38,7 @@ angular.module('gettext')
                     var prevEl = currentEl;
 
                     currentEl = transclude(scope, function (clone) {
-                        var msgid = trim(clone.html());
+                        var msgid = trim(clone.html().replace(' class="ng-binding"', ''));
 
                         // Fetch correct translated string.
                         var translated;
