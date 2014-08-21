@@ -191,7 +191,7 @@ describe("Directive", function () {
         assert.equal(el.text(), "");
     });
 
-    it("Should strip the ng-binding class", function () {
+    it("Does not have a ng-binding class", function () {
         $rootScope.url = "http://google.com";
         catalog.currentLanguage = "nl";
         var el = $compile("<div><p translate>This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.</p></div>")($rootScope);
