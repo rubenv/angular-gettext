@@ -101,7 +101,7 @@ angular.module('gettext').directive('translate', [
     return {
       restrict: 'A',
       terminal: true,
-      priority: 350,
+      priority: 0,
       compile: function compile(element, attrs) {
         // Validate attributes
         assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
