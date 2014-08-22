@@ -30,7 +30,7 @@
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-watch": "~0.5.1",
-    "grunt-jscs-checker": "^0.4.4",
+    "grunt-jscs": "^0.6.2",
     "grunt-karma": "~0.8.3",
     "grunt-ng-annotate": "^0.3.2",
     "karma": "~0.12.16",
