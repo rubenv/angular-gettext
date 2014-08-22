@@ -33,7 +33,6 @@ angular.module('gettext')
 
                 return {
                     post: function (scope, element, attrs) {
-
                         var countFn = $parse(attrs.translateN);
                         var pluralScope = null;
 

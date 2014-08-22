@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-jscs-checker");
     grunt.loadNpmTasks("grunt-karma");
-    grunt.loadNpmTasks("grunt-ngmin");
+    grunt.loadNpmTasks("grunt-ng-annotate");
 
     grunt.initConfig({
         jshint: {
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
             }
         },
 
-        ngmin: {
+        ngAnnotate: {
             dist: {
                 files: {
                     "dist/angular-gettext.js": "dist/angular-gettext.js"
@@ -144,7 +144,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("default", ["test"]);
-    grunt.registerTask("build", ["clean", "jshint", "jscs", "concat", "ngmin", "uglify"]);
+    grunt.registerTask("build", ["clean", "jshint", "jscs", "concat", "ngAnnotate", "uglify"]);
     grunt.registerTask("test", ["build", "connect:e2e", "karma:unit", "karma:unit_nojquery", "karma:e2e", "watch:all"]);
     grunt.registerTask("test_unit", ["build", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
     grunt.registerTask("test_e2e", ["build", "connect:e2e", "karma:e2e", "watch:e2e"]);
