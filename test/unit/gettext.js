@@ -1,4 +1,4 @@
-describe("Catalog", function () {
+describe("gettext", function () {
     var gettext = null;
 
     beforeEach(module("gettext"));
