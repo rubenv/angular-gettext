@@ -14,6 +14,9 @@ describe("Filter", function () {
             "Hello {{name}}!": "Hallo {{name}}!",
             "One boat": ["Een boot", "{{count}} boten"]
         });
+        catalog.setStrings("pt-BR", {
+            Hello: [{ Bull: "Olé", Person: "Olá" }]
+        });
     }));
 
     it("Should have a translate filter", function () {
@@ -27,6 +30,19 @@ describe("Filter", function () {
         var el = $compile("<span>{{\"Hello\"|translate}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
+    });
+
+    it("Should translate known strings according to translate context", function () {
+        catalog.currentLanguage = "pt-BR";
+        var el = $compile("<span>{{\"Hello\"|translate:'Bull'}}</span>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Olé");
+        el = $compile("<span>{{\"Hello\"|translate:'Person'}}</span>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Olá");
+        el = $compile("<span>{{\"Hello\"|translate}}</span>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hello");
     });
 
     it("Can use filter in attribute values", function () {

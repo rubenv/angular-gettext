@@ -40,7 +40,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
             for (var key in strings) {
                 var val = strings[key];
-                if (typeof val === 'string') {
+                if (!( val instanceof Array )) {
                     this.strings[language][key] = [val];
                 } else {
                     this.strings[language][key] = val;
@@ -48,20 +48,25 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             }
         },
 
-        getStringForm: function (string, n) {
+        getStringForm: function (string, n, gettextContext) {
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
-            return plurals[n];
+            var translation = plurals[n];
+            if (typeof translation === 'object'){
+                //Translation is an object with context bound translations for the string
+                translation = translation[gettextContext];
+            }
+            return translation;
         },
 
-        getString: function (string, context) {
-            string = this.getStringForm(string, 0) || prefixDebug(string);
+        getString: function (string, context, gettextContext) {
+            string = this.getStringForm(string, 0, gettextContext) || prefixDebug(string);
             return context ? $interpolate(string)(context) : string;
         },
 
-        getPlural: function (n, string, stringPlural, context) {
+        getPlural: function (n, string, stringPlural, context, gettextContext) {
             var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+            string = this.getStringForm(string, form, gettextContext) || prefixDebug(n === 1 ? string : stringPlural);
             return context ? $interpolate(string)(context) : string;
         },
 
@@ -111,6 +116,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
             var msgid = trim(element.html());
             var translatePlural = attrs.translatePlural;
+            var translateContext = attrs.translateContext;
 
             return {
                 post: function (scope, element, attrs) {
@@ -123,9 +129,9 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, undefined, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid);
+                            translated = gettextCatalog.getString(msgid,  undefined, translateContext);
                         }
 
                         // Swap in the translation
@@ -151,8 +157,8 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 }]);
 
 angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
-    return function (input) {
-        return gettextCatalog.getString(input);
+    return function (input, translateContext ) {
+        return gettextCatalog.getString(input, undefined, translateContext);
     };
 }]);
 

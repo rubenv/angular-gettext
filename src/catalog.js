@@ -28,7 +28,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
             for (var key in strings) {
                 var val = strings[key];
-                if (typeof val === 'string') {
+                if (!( val instanceof Array )) {
                     this.strings[language][key] = [val];
                 } else {
                     this.strings[language][key] = val;
@@ -36,20 +36,25 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             }
         },
 
-        getStringForm: function (string, n) {
+        getStringForm: function (string, n, gettextContext) {
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
-            return plurals[n];
+            var translation = plurals[n];
+            if (typeof translation === 'object'){
+                //Translation is an object with context bound translations for the string
+                translation = translation[gettextContext];
+            }
+            return translation;
         },
 
-        getString: function (string, context) {
-            string = this.getStringForm(string, 0) || prefixDebug(string);
+        getString: function (string, context, gettextContext) {
+            string = this.getStringForm(string, 0, gettextContext) || prefixDebug(string);
             return context ? $interpolate(string)(context) : string;
         },
 
-        getPlural: function (n, string, stringPlural, context) {
+        getPlural: function (n, string, stringPlural, context, gettextContext) {
             var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+            string = this.getStringForm(string, form, gettextContext) || prefixDebug(n === 1 ? string : stringPlural);
             return context ? $interpolate(string)(context) : string;
         },
 
