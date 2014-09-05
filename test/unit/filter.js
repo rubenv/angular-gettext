@@ -34,10 +34,10 @@ describe("Filter", function () {
 
     it("Should translate known strings according to translate context", function () {
         catalog.currentLanguage = "pt-BR";
-        var el = $compile("<span>{{\"Hello\"|translate:'Bull'}}</span>")($rootScope);
+        var el = $compile("<span>{{\"Hello\"|translate:{translateContext:'Bull'}}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Olé");
-        el = $compile("<span>{{\"Hello\"|translate:'Person'}}</span>")($rootScope);
+        el = $compile("<span>{{\"Hello\"|translate:{translateContext:'Person'}}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Olá");
         el = $compile("<span>{{\"Hello\"|translate}}</span>")($rootScope);
