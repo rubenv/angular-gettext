@@ -28,7 +28,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
             for (var key in strings) {
                 var val = strings[key];
-                if (!( val instanceof Array )) {
+                if (!angular.isArray(val)) {
                     this.strings[language][key] = [val];
                 } else {
                     this.strings[language][key] = val;
@@ -40,7 +40,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
             var translation = plurals[n];
-            if (typeof translation === 'object'){
+            if (angular.isObject(translation)){
                 //Translation is an object with context bound translations for the string
                 translation = translation[gettextContext];
             }

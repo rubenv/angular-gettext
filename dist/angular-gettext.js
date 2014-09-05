@@ -40,7 +40,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
             for (var key in strings) {
                 var val = strings[key];
-                if (!( val instanceof Array )) {
+                if (!angular.isArray(val)) {
                     this.strings[language][key] = [val];
                 } else {
                     this.strings[language][key] = val;
@@ -52,7 +52,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
             var translation = plurals[n];
-            if (typeof translation === 'object'){
+            if (angular.isObject(translation)){
                 //Translation is an object with context bound translations for the string
                 translation = translation[gettextContext];
             }
@@ -129,9 +129,9 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, undefined, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid,  undefined, translateContext);
+                            translated = gettextCatalog.getString(msgid,  null, translateContext);
                         }
 
                         // Swap in the translation
