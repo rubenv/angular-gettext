@@ -18,11 +18,22 @@ describe("Directive", function () {
             "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
         });
         catalog.setStrings("pt-BR", {
-            Developer: [{ male: "Programador", female: "Programadora" },
-            { male: "{{count}} Programadores", female: "{{count}} Programadoras" }],
-            "{{gratitude}} developer!": [{
-                male: "{{gratitude}} programador!",
-            female: "{{gratitude}} programadora!" }]
+            Developer: [
+                {
+                    male: "Programador",
+                    female: "Programadora"
+                },
+                {
+                    male: "{{count}} Programadores",
+                    female: "{{count}} Programadoras"
+                }
+            ],
+            "{{gratitude}} developer!": [
+                {
+                    male: "{{gratitude}} programador!",
+                    female: "{{gratitude}} programadora!"
+                }
+            ]
         });
     }));
 
