@@ -20,18 +20,14 @@ describe("Directive", function () {
         catalog.setStrings("pt-BR", {
             Developer: [
                 {
-                    male: "Programador",
-                    female: "Programadora"
-                },
-                {
-                    male: "{{count}} Programadores",
-                    female: "{{count}} Programadoras"
+                    male: ["Programador", "{{count}} Programadores"],
+                    female: ["Programadora", "{{count}} Programadoras"]
                 }
             ],
             "{{gratitude}} developer!": [
                 {
-                    male: "{{gratitude}} programador!",
-                    female: "{{gratitude}} programadora!"
+                    male: ["{{gratitude}} programador!"],
+                    female: ["{{gratitude}} programadora!"]
                 }
             ]
         });

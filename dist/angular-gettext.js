@@ -51,11 +51,15 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         getStringForm: function (string, n, gettextContext) {
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
-            var translation = plurals[n];
-            if (angular.isObject(translation)){
-                //Translation is an object with context bound translations for the string
-                translation = translation[gettextContext];
+            var translation;
+            //Translation is an object with context bound translations for the string
+            if (angular.isObject(plurals[0])){
+                plurals = (plurals[0][gettextContext] || []);
+                if (!angular.isArray(plurals)){
+                    throw new Error('Context bound translations must be wrapped in a array');
+                }
             }
+            translation = plurals[n];
             return translation;
         },
 

@@ -15,7 +15,7 @@ describe("Filter", function () {
             "One boat": ["Een boot", "{{count}} boten"]
         });
         catalog.setStrings("pt-BR", {
-            Hello: [{ Bull: "Olé", Person: "Olá" }]
+            Hello: [{ Bull: ["Olé"], Person: ["Olá"] }]
         });
     }));
 
