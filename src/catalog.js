@@ -62,6 +62,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                 for (var lang in data) {
                     catalog.setStrings(lang, data[lang]);
                 }
+                $rootScope.$broadcast('gettextLanguageChanged');
             });
         }
     };
