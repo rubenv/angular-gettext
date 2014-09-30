@@ -28,6 +28,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
             var msgid = trim(element.html());
             var translatePlural = attrs.translatePlural;
+            var translateDomain = attrs.translate || attrs.translateDomain;
 
             return {
                 post: function (scope, element, attrs) {
@@ -40,9 +41,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, translateDomain);
                         } else {
-                            translated = gettextCatalog.getString(msgid);
+                            translated = gettextCatalog.getString(msgid, translateDomain);
                         }
 
                         // Swap in the translation
