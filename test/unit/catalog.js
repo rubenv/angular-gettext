@@ -11,7 +11,7 @@ describe("Catalog", function () {
         var strings = { Hello: "Hallo" };
         assert.deepEqual(catalog.strings, {});
         catalog.setStrings("nl", strings);
-        assert.deepEqual(catalog.strings.nl.default.Hello[0], "Hallo");
+        assert.deepEqual(catalog.strings.nl["default"].Hello[0], "Hallo");
     });
 
     it("Can retrieve strings", function () {
