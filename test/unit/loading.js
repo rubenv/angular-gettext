@@ -19,7 +19,7 @@ describe("String loading", function () {
         $httpBackend.flush();
     });
 
-    it("Will set the loaded strings", function () {
+    it("Will set the loaded strings in the default textdomain", function () {
         catalog.loadRemote("/strings/nl.json");
         $httpBackend.expectGET("/strings/nl.json").respond(200, {
             nl: {
@@ -27,7 +27,18 @@ describe("String loading", function () {
             }
         });
         $httpBackend.flush();
-        assert.notEqual(void 0, catalog.strings.nl);
+        assert.notEqual(void 0, catalog.strings.nl.default);
+    });
+
+    it("Will set the loaded strings in a specified textdomain", function () {
+        catalog.loadRemote("/strings/nl.json", "testDomain");
+        $httpBackend.expectGET("/strings/nl.json").respond(200, {
+            nl: {
+                Hello: "Hallo"
+            }
+        });
+        $httpBackend.flush();
+        assert.notEqual(void 0, catalog.strings.nl.testDomain);
     });
 
     it("Gracefully handles failure", function () {
