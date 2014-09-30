@@ -25,7 +25,13 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             broadcastUpdated();
         },
 
-        setStrings: function (language, strings) {
+        setStrings: function (language, strings, domain) {
+            domain = domain || 'default';
+
+            if (!this.strings[language]) {
+                this.strings[language] = {};
+            }
+
             if (!this.strings[language]) {
                 this.strings[language] = {};
             }
