@@ -32,47 +32,49 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                 this.strings[language] = {};
             }
 
-            if (!this.strings[language]) {
-                this.strings[language] = {};
+            if (!this.strings[language][domain]) {
+                this.strings[language][domain] = {};
             }
 
             for (var key in strings) {
                 var val = strings[key];
                 if (typeof val === 'string') {
-                    this.strings[language][key] = [val];
+                    this.strings[language][domain][key] = [val];
                 } else {
-                    this.strings[language][key] = val;
+                    this.strings[language][domain][key] = val;
                 }
             }
 
             broadcastUpdated();
         },
 
-        getStringForm: function (string, n) {
+        getStringForm: function (string, n, domain) {
             var stringTable = this.strings[this.currentLanguage] || {};
-            var plurals = stringTable[string] || [];
+            var plurals = stringTable[string][domain] || [];
             return plurals[n];
         },
 
-        getString: function (string, context) {
-            string = this.getStringForm(string, 0) || prefixDebug(string);
+        getString: function (string, context, domain) {
+            domain = domain || 'default';
+            string = this.getStringForm(string, 0, domain) || prefixDebug(string);
             return context ? $interpolate(string)(context) : string;
         },
 
-        getPlural: function (n, string, stringPlural, context) {
+        getPlural: function (n, string, stringPlural, context, domain) {
             var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+            domain = domain || 'default';
+            string = this.getStringForm(string, form, domain) || prefixDebug(n === 1 ? string : stringPlural);
             return context ? $interpolate(string)(context) : string;
         },
 
-        loadRemote: function (url) {
+        loadRemote: function (url, domain) {
             return $http({
                 method: 'GET',
                 url: url,
                 cache: catalog.cache
             }).success(function (data) {
                 for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
+                    catalog.setStrings(lang, data[lang], domain);
                 }
             });
         }
