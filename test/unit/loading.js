@@ -27,7 +27,7 @@ describe("String loading", function () {
             }
         });
         $httpBackend.flush();
-        assert.notEqual(void 0, catalog.strings.nl.default);
+        assert.notEqual(void 0, catalog.strings.nl["default"]);
     });
 
     it("Will set the loaded strings in a specified textdomain", function () {
