@@ -50,7 +50,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
         getStringForm: function (string, n, domain) {
             var stringTable = this.strings[this.currentLanguage] || {};
-            var plurals = stringTable[string][domain] || [];
+            var plurals = stringTable[string] && stringTable[string][domain] || [];
             return plurals[n];
         },
 
