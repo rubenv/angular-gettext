@@ -75,6 +75,38 @@ describe("Catalog", function () {
         assert.equal(catalog.getPlural(2, "Bird", "Birds"), "Vogels");
     });
 
+    it("Should get the translation according to the context in which the string is used", function () {
+        catalog.currentLanguage = "pt-BR";
+        catalog.setStrings("pt-BR", {
+            beautiful: [{
+                male: ["bonito", "bonitos"],
+                female: ["bonita", "bonitas"]
+            }]
+        });
+        assert.equal(catalog.getString("beautiful", undefined, "male"), "bonito");
+        assert.equal(catalog.getString("beautiful", undefined, "female"), "bonita");
+        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined, "male"), "bonitos");
+        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined, "female"), "bonitas");
+
+        assert.equal(catalog.getString("beautiful"), "beautiful");
+        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined), "beautiful");
+    });
+
+    it("Only allows context bound translations wrapped in an array", function () {
+        catalog.currentLanguage = "pt-BR";
+        catalog.setStrings("pt-BR", {
+            beautiful: [{
+                male: "bonito",
+                female: ["bonita"]
+            }]
+        });
+        var errorCall = function () {
+            catalog.getString("beautiful", undefined, "male");
+        };
+        assert.throws(errorCall, Error, "Context bound translations must be wrapped in a array");
+        assert.equal(catalog.getString("beautiful", undefined, "female"), "bonita");
+    });
+
     it("Should add prefix for untranslated plural strings when in debug (single)", function () {
         catalog.debug = true;
         catalog.currentLanguage = "nl";

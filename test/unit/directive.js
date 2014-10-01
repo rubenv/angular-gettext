@@ -17,6 +17,20 @@ describe("Directive", function () {
         catalog.setStrings("af", {
             "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
         });
+        catalog.setStrings("pt-BR", {
+            Developer: [
+                {
+                    male: ["Programador", "{{count}} Programadores"],
+                    female: ["Programadora", "{{count}} Programadoras"]
+                }
+            ],
+            "{{gratitude}} developer!": [
+                {
+                    male: ["{{gratitude}} programador!"],
+                    female: ["{{gratitude}} programadora!"]
+                }
+            ]
+        });
     }));
 
     it("Should return string unchanged when no translation is available", function () {
@@ -32,12 +46,30 @@ describe("Directive", function () {
         assert.equal(el.text(), "Hallo");
     });
 
+    it("Should translate known strings according to defined translation context", function () {
+        catalog.currentLanguage = "pt-BR";
+        var el = $compile("<div><h1 translate translate-context=\"female\">Developer</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Programadora");
+        el = $compile("<div><h1 translate translate-context=\"male\">Developer</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Programador");
+        el = $compile("<div><h1 translate>Developer</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Developer");
+    });
+
     it("Should still allow for interpolation", function () {
         $rootScope.name = "Ruben";
         catalog.currentLanguage = "nl";
         var el = $compile("<div><div translate>Hello {{name}}!</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo Ruben!");
+        catalog.currentLanguage = "pt-BR";
+        $rootScope.gratitude = "Obrigado";
+        el = $compile("<div><h1 translate translate-context=\"female\">{{gratitude}} developer!</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Obrigado programadora!");
     });
 
     it("Can provide plural value and string, should translate", function () {
@@ -46,6 +78,16 @@ describe("Directive", function () {
         var el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} boats\">One boat</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "3 boten");
+        catalog.currentLanguage = "pt-BR";
+        el = $compile("<div><div translate translate-context=\"male\" translate-n=\"count\" translate-plural=\"{{count}} developers\">Developer</div></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "3 Programadores");
+        el = $compile("<div><div translate translate-context=\"female\" translate-n=\"count\" translate-plural=\"{{count}} developers\">Developer</div></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "3 Programadoras");
+        el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} Developers\">Developer</div></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "3 Developers");
     });
 
     it("Can provide plural value and string, should translate even for unknown languages", function () {
