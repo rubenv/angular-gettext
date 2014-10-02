@@ -40,12 +40,46 @@ describe("Directive", function () {
         assert.equal(el.text(), "Hallo Ruben!");
     });
 
+    it("Should translate known strings on specified textdomains", function () {
+        catalog.currentLanguage = "nl";
+        catalog.setStrings("nl", {
+            Welcome: "Welkom"
+        }, "testDomain");
+
+        var el = $compile("<div><h1 translate=\"testDomain\">Welcome</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Welkom");
+    });
+
+    it("Should translate known strings on specified textdomains using alternate syntax", function () {
+        catalog.currentLanguage = "nl";
+        catalog.setStrings("nl", {
+            Welcome: "Welkom"
+        }, "testDomain");
+
+        var el = $compile("<div><h1 translate translate-domain=\"testDomain\">Welcome</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Welkom");
+    });
+
     it("Can provide plural value and string, should translate", function () {
         $rootScope.count = 3;
         catalog.currentLanguage = "nl";
         var el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} boats\">One boat</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "3 boten");
+    });
+
+    it("Can provide plural value, string, and textdomain, should translate", function () {
+        $rootScope.count = 3;
+        catalog.currentLanguage = "nl";
+        catalog.setStrings("nl", {
+            "One car": ["Een auto", "{{count}} autos"]
+        }, "testDomain");
+
+        var el = $compile("<div><div translate=\"testDomain\" translate-n=\"count\" translate-plural=\"{{count}} cars\">One car</div></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "3 autos");
     });
 
     it("Can provide plural value and string, should translate even for unknown languages", function () {

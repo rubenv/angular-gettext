@@ -11,7 +11,7 @@ describe("Catalog", function () {
         var strings = { Hello: "Hallo" };
         assert.deepEqual(catalog.strings, {});
         catalog.setStrings("nl", strings);
-        assert.deepEqual(catalog.strings.nl.Hello[0], "Hallo");
+        assert.deepEqual(catalog.strings.nl["default"].Hello[0], "Hallo");
     });
 
     it("Can retrieve strings", function () {
@@ -19,6 +19,20 @@ describe("Catalog", function () {
         catalog.setStrings("nl", strings);
         catalog.currentLanguage = "nl";
         assert.equal(catalog.getString("Hello"), "Hallo");
+    });
+
+    it("Can set strings on a textdomain", function () {
+        var strings = { Hello: "Hallo" };
+        assert.deepEqual(catalog.strings, {});
+        catalog.setStrings("nl", strings, "testDomain");
+        assert.deepEqual(catalog.strings.nl.testDomain.Hello[0], "Hallo");
+    });
+
+    it("Can retrieve strings on a textdomain", function () {
+        var strings = { Hello: "Hallo" };
+        catalog.setStrings("nl", strings, "testDomain");
+        catalog.currentLanguage = "nl";
+        assert.equal(catalog.getString("Hello", null, "testDomain"), "Hallo");
     });
 
     it("Should return original for unknown strings", function () {
