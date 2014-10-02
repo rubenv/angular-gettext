@@ -12,10 +12,10 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "angular": "~1.2.0"
+    "angular": ">=1.2.0"
   },
   "devDependencies": {
     "jquery": ">=1.8.0",
-    "angular-mocks": "~1.2.0"
+    "angular-mocks": ">=1.2.0"
   }
 }
