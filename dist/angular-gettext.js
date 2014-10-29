@@ -15,7 +15,15 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
-            return '[MISSING]: ' + string;
+            return catalog.debugPrefix + string;
+        } else {
+            return string;
+        }
+    };
+
+    var addTranslatedMarkers = function (string) {
+        if (catalog.showTranslatedMarkers) {
+            return catalog.translatedMarkerPrefix + string + catalog.translatedMarkerSuffix;
         } else {
             return string;
         }
@@ -27,6 +35,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
     catalog = {
         debug: false,
+        debugPrefix: '[MISSING]: ',
+        showTranslatedMarkers: false,
+        translatedMarkerPrefix: '[',
+        translatedMarkerSuffix: ']',
         strings: {},
         baseLanguage: 'en',
         currentLanguage: 'en',
@@ -62,13 +74,15 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
         getString: function (string, context) {
             string = this.getStringForm(string, 0) || prefixDebug(string);
-            return context ? $interpolate(string)(context) : string;
+            string = context ? $interpolate(string)(context) : string;
+            return addTranslatedMarkers(string);
         },
 
         getPlural: function (n, string, stringPlural, context) {
             var form = gettextPlurals(this.currentLanguage, n);
             string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
-            return context ? $interpolate(string)(context) : string;
+            string = context ? $interpolate(string)(context) : string;
+            return addTranslatedMarkers(string);
         },
 
         loadRemote: function (url) {
