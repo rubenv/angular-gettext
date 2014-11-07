@@ -69,6 +69,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         getPlural: function (n, string, stringPlural, context) {
             var form = gettextPlurals(this.currentLanguage, n);
             string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+
+            // Replace {} pattern with number
+            string = string.replace(/\{\}/g, n);
+
             string = context ? $interpolate(string)(context) : string;
             return addTranslatedMarkers(string);
         },
