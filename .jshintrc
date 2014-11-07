@@ -24,9 +24,13 @@
         "beforeEach",
         "browser",
         "describe",
+        "ddescribe",
         "element",
         "expect",
         "inject",
-        "it"
+        "it",
+        "iit",
+        "xdescribe",
+        "xit",
     ]
 }
