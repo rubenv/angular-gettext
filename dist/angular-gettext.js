@@ -81,6 +81,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         getPlural: function (n, string, stringPlural, context) {
             var form = gettextPlurals(this.currentLanguage, n);
             string = this.getStringForm(string, form) || prefixDebug(n === 1 ? string : stringPlural);
+
+            // Replace {} pattern with number
+            string = string.replace(/\{\}/g, n);
+
             string = context ? $interpolate(string)(context) : string;
             return addTranslatedMarkers(string);
         },
@@ -173,6 +177,14 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
     function filter(input) {
         return gettextCatalog.getString(input);
+    }
+    filter.$stateful = true;
+    return filter;
+}]);
+
+angular.module('gettext').filter('translatePlural', ['gettextCatalog', function (gettextCatalog) {
+    function filter(string, n, stringPlural) {
+        return gettextCatalog.getPlural(n, string, stringPlural);
     }
     filter.$stateful = true;
     return filter;

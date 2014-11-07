@@ -112,6 +112,16 @@ describe("Catalog", function () {
         assert.equal(catalog.getPlural(1, "There is {{count}} bird", "There are {{count}} birds", { count: 1 }), "There is 1 bird");
     });
 
+    it("Can return an interpolated plural string for special {} pattern", function () {
+        assert.deepEqual(catalog.strings, {});
+        catalog.currentLanguage = "gb";
+        catalog.setStrings("gb", {
+            "There is {} bird": ["There is {} bird", "There are {} birds"]
+        });
+        assert.equal(catalog.getPlural(2, "There is {} bird", "There are {} birds"), "There are 2 birds");
+        assert.equal(catalog.getPlural(1, "There is {} bird", "There are {} birds"), "There is 1 bird");
+    });
+
     it("Should add translation markers when enabled", function () {
         catalog.showTranslatedMarkers = true;
         assert.equal(catalog.getString("Bye"), "[Bye]");
