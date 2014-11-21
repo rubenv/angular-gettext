@@ -152,6 +152,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         var newWrapper = angular.element('<span>' + translated + '</span>');
                         $compile(newWrapper.contents())(scope);
                         var oldContents = element.contents();
+                        $compile(oldContents)(scope);
                         var newContents = newWrapper.contents();
                         $animate.enter(newContents, element);
                         $animate.leave(oldContents);
