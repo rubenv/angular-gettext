@@ -41,9 +41,18 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             if (!this.strings[language]) {
                 this.strings[language] = {};
             }
-
+            // IE8 returns UPPER CASE tags, even though the source is lower
+            // case.
+            // This can causes the (key) string in the DOM to have a different
+            // case to the string in the `po` files.
+            var test = '<span>test</span>';
+            var isUpperCaseTags = (angular.element('<span>' + test + '</span>').html() !== test);
             for (var key in strings) {
                 var val = strings[key];
+                if (isUpperCaseTags) {
+                    // Use the DOM engine to uppercase any tags in the key.
+                    key = angular.element('<span>' + key + '</span>').html();
+                }
                 if (typeof val === 'string') {
                     this.strings[language][key] = [val];
                 } else {
