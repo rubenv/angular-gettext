@@ -1,4 +1,4 @@
-angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile) {
+angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile, $window) {
     // Trim polyfill for old browsers (instead of jQuery)
     // Based on AngularJS-v1.2.2 (angular.js#620)
     var trim = (function () {
@@ -18,6 +18,8 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
         }
     }
 
+    var msie = parseInt((/msie (\d+)/.exec(angular.lowercase($window.navigator.userAgent)) || [])[1], 10);
+
     return {
         restrict: 'A',
         terminal: true,
@@ -28,6 +30,14 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
             var msgid = trim(element.html());
             var translatePlural = attrs.translatePlural;
+
+            if (msie <= 8) {
+                // Workaround fix relating to angular adding a comment node to
+                // anchors. angular/angular.js/#1949 / angular/angular.js/#2013
+                if (msgid.slice(-13) === '<!--IE fix-->') {
+                    msgid = msgid.slice(0, -13);
+                }
+            }
 
             return {
                 post: function (scope, element, attrs) {
