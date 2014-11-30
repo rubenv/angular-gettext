@@ -13,6 +13,12 @@ angular.module('gettext').constant('gettext', function (str) {
 angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
 
+    // IE8 returns UPPER CASE tags, even though the source is lower case.
+    // This can causes the (key) string in the DOM to have a different case to
+    // the string in the `po` files.
+    var test = '<span>test</span>';
+    var isUpperCaseTags = (angular.element('<span>' + test + '</span>').html() !== test);
+
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
             return catalog.debugPrefix + string;
@@ -53,12 +59,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             if (!this.strings[language]) {
                 this.strings[language] = {};
             }
-            // IE8 returns UPPER CASE tags, even though the source is lower
-            // case.
-            // This can causes the (key) string in the DOM to have a different
-            // case to the string in the `po` files.
-            var test = '<span>test</span>';
-            var isUpperCaseTags = (angular.element('<span>' + test + '</span>').html() !== test);
+
             for (var key in strings) {
                 var val = strings[key];
                 if (isUpperCaseTags) {
