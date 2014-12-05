@@ -10,8 +10,7 @@ angular.module('gettext').constant('gettext', function (str) {
     return str;
 });
 
-angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
-    var catalog;
+angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function (gettextPlurals) {
     var noContext = '$$noContext';
 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
@@ -20,27 +19,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
     var test = '<span>test</span>';
     var isUpperCaseTags = (angular.element('<span>' + test + '</span>').html() !== test);
 
-    var prefixDebug = function (string) {
-        if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
-            return catalog.debugPrefix + string;
-        } else {
-            return string;
-        }
-    };
-
-    var addTranslatedMarkers = function (string) {
-        if (catalog.showTranslatedMarkers) {
-            return catalog.translatedMarkerPrefix + string + catalog.translatedMarkerSuffix;
-        } else {
-            return string;
-        }
-    };
-
-    function broadcastUpdated() {
-        $rootScope.$broadcast('gettextLanguageChanged');
-    }
-
-    catalog = {
+    var provider = {
         debug: false,
         debugPrefix: '[MISSING]: ',
         showTranslatedMarkers: false,
@@ -49,11 +28,9 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         strings: {},
         baseLanguage: 'en',
         currentLanguage: 'en',
-        cache: $cacheFactory('strings'),
 
         setCurrentLanguage: function (lang) {
             this.currentLanguage = lang;
-            broadcastUpdated();
         },
 
         setStrings: function (language, strings) {
@@ -83,8 +60,6 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
                 }
                 this.strings[language][key] = val;
             }
-
-            broadcastUpdated();
         },
 
         getStringForm: function (string, n, context) {
@@ -92,38 +67,79 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];
-        },
-
-        getString: function (string, scope, context) {
-            string = this.getStringForm(string, 0, context) || prefixDebug(string);
-            string = scope ? $interpolate(string)(scope) : string;
-            return addTranslatedMarkers(string);
-        },
-
-        getPlural: function (n, string, stringPlural, scope, context) {
-            var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
-            if (scope) {
-                scope.$count = n;
-                string = $interpolate(string)(scope);
-            }
-            return addTranslatedMarkers(string);
-        },
-
-        loadRemote: function (url) {
-            return $http({
-                method: 'GET',
-                url: url,
-                cache: catalog.cache
-            }).success(function (data) {
-                for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
-                }
-            });
         }
     };
 
-    return catalog;
+    angular.extend(this, provider);
+
+    var self = this;
+    this.$get = /* @ngInject */ ["$http", "$interpolate", "$cacheFactory", "$rootScope", function ($http, $interpolate, $cacheFactory, $rootScope) {
+        function Catalog(options) {
+            angular.extend(this, options);
+            var self = this;
+
+            var prefixDebug = function (string) {
+                if (self.debug && self.currentLanguage !== self.baseLanguage) {
+                    return self.debugPrefix + string;
+                } else {
+                    return string;
+                }
+            };
+
+            var addTranslatedMarkers = function (string) {
+                if (self.showTranslatedMarkers) {
+                    return self.translatedMarkerPrefix + string + self.translatedMarkerSuffix;
+                } else {
+                    return string;
+                }
+            };
+
+            function broadcastUpdated() {
+                $rootScope.$broadcast('gettextLanguageChanged');
+            }
+
+            this.setCurrentLanguage = function () {
+                options.setCurrentLanguage.apply(this, arguments);
+                broadcastUpdated();
+            };
+
+            this.setStrings = function () {
+                options.setStrings.apply(this, arguments);
+                broadcastUpdated();
+            };
+
+            this.getString = function (string, scope, context) {
+                string = this.getStringForm(string, 0, context) || prefixDebug(string);
+                string = scope ? $interpolate(string)(scope) : string;
+                return addTranslatedMarkers(string);
+            };
+
+            this.getPlural = function (n, string, stringPlural, scope, context) {
+                var form = gettextPlurals(this.currentLanguage, n);
+                string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+                if (scope) {
+                    scope.$count = n;
+                    string = $interpolate(string)(scope);
+                }
+                return addTranslatedMarkers(string);
+            };
+
+            this.loadRemote = function (url) {
+                return $http({
+                    method: 'GET',
+                    url: url,
+                    cache: self.cache
+                }).success(function (data) {
+                    for (var lang in data) {
+                        self.setStrings(lang, data[lang]);
+                    }
+                });
+            };
+        }
+
+        self.cache = self.cache || $cacheFactory('strings');
+        return new Catalog(self);
+    }];
 }]);
 
 angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", function (gettextCatalog, $parse, $animate, $compile, $window) {
@@ -215,116 +231,117 @@ angular.module('gettext').filter('translate', ["gettextCatalog", function (gette
 }]);
 
 // Do not edit this file, it is autogenerated using genplurals.py!
-angular.module("gettext").factory("gettextPlurals", function () {
-    return function (langCode, n) {
-        switch (langCode) {
-            case "ay":  // Aymará
-            case "bo":  // Tibetan
-            case "cgg": // Chiga
-            case "dz":  // Dzongkha
-            case "fa":  // Persian
-            case "id":  // Indonesian
-            case "ja":  // Japanese
-            case "jbo": // Lojban
-            case "ka":  // Georgian
-            case "kk":  // Kazakh
-            case "km":  // Khmer
-            case "ko":  // Korean
-            case "ky":  // Kyrgyz
-            case "lo":  // Lao
-            case "ms":  // Malay
-            case "my":  // Burmese
-            case "sah": // Yakut
-            case "su":  // Sundanese
-            case "th":  // Thai
-            case "tt":  // Tatar
-            case "ug":  // Uyghur
-            case "vi":  // Vietnamese
-            case "wo":  // Wolof
-            case "zh":  // Chinese
-                // 1 form
-                return 0;
-            case "is":  // Icelandic
-                // 2 forms
-                return (n%10!=1 || n%100==11) ? 1 : 0;
-            case "jv":  // Javanese
-                // 2 forms
-                return n!=0 ? 1 : 0;
-            case "mk":  // Macedonian
-                // 2 forms
-                return n==1 || n%10==1 ? 0 : 1;
-            case "ach": // Acholi
-            case "ak":  // Akan
-            case "am":  // Amharic
-            case "arn": // Mapudungun
-            case "br":  // Breton
-            case "fil": // Filipino
-            case "fr":  // French
-            case "gun": // Gun
-            case "ln":  // Lingala
-            case "mfe": // Mauritian Creole
-            case "mg":  // Malagasy
-            case "mi":  // Maori
-            case "oc":  // Occitan
-            case "pt_BR":  // Brazilian Portuguese
-            case "tg":  // Tajik
-            case "ti":  // Tigrinya
-            case "tr":  // Turkish
-            case "uz":  // Uzbek
-            case "wa":  // Walloon
-            case "zh":  // Chinese
-                // 2 forms
-                return n>1 ? 1 : 0;
-            case "lv":  // Latvian
-                // 3 forms
-                return (n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);
-            case "lt":  // Lithuanian
-                // 3 forms
-                return (n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);
-            case "be":  // Belarusian
-            case "bs":  // Bosnian
-            case "hr":  // Croatian
-            case "ru":  // Russian
-            case "sr":  // Serbian
-            case "uk":  // Ukrainian
-                // 3 forms
-                return (n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);
-            case "mnk": // Mandinka
-                // 3 forms
-                return (n==0 ? 0 : n==1 ? 1 : 2);
-            case "ro":  // Romanian
-                // 3 forms
-                return (n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);
-            case "pl":  // Polish
-                // 3 forms
-                return (n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);
-            case "cs":  // Czech
-            case "sk":  // Slovak
-                // 3 forms
-                return (n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;
-            case "sl":  // Slovenian
-                // 4 forms
-                return (n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);
-            case "mt":  // Maltese
-                // 4 forms
-                return (n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);
-            case "gd":  // Scottish Gaelic
-                // 4 forms
-                return (n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;
-            case "cy":  // Welsh
-                // 4 forms
-                return (n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;
-            case "kw":  // Cornish
-                // 4 forms
-                return (n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3;
-            case "ga":  // Irish
-                // 5 forms
-                return n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4;
-            case "ar":  // Arabic
-                // 6 forms
-                return (n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);
-            default: // Everything else
-                return n != 1 ? 1 : 0;
-        }
+angular.module("gettext").constant("gettextPlurals", function (langCode, n) {
+    switch (langCode) {
+        case "ay":  // Aymará
+        case "bo":  // Tibetan
+        case "cgg": // Chiga
+        case "dz":  // Dzongkha
+        case "fa":  // Persian
+        case "id":  // Indonesian
+        case "ja":  // Japanese
+        case "jbo": // Lojban
+        case "ka":  // Georgian
+        case "kk":  // Kazakh
+        case "km":  // Khmer
+        case "ko":  // Korean
+        case "ky":  // Kyrgyz
+        case "lo":  // Lao
+        case "ms":  // Malay
+        case "my":  // Burmese
+        case "sah": // Yakut
+        case "su":  // Sundanese
+        case "th":  // Thai
+        case "tt":  // Tatar
+        case "ug":  // Uyghur
+        case "vi":  // Vietnamese
+        case "wo":  // Wolof
+        case "zh":  // Chinese
+            // 1 form
+            return 0;
+        case "is":  // Icelandic
+            // 2 forms
+            return (n%10!=1 || n%100==11) ? 1 : 0;
+        case "jv":  // Javanese
+            // 2 forms
+            return n!=0 ? 1 : 0;
+        case "mk":  // Macedonian
+            // 2 forms
+            return n==1 || n%10==1 ? 0 : 1;
+        case "ach": // Acholi
+        case "ak":  // Akan
+        case "am":  // Amharic
+        case "arn": // Mapudungun
+        case "br":  // Breton
+        case "fil": // Filipino
+        case "fr":  // French
+        case "gun": // Gun
+        case "ln":  // Lingala
+        case "mfe": // Mauritian Creole
+        case "mg":  // Malagasy
+        case "mi":  // Maori
+        case "oc":  // Occitan
+        case "pt_BR":  // Brazilian Portuguese
+        case "tg":  // Tajik
+        case "ti":  // Tigrinya
+        case "tr":  // Turkish
+        case "uz":  // Uzbek
+        case "wa":  // Walloon
+        case "zh":  // Chinese
+            // 2 forms
+            return n>1 ? 1 : 0;
+        case "lv":  // Latvian
+            // 3 forms
+            return (n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);
+        case "lt":  // Lithuanian
+            // 3 forms
+            return (n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);
+        case "be":  // Belarusian
+        case "bs":  // Bosnian
+        case "hr":  // Croatian
+        case "ru":  // Russian
+        case "sr":  // Serbian
+        case "uk":  // Ukrainian
+            // 3 forms
+            return (n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);
+        case "mnk": // Mandinka
+            // 3 forms
+            return (n==0 ? 0 : n==1 ? 1 : 2);
+        case "ro":  // Romanian
+            // 3 forms
+            return (n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);
+        case "pl":  // Polish
+            // 3 forms
+            return (n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);
+        case "cs":  // Czech
+        case "sk":  // Slovak
+            // 3 forms
+            return (n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;
+        case "csb": // Kashubian
+            // 3 forms
+            return (n==1) ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;
+        case "sl":  // Slovenian
+            // 4 forms
+            return (n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0);
+        case "mt":  // Maltese
+            // 4 forms
+            return (n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3);
+        case "gd":  // Scottish Gaelic
+            // 4 forms
+            return (n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3;
+        case "cy":  // Welsh
+            // 4 forms
+            return (n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;
+        case "kw":  // Cornish
+            // 4 forms
+            return (n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3;
+        case "ga":  // Irish
+            // 5 forms
+            return (n==1) ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4;
+        case "ar":  // Arabic
+            // 6 forms
+            return (n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);
+        default: // Everything else
+            return n != 1 ? 1 : 0;
     }
 });

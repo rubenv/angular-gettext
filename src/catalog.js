@@ -1,5 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
-    var catalog;
+angular.module('gettext').provider('gettextCatalog', function (gettextPlurals) {
     var noContext = '$$noContext';
 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
@@ -8,27 +7,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
     var test = '<span>test</span>';
     var isUpperCaseTags = (angular.element('<span>' + test + '</span>').html() !== test);
 
-    var prefixDebug = function (string) {
-        if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
-            return catalog.debugPrefix + string;
-        } else {
-            return string;
-        }
-    };
-
-    var addTranslatedMarkers = function (string) {
-        if (catalog.showTranslatedMarkers) {
-            return catalog.translatedMarkerPrefix + string + catalog.translatedMarkerSuffix;
-        } else {
-            return string;
-        }
-    };
-
-    function broadcastUpdated() {
-        $rootScope.$broadcast('gettextLanguageChanged');
-    }
-
-    catalog = {
+    var provider = {
         debug: false,
         debugPrefix: '[MISSING]: ',
         showTranslatedMarkers: false,
@@ -37,11 +16,9 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         strings: {},
         baseLanguage: 'en',
         currentLanguage: 'en',
-        cache: $cacheFactory('strings'),
 
         setCurrentLanguage: function (lang) {
             this.currentLanguage = lang;
-            broadcastUpdated();
         },
 
         setStrings: function (language, strings) {
@@ -71,8 +48,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                 }
                 this.strings[language][key] = val;
             }
-
-            broadcastUpdated();
         },
 
         getStringForm: function (string, n, context) {
@@ -80,36 +55,77 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];
-        },
-
-        getString: function (string, scope, context) {
-            string = this.getStringForm(string, 0, context) || prefixDebug(string);
-            string = scope ? $interpolate(string)(scope) : string;
-            return addTranslatedMarkers(string);
-        },
-
-        getPlural: function (n, string, stringPlural, scope, context) {
-            var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
-            if (scope) {
-                scope.$count = n;
-                string = $interpolate(string)(scope);
-            }
-            return addTranslatedMarkers(string);
-        },
-
-        loadRemote: function (url) {
-            return $http({
-                method: 'GET',
-                url: url,
-                cache: catalog.cache
-            }).success(function (data) {
-                for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
-                }
-            });
         }
     };
 
-    return catalog;
+    angular.extend(this, provider);
+
+    var self = this;
+    this.$get = /* @ngInject */ function ($http, $interpolate, $cacheFactory, $rootScope) {
+        function Catalog(options) {
+            angular.extend(this, options);
+            var self = this;
+
+            var prefixDebug = function (string) {
+                if (self.debug && self.currentLanguage !== self.baseLanguage) {
+                    return self.debugPrefix + string;
+                } else {
+                    return string;
+                }
+            };
+
+            var addTranslatedMarkers = function (string) {
+                if (self.showTranslatedMarkers) {
+                    return self.translatedMarkerPrefix + string + self.translatedMarkerSuffix;
+                } else {
+                    return string;
+                }
+            };
+
+            function broadcastUpdated() {
+                $rootScope.$broadcast('gettextLanguageChanged');
+            }
+
+            this.setCurrentLanguage = function () {
+                options.setCurrentLanguage.apply(this, arguments);
+                broadcastUpdated();
+            };
+
+            this.setStrings = function () {
+                options.setStrings.apply(this, arguments);
+                broadcastUpdated();
+            };
+
+            this.getString = function (string, scope, context) {
+                string = this.getStringForm(string, 0, context) || prefixDebug(string);
+                string = scope ? $interpolate(string)(scope) : string;
+                return addTranslatedMarkers(string);
+            };
+
+            this.getPlural = function (n, string, stringPlural, scope, context) {
+                var form = gettextPlurals(this.currentLanguage, n);
+                string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+                if (scope) {
+                    scope.$count = n;
+                    string = $interpolate(string)(scope);
+                }
+                return addTranslatedMarkers(string);
+            };
+
+            this.loadRemote = function (url) {
+                return $http({
+                    method: 'GET',
+                    url: url,
+                    cache: self.cache
+                }).success(function (data) {
+                    for (var lang in data) {
+                        self.setStrings(lang, data[lang]);
+                    }
+                });
+            };
+        }
+
+        self.cache = self.cache || $cacheFactory('strings');
+        return new Catalog(self);
+    };
 });
