@@ -26,15 +26,22 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
             assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
 
-            var msgid = trim(element.html());
+            var html = trim(element.html());
             var translatePlural = attrs.translatePlural;
 
             return {
                 post: function (scope, element, attrs) {
                     var countFn = $parse(attrs.translateN);
                     var pluralScope = null;
+                    var msgidExp = attrs.translate ? $parse(attrs.translate) : function () { return html; };
 
                     function update() {
+                        var msgid = msgidExp(scope);
+                        if (!msgid) {
+                            // wait until msgid is initialized
+                            return;
+                        }
+
                         // Fetch correct translated string.
                         var translated;
                         if (translatePlural) {
@@ -56,6 +63,10 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
                     if (attrs.translateN) {
                         scope.$watch(attrs.translateN, update);
+                    }
+
+                    if (attrs.translate) {
+                        scope.$watch(attrs.translate, update);
                     }
 
                     scope.$on('gettextLanguageChanged', update);

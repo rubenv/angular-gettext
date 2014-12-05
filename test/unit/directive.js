@@ -200,4 +200,25 @@ describe("Directive", function () {
         $rootScope.$digest();
         assert.equal(el.text(), "Die skakel: http://google.com sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat.");
     });
+
+    describe("translate=", function () {
+        it("Should allow passing scope variable directly to translate directive", function () {
+            $rootScope.greeting = "Hello";
+            catalog.currentLanguage = "nl";
+            var el = $compile("<div translate=\"greeting\"></div>")($rootScope);
+            $rootScope.$digest();
+            assert.equal(el.text(), "Hallo");
+        });
+
+        it("Shouldn't set text until it's initialized", function () {
+            catalog.currentLanguage = "nl";
+            var el = $compile("<div translate=\"greeting\"></div>")($rootScope);
+            $rootScope.$digest();
+            assert.equal(el.text(), "");
+
+            $rootScope.greeting = "Hello";
+            $rootScope.$digest();
+            assert.equal(el.text(), "Hallo");
+        });
+    });
 });
