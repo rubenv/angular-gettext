@@ -200,4 +200,11 @@ describe("Directive", function () {
         $rootScope.$digest();
         assert.equal(el.text(), "Die skakel: http://google.com sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat.");
     });
+
+    it("Should work as an element", function () {
+        catalog.currentLanguage = "nl";
+        var el = $compile("<translate>Hello</translate>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hallo");
+    });
 });
