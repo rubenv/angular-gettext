@@ -12,6 +12,7 @@ angular.module('gettext').constant('gettext', function (str) {
 
 angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
+    var noContext = '$$noContext';
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -56,11 +57,19 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
             for (var key in strings) {
                 var val = strings[key];
-                if (!angular.isArray(val)) {
-                    this.strings[language][key] = [val];
-                } else {
-                    this.strings[language][key] = val;
+                if (angular.isString(val) || angular.isArray(val)) {
+                    // No context, wrap it in $$noContext.
+                    var obj = {};
+                    obj[noContext] = val;
+                    val = obj;
                 }
+
+                // Expand single strings for each context.
+                for (var context in val) {
+                    var str = val[context];
+                    val[context] = angular.isArray(str) ? str : [str];
+                }
+                this.strings[language][key] = val;
             }
 
             broadcastUpdated();
@@ -68,18 +77,9 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
         getStringForm: function (string, n, context) {
             var stringTable = this.strings[this.currentLanguage] || {};
-            var plurals = stringTable[string] || [];
-            var translation;
-
-            // Translation is an object with context bound translations for the string
-            if (angular.isObject(plurals[0])){
-                plurals = (plurals[0][context] || []);
-                if (!angular.isArray(plurals)){
-                    throw new Error('Context bound translations must be wrapped in a array');
-                }
-            }
-            translation = plurals[n];
-            return translation;
+            var contexts = stringTable[string] || {};
+            var plurals = contexts[context || noContext] || [];
+            return plurals[n];
         },
 
         getString: function (string, scope, context) {
@@ -91,7 +91,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         getPlural: function (n, string, stringPlural, scope, context) {
             var form = gettextPlurals(this.currentLanguage, n);
             string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
-            string = scope ? $interpolate(string)(scope) : string;
+            if (scope) {
+                scope.$count = n;
+                string = $interpolate(string)(scope);
+            }
             return addTranslatedMarkers(string);
         },
 

@@ -12,24 +12,11 @@ describe("Directive", function () {
         catalog.setStrings("nl", {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
-            "One boat": ["Een boot", "{{count}} boten"]
+            "One boat": ["Een boot", "{{count}} boten"],
+            Archive: { verb: "Archiveren", noun: "Archief" }
         });
         catalog.setStrings("af", {
             "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
-        });
-        catalog.setStrings("pt-BR", {
-            Developer: [
-                {
-                    male: ["Programador", "{{count}} Programadores"],
-                    female: ["Programadora", "{{count}} Programadoras"]
-                }
-            ],
-            "{{gratitude}} developer!": [
-                {
-                    male: ["{{gratitude}} programador!"],
-                    female: ["{{gratitude}} programadora!"]
-                }
-            ]
         });
     }));
 
@@ -40,59 +27,41 @@ describe("Directive", function () {
     });
 
     it("Should translate known strings", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><h1 translate>Hello</h1></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
     });
 
     it("Should translate known strings according to defined translation context", function () {
-        catalog.currentLanguage = "pt-BR";
-        var el = $compile("<div><h1 translate translate-context=\"female\">Developer</h1></div>")($rootScope);
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<div><h1 translate translate-context=\"verb\">Archive</h1></div>")($rootScope);
         $rootScope.$digest();
-        assert.equal(el.text(), "Programadora");
-        el = $compile("<div><h1 translate translate-context=\"male\">Developer</h1></div>")($rootScope);
+        assert.equal(el.text(), "Archiveren");
+        el = $compile("<div><h1 translate translate-context=\"noun\">Archive</h1></div>")($rootScope);
         $rootScope.$digest();
-        assert.equal(el.text(), "Programador");
-        el = $compile("<div><h1 translate>Developer</h1></div>")($rootScope);
-        $rootScope.$digest();
-        assert.equal(el.text(), "Developer");
+        assert.equal(el.text(), "Archief");
     });
 
     it("Should still allow for interpolation", function () {
         $rootScope.name = "Ruben";
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><div translate>Hello {{name}}!</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo Ruben!");
-        catalog.currentLanguage = "pt-BR";
-        $rootScope.gratitude = "Obrigado";
-        el = $compile("<div><h1 translate translate-context=\"female\">{{gratitude}} developer!</h1></div>")($rootScope);
-        $rootScope.$digest();
-        assert.equal(el.text(), "Obrigado programadora!");
     });
 
     it("Can provide plural value and string, should translate", function () {
         $rootScope.count = 3;
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} boats\">One boat</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "3 boten");
-        catalog.currentLanguage = "pt-BR";
-        el = $compile("<div><div translate translate-context=\"male\" translate-n=\"count\" translate-plural=\"{{count}} developers\">Developer</div></div>")($rootScope);
-        $rootScope.$digest();
-        assert.equal(el.text(), "3 Programadores");
-        el = $compile("<div><div translate translate-context=\"female\" translate-n=\"count\" translate-plural=\"{{count}} developers\">Developer</div></div>")($rootScope);
-        $rootScope.$digest();
-        assert.equal(el.text(), "3 Programadoras");
-        el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} Developers\">Developer</div></div>")($rootScope);
-        $rootScope.$digest();
-        assert.equal(el.text(), "3 Developers");
     });
 
     it("Can provide plural value and string, should translate even for unknown languages", function () {
         $rootScope.count = 2;
-        catalog.currentLanguage = "fr";
+        catalog.setCurrentLanguage("fr");
         var el = $compile("<div><div translate translate-n=\"count\" translate-plural=\"{{count}} boats\">One boat</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "2 boats");
@@ -198,7 +167,7 @@ describe("Directive", function () {
     });
 
     it("Changing language should translate again", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><div translate>Hello</div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
@@ -221,7 +190,7 @@ describe("Directive", function () {
 
     it("Translates inside an ngIf directive", function () {
         $rootScope.flag = true;
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><div ng-if=\"flag\"><div translate>Hello</div></div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
@@ -229,7 +198,7 @@ describe("Directive", function () {
 
     it("Does not translate inside a false ngIf directive", function () {
         $rootScope.flag = false;
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<div><div ng-if=\"flag\"><div translate>Hello</div></div></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "");
@@ -237,7 +206,7 @@ describe("Directive", function () {
 
     it("Does not have a ng-binding class", function () {
         $rootScope.url = "http://google.com";
-        catalog.currentLanguage = "af";
+        catalog.setCurrentLanguage("af");
         var el = $compile("<div><p translate>This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.</p></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Die skakel: http://google.com sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat.");

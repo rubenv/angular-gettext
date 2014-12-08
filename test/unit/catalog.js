@@ -11,50 +11,50 @@ describe("Catalog", function () {
         var strings = { Hello: "Hallo" };
         assert.deepEqual(catalog.strings, {});
         catalog.setStrings("nl", strings);
-        assert.deepEqual(catalog.strings.nl.Hello[0], "Hallo");
+        assert.deepEqual(catalog.strings.nl.Hello.$$noContext[0], "Hallo");
     });
 
     it("Can retrieve strings", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         assert.equal(catalog.getString("Hello"), "Hallo");
     });
 
     it("Should return original for unknown strings", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         assert.equal(catalog.getString("Bye"), "Bye");
     });
 
     it("Should return original for unknown languages", function () {
-        catalog.currentLanguage = "fr";
+        catalog.setCurrentLanguage("fr");
         assert.equal(catalog.getString("Hello"), "Hello");
     });
 
     it("Should add prefix for untranslated strings when in debug", function () {
         catalog.debug = true;
-        catalog.currentLanguage = "fr";
+        catalog.setCurrentLanguage("fr");
         assert.equal(catalog.getString("Hello"), "[MISSING]: Hello");
     });
 
     it("Should add custom prefix for untranslated strings when in debug", function () {
         catalog.debug = true;
         catalog.debugPrefix = "#X# ";
-        catalog.currentLanguage = "fr";
+        catalog.setCurrentLanguage("fr");
         assert.equal(catalog.getString("Hello"), "#X# Hello");
     });
 
     it("Should not add prefix for untranslated strings in English", function () {
         catalog.debug = true;
-        catalog.currentLanguage = "en";
+        catalog.setCurrentLanguage("en");
         assert.equal(catalog.getString("Hello"), "Hello");
     });
 
     it("Should not add prefix for untranslated strings in preferred language", function () {
         catalog.debug = true;
-        catalog.currentLanguage = catalog.baseLanguage;
+        catalog.setCurrentLanguage(catalog.baseLanguage);
         assert.equal(catalog.getString("Hello"), "Hello");
     });
 
@@ -67,7 +67,7 @@ describe("Catalog", function () {
     });
 
     it("Should return singular for singular strings", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         catalog.setStrings("nl", {
             Bird: ["Vogel", "Vogels"]
         });
@@ -75,69 +75,37 @@ describe("Catalog", function () {
     });
 
     it("Should return plural for plural strings", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         catalog.setStrings("nl", {
             Bird: ["Vogel", "Vogels"]
         });
         assert.equal(catalog.getPlural(2, "Bird", "Birds"), "Vogels");
     });
 
-    it("Should get the translation according to the context in which the string is used", function () {
-        catalog.currentLanguage = "pt-BR";
-        catalog.setStrings("pt-BR", {
-            beautiful: [{
-                male: ["bonito", "bonitos"],
-                female: ["bonita", "bonitas"]
-            }]
-        });
-        assert.equal(catalog.getString("beautiful", undefined, "male"), "bonito");
-        assert.equal(catalog.getString("beautiful", undefined, "female"), "bonita");
-        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined, "male"), "bonitos");
-        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined, "female"), "bonitas");
-
-        assert.equal(catalog.getString("beautiful"), "beautiful");
-        assert.equal(catalog.getPlural(2, "beautiful", "beautiful", undefined), "beautiful");
-    });
-
-    it("Only allows context bound translations wrapped in an array", function () {
-        catalog.currentLanguage = "pt-BR";
-        catalog.setStrings("pt-BR", {
-            beautiful: [{
-                male: "bonito",
-                female: ["bonita"]
-            }]
-        });
-        var errorCall = function () {
-            catalog.getString("beautiful", undefined, "male");
-        };
-        assert.throws(errorCall, Error, "Context bound translations must be wrapped in a array");
-        assert.equal(catalog.getString("beautiful", undefined, "female"), "bonita");
-    });
-
     it("Should add prefix for untranslated plural strings when in debug (single)", function () {
         catalog.debug = true;
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         assert.equal(catalog.getPlural(1, "Bird", "Birds"), "[MISSING]: Bird");
     });
 
     it("Should add prefix for untranslated plural strings when in debug", function () {
         catalog.debug = true;
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         assert.equal(catalog.getPlural(2, "Bird", "Birds"), "[MISSING]: Birds");
     });
 
     it("Can return an interpolated string", function () {
         var strings = { "Hello {{name}}!": "Hallo {{name}}!" };
         assert.deepEqual(catalog.strings, {});
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         catalog.setStrings("nl", strings);
         assert.equal(catalog.getString("Hello {{name}}!", { name: "Andrew" }), "Hallo Andrew!");
     });
 
     it("Can return an interpolated plural string", function () {
         assert.deepEqual(catalog.strings, {});
-        catalog.currentLanguage = "gb";
-        catalog.setStrings("gb", {
+        catalog.setCurrentLanguage("en");
+        catalog.setStrings("en", {
             "There is {{count}} bird": ["There is {{count}} bird", "There are {{count}} birds"]
         });
         assert.equal(catalog.getPlural(2, "There is {{count}} bird", "There are {{count}} birds", { count: 2 }), "There are 2 birds");
@@ -159,7 +127,22 @@ describe("Catalog", function () {
     it("Should add prefix for untranslated strings and add translation markers when enabled", function () {
         catalog.debug = true;
         catalog.showTranslatedMarkers = true;
-        catalog.currentLanguage = "fr";
+        catalog.setCurrentLanguage("fr");
         assert.equal(catalog.getString("Bye"), "[[MISSING]: Bye]");
+    });
+
+    it("Understands contexts in the string catalog format", function () {
+        catalog.setCurrentLanguage("nl");
+        catalog.setStrings("nl", {
+            Cat: "Kat", // Single string
+            "1 boat": ["1 boot", "{{$count}} boten"], // Plural
+            Archive: { verb: "Archiveren", noun: "Archief" } // Contexts
+        });
+
+        assert.equal(catalog.getString("Cat"), "Kat");
+        assert.equal(catalog.getPlural(1, "1 boat", "{{$count}} boats", {}), "1 boot");
+        assert.equal(catalog.getPlural(2, "1 boat", "{{$count}} boats", {}), "2 boten");
+        assert.equal(catalog.getString("Archive", {}, "verb"), "Archiveren");
+        assert.equal(catalog.getString("Archive", {}, "noun"), "Archief");
     });
 });

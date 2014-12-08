@@ -12,10 +12,8 @@ describe("Filter", function () {
         catalog.setStrings("nl", {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
-            "One boat": ["Een boot", "{{count}} boten"]
-        });
-        catalog.setStrings("pt-BR", {
-            Hello: [{ Bull: ["Olé"], Person: ["Olá"] }]
+            "One boat": ["Een boot", "{{count}} boten"],
+            Archive: { verb: "Archiveren", noun: "Archief", $$noContext: "Archief (no context)" }
         });
     }));
 
@@ -26,27 +24,27 @@ describe("Filter", function () {
     });
 
     it("Should translate known strings", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<span>{{\"Hello\"|translate}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
     });
 
     it("Should translate known strings according to translate context", function () {
-        catalog.currentLanguage = "pt-BR";
-        var el = $compile("<span>{{\"Hello\"|translate:'Bull'}}</span>")($rootScope);
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<span>{{\"Archive\"|translate:'verb'}}</span>")($rootScope);
         $rootScope.$digest();
-        assert.equal(el.text(), "Olé");
-        el = $compile("<span>{{\"Hello\"|translate:'Person'}}</span>")($rootScope);
+        assert.equal(el.text(), "Archiveren");
+        el = $compile("<span>{{\"Archive\"|translate:'noun'}}</span>")($rootScope);
         $rootScope.$digest();
-        assert.equal(el.text(), "Olá");
-        el = $compile("<span>{{\"Hello\"|translate}}</span>")($rootScope);
+        assert.equal(el.text(), "Archief");
+        el = $compile("<span>{{\"Archive\"|translate}}</span>")($rootScope);
         $rootScope.$digest();
-        assert.equal(el.text(), "Hello");
+        assert.equal(el.text(), "Archief (no context)");
     });
 
     it("Can use filter in attribute values", function () {
-        catalog.currentLanguage = "nl";
+        catalog.setCurrentLanguage("nl");
         var el = $compile("<input type=\"text\" placeholder=\"{{'Hello'|translate}}\" />")($rootScope);
         $rootScope.$digest();
         assert.equal(el.attr("placeholder"), "Hallo");
