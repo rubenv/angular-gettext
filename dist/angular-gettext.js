@@ -135,7 +135,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
     }
 
     return {
-        restrict: 'A',
+        restrict: 'AE',
         terminal: true,
         compile: function compile(element, attrs) {
             // Validate attributes
