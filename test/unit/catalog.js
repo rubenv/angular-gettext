@@ -39,6 +39,13 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Hello"), "[MISSING]: Hello");
     });
 
+    it("Should add custom prefix for untranslated strings when in debug", function () {
+        catalog.debug = true;
+        catalog.debugPrefix = "#X# ";
+        catalog.currentLanguage = "fr";
+        assert.equal(catalog.getString("Hello"), "#X# Hello");
+    });
+
     it("Should not add prefix for untranslated strings in English", function () {
         catalog.debug = true;
         catalog.currentLanguage = "en";
@@ -135,5 +142,24 @@ describe("Catalog", function () {
         });
         assert.equal(catalog.getPlural(2, "There is {{count}} bird", "There are {{count}} birds", { count: 2 }), "There are 2 birds");
         assert.equal(catalog.getPlural(1, "There is {{count}} bird", "There are {{count}} birds", { count: 1 }), "There is 1 bird");
+    });
+
+    it("Should add translation markers when enabled", function () {
+        catalog.showTranslatedMarkers = true;
+        assert.equal(catalog.getString("Bye"), "[Bye]");
+    });
+
+    it("Should add custom translation markers when enabled", function () {
+        catalog.showTranslatedMarkers = true;
+        catalog.translatedMarkerPrefix = "(TRANS: ";
+        catalog.translatedMarkerSuffix = ")";
+        assert.equal(catalog.getString("Bye"), "(TRANS: Bye)");
+    });
+
+    it("Should add prefix for untranslated strings and add translation markers when enabled", function () {
+        catalog.debug = true;
+        catalog.showTranslatedMarkers = true;
+        catalog.currentLanguage = "fr";
+        assert.equal(catalog.getString("Bye"), "[[MISSING]: Bye]");
     });
 });

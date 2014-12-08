@@ -15,7 +15,15 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
-            return '[MISSING]: ' + string;
+            return catalog.debugPrefix + string;
+        } else {
+            return string;
+        }
+    };
+
+    var addTranslatedMarkers = function (string) {
+        if (catalog.showTranslatedMarkers) {
+            return catalog.translatedMarkerPrefix + string + catalog.translatedMarkerSuffix;
         } else {
             return string;
         }
@@ -27,6 +35,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
     catalog = {
         debug: false,
+        debugPrefix: '[MISSING]: ',
+        showTranslatedMarkers: false,
+        translatedMarkerPrefix: '[',
+        translatedMarkerSuffix: ']',
         strings: {},
         baseLanguage: 'en',
         currentLanguage: 'en',
@@ -54,14 +66,14 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             broadcastUpdated();
         },
 
-        getStringForm: function (string, n, gettextContext) {
+        getStringForm: function (string, n, context) {
             var stringTable = this.strings[this.currentLanguage] || {};
             var plurals = stringTable[string] || [];
             var translation;
 
             // Translation is an object with context bound translations for the string
             if (angular.isObject(plurals[0])){
-                plurals = (plurals[0][gettextContext] || []);
+                plurals = (plurals[0][context] || []);
                 if (!angular.isArray(plurals)){
                     throw new Error('Context bound translations must be wrapped in a array');
                 }
@@ -70,15 +82,17 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             return translation;
         },
 
-        getString: function (string, context, gettextContext) {
-            string = this.getStringForm(string, 0, gettextContext) || prefixDebug(string);
-            return context ? $interpolate(string)(context) : string;
+        getString: function (string, scope, context) {
+            string = this.getStringForm(string, 0, context) || prefixDebug(string);
+            string = scope ? $interpolate(string)(scope) : string;
+            return addTranslatedMarkers(string);
         },
 
-        getPlural: function (n, string, stringPlural, context, gettextContext) {
+        getPlural: function (n, string, stringPlural, scope, context) {
             var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form, gettextContext) || prefixDebug(n === 1 ? string : stringPlural);
-            return context ? $interpolate(string)(context) : string;
+            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+            string = scope ? $interpolate(string)(scope) : string;
+            return addTranslatedMarkers(string);
         },
 
         loadRemote: function (url) {
