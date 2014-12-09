@@ -22,7 +22,6 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
     return {
         restrict: 'AE',
-        terminal: true,
         compile: function compile(element, attrs) {
             // Validate attributes
             assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
