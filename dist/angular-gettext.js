@@ -73,7 +73,12 @@ angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function
     angular.extend(this, provider);
 
     var self = this;
-    this.$get = /* @ngInject */ ["$http", "$interpolate", "$cacheFactory", "$rootScope", function ($http, $interpolate, $cacheFactory, $rootScope) {
+    this.$get = /* @ngInject */ ["$injector", function ($injector) {
+        // lazily inject these to prevent circular dependecies
+        var $http;
+        var $interpolate;
+        var $rootScope;
+
         function Catalog(options) {
             angular.extend(this, options);
             var self = this;
@@ -95,6 +100,7 @@ angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function
             };
 
             function broadcastUpdated() {
+                $rootScope = $rootScope || $injector.get('$rootScope');
                 $rootScope.$broadcast('gettextLanguageChanged');
             }
 
@@ -109,12 +115,16 @@ angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function
             };
 
             this.getString = function (string, scope, context) {
+                $interpolate = $interpolate || $injector.get('$interpolate');
+
                 string = this.getStringForm(string, 0, context) || prefixDebug(string);
                 string = scope ? $interpolate(string)(scope) : string;
                 return addTranslatedMarkers(string);
             };
 
             this.getPlural = function (n, string, stringPlural, scope, context) {
+                $interpolate = $interpolate || $injector.get('$interpolate');
+
                 var form = gettextPlurals(this.currentLanguage, n);
                 string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
                 if (scope) {
@@ -125,6 +135,7 @@ angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function
             };
 
             this.loadRemote = function (url) {
+                $http = $http || $injector.get('$http');
                 return $http({
                     method: 'GET',
                     url: url,
@@ -137,7 +148,7 @@ angular.module('gettext').provider('gettextCatalog', ["gettextPlurals", function
             };
         }
 
-        self.cache = self.cache || $cacheFactory('strings');
+        self.cache = self.cache || $injector.get('$cacheFactory')('strings');
         return new Catalog(self);
     }];
 }]);
