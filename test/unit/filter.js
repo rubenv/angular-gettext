@@ -1,13 +1,17 @@
 describe("Filter", function () {
-    var catalog = null;
-    var $rootScope = null;
-    var $compile = null;
+    var catalog;
+    var filter;
+    var $rootScope;
+    var $compile;
+    var $injector;
 
     beforeEach(module("gettext"));
 
-    beforeEach(inject(function ($injector, gettextCatalog) {
+    beforeEach(inject(function (_$injector_, gettextCatalog, translateFilter) {
+        $injector = _$injector_;
         $rootScope = $injector.get("$rootScope");
         $compile = $injector.get("$compile");
+        filter = translateFilter;
         catalog = gettextCatalog;
         catalog.setStrings("nl", {
             Hello: "Hallo",
@@ -32,15 +36,20 @@ describe("Filter", function () {
 
     it("Should translate known strings according to translate context", function () {
         catalog.setCurrentLanguage("nl");
-        var el = $compile("<span>{{\"Archive\"|translate:'verb'}}</span>")($rootScope);
+        var el = $compile("<span>{{'Archive' | translate:'{context:\"verb\"}'}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Archiveren");
-        el = $compile("<span>{{\"Archive\"|translate:'noun'}}</span>")($rootScope);
+        el = $compile("<span>{{'Archive' | translate:'{context:\"noun\"}'}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Archief");
-        el = $compile("<span>{{\"Archive\"|translate}}</span>")($rootScope);
+        el = $compile("<span>{{'Archive' | translate}}</span>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Archief (no context)");
+    });
+
+    it("Should support passing object directly to filter", function () {
+        catalog.setCurrentLanguage("nl");
+        assert.equal(filter("Archive", { context: "verb" }), "Archiveren");
     });
 
     it("Can use filter in attribute values", function () {
@@ -49,4 +58,28 @@ describe("Filter", function () {
         $rootScope.$digest();
         assert.equal(el.attr("placeholder"), "Hallo");
     });
+
+    describe("plurals", function () {
+        it("Should work if n is a number", function () {
+            catalog.setCurrentLanguage("nl");
+            var scope = $rootScope.$new();
+
+            assert.equal(filter("Een boot", { plural: "{{$count}} boten", n: 2, scope: scope }), "2 boten");
+            assert.equal(filter("Een boot", { plural: "{{$count}} boten", n: 1, scope: scope }), "Een boot");
+        });
+
+        it("Should work if n is an expression string", function () {
+            catalog.setCurrentLanguage("nl");
+            var scope = $rootScope.$new();
+
+            scope.count = 2;
+            $rootScope.$digest();
+            assert.equal(filter("Een boot", { plural: "{{$count}} boten", n: "count", scope: scope }), "2 boten");
+
+            scope.count = 1;
+            $rootScope.$digest();
+            assert.equal(filter("Een boot", { plural: "{{$count}} boten", n: "count", scope: scope }), "Een boot");
+        });
+    });
+
 });
