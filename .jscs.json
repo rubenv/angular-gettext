@@ -24,7 +24,7 @@
     "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
     "requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
     "requireSpaceAfterBinaryOperators": [",", "+", "-", "/", "*", "=", "==", "===", "!=", "!==", ">", ">=", "<", "<="],
-    "validateQuoteMarks": true,
+    "validateQuoteMarks": { "mark": true, "escape": true },
     "validateIndentation": 4,
     "disallowTrailingWhitespace": true,
     "disallowKeywordsOnNewLine": ["else"],
