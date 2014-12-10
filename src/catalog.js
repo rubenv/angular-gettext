@@ -89,6 +89,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
+            if (!n && n !== 0) {
+                return this.getString(string, scope, context);
+            }
+
             var form = gettextPlurals(this.currentLanguage, n);
             string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
