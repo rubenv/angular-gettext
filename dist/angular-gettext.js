@@ -56,6 +56,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             broadcastUpdated();
         },
 
+        getCurrentLanguage: function () {
+            return this.currentLanguage;
+        },
+
         setStrings: function (language, strings) {
             if (!this.strings[language]) {
                 this.strings[language] = {};
