@@ -17,8 +17,8 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
-    // IE9 reorders the attributes of tags.
-    var test = '<span title="test" class="tested">test</span>';
+    // IE9, IE10 and IE11 reorders the attributes of tags.
+    var test = '<span id="test" title="test" class="tested">test</span>';
     var isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
 
     var prefixDebug = function (string) {
