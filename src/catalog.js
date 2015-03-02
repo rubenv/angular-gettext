@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope, $q) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -104,14 +104,17 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         loadRemote: function (url) {
-            return $http({
-                method: 'GET',
-                url: url,
-                cache: catalog.cache
-            }).success(function (data) {
-                for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
-                }
+            return $q(function (resolve) {
+                $http({
+                    method: 'GET',
+                    url: url,
+                    cache: catalog.cache
+                }).success(function (data) {
+                    for (var lang in data) {
+                        catalog.setStrings(lang, data[lang]);
+                    }
+                    resolve(data);
+                });
             });
         }
     };
