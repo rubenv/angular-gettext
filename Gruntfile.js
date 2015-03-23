@@ -30,6 +30,13 @@ module.exports = function (grunt) {
         },
 
         concat: {
+            options: {
+                banner: "/* commonjs package manager support (eg componentjs) */\n" +
+                    "if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports){\n" +
+                    "    module.exports = 'gettext';\n" +
+                    "}\n\n"
+
+            },
             dist: {
                 files: {
                     "dist/angular-gettext.js": ["src/index.js", "src/*.js"]
