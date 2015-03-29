@@ -53,8 +53,11 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         cache: $cacheFactory('strings'),
 
         setCurrentLanguage: function (lang) {
-            this.currentLanguage = lang;
-            broadcastUpdated();
+            var self = this;
+            $rootScope.$apply(function () {
+                self.currentLanguage = lang;
+                broadcastUpdated();
+            });
         },
 
         getCurrentLanguage: function () {
