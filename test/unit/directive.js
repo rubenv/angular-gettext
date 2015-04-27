@@ -11,6 +11,7 @@ describe("Directive", function () {
         catalog = gettextCatalog;
         catalog.setStrings("nl", {
             Hello: "Hallo",
+            " Hello friend ": " Hallo amigo ",
             "Hello {{name}}!": "Hallo {{name}}!",
             "One boat": ["Een boot", "{{count}} boten"],
             Archive: { verb: "Archiveren", noun: "Archief" }
@@ -24,6 +25,21 @@ describe("Directive", function () {
         var el = $compile("<div><h1 translate>Hello!</h1></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hello!");
+    });
+
+    it("Should trim whitespace around the message id by default", function () {
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<div><h1 translate> Hello </h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hallo");
+    });
+
+    it("Should let the message id transform be customized", function () {
+        catalog.setCurrentLanguage("nl");
+        catalog.setIdTransform(function (s) { return s.replace(/\s+/g, " "); });
+        var el = $compile("<div><h1 translate>   Hello   friend    </h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), " Hallo amigo ");
     });
 
     it("Should translate known strings", function () {
