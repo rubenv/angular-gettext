@@ -1,16 +1,4 @@
 angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile, $window) {
-    // Trim polyfill for old browsers (instead of jQuery)
-    // Based on AngularJS-v1.2.2 (angular.js#620)
-    var trim = (function () {
-        if (!String.prototype.trim) {
-            return function (value) {
-                return (typeof value === 'string') ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
-            };
-        }
-        return function (value) {
-            return (typeof value === 'string') ? value.trim() : value;
-        };
-    })();
 
     function assert(condition, missing, found) {
         if (!condition) {
@@ -28,7 +16,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
             assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
 
-            var msgid = trim(element.html());
+            var msgid = element.html();
             var translatePlural = attrs.translatePlural;
             var translateContext = attrs.translateContext;
 

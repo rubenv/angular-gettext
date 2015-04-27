@@ -25,6 +25,19 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         }
     };
 
+    // Trim polyfill for old browsers (instead of jQuery)
+    // Based on AngularJS-v1.2.2 (angular.js#620)
+    var trim = (function () {
+        if (!String.prototype.trim) {
+            return function (value) {
+                return (typeof value === 'string') ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
+            };
+        }
+        return function (value) {
+            return (typeof value === 'string') ? value.trim() : value;
+        };
+    })();
+
     function broadcastUpdated() {
         $rootScope.$broadcast('gettextLanguageChanged');
     }
@@ -35,10 +48,16 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         showTranslatedMarkers: false,
         translatedMarkerPrefix: '[',
         translatedMarkerSuffix: ']',
+        idTransform: function (s) { return trim(s); },
         strings: {},
         baseLanguage: 'en',
         currentLanguage: 'en',
         cache: $cacheFactory('strings'),
+
+        setIdTransform: function (idTransform) {
+            this.idTransform = idTransform;
+            broadcastUpdated();
+        },
 
         setCurrentLanguage: function (lang) {
             this.currentLanguage = lang;
@@ -81,8 +100,9 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getStringForm: function (string, n, context) {
+            var msgId = (typeof string === 'string') ? this.idTransform(string) : string;
             var stringTable = this.strings[this.currentLanguage] || {};
-            var contexts = stringTable[string] || {};
+            var contexts = stringTable[msgId] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];
         },
