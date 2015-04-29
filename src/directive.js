@@ -60,9 +60,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         var oldContents = element.contents();
 
                         // Avoid redundant swaps
-                        if(translated === oldContents[0].textContent){
+                        if (translated === oldContents[0].textContent){
                             // Take care of unlinked content
-                            if(linking){
+                            if (linking){
                                 $compile(oldContents)(scope);
                             }
                             return;
