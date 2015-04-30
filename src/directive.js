@@ -59,8 +59,12 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
                         var oldContents = element.contents();
 
+                        if(!oldContents){
+                            return;
+                        }
+
                         // Avoid redundant swaps
-                        if (translated === oldContents[0].textContent){
+                        if (translated === oldContents.html()){
                             // Take care of unlinked content
                             if (linking){
                                 $compile(oldContents)(scope);
@@ -73,8 +77,13 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         $compile(newWrapper.contents())(scope);
                         var newContents = newWrapper.contents();
 
-                        $animate.enter(newContents, element);
-                        $animate.leave(oldContents);
+                        // No animation is required before anything shows
+                        if (linking){
+                            oldContents.replaceWith(newContents);
+                        } else {
+                            $animate.enter(newContents, element);
+                            $animate.leave(oldContents);
+                        }
                     }
 
                     if (attrs.translateN) {
