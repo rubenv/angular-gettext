@@ -192,13 +192,12 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
                         var oldContents = element.contents();
 
-                        // if (!oldContents.length){
-                        //     $compile(oldContents)(scope);
-                        //     return;
-                        // }
+                        if (oldContents.length === 0){
+                            return;
+                        }
 
                         // Avoid redundant swaps
-                        if (translated === oldContents.html()){
+                        if (translated === trim(oldContents.html())){
                             // Take care of unlinked content
                             if (linking){
                                 $compile(oldContents)(scope);
