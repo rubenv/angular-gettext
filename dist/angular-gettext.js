@@ -115,16 +115,27 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             return addTranslatedMarkers(string);
         },
 
-        loadRemote: function (url) {
-            return $http({
+        loadRemote: function (url, noCache) {
+
+            noCache = noCache || false;
+
+            var httpOptions = {
                 method: 'GET',
                 url: url,
                 cache: catalog.cache
-            }).success(function (data) {
-                for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
-                }
-            });
+            };
+
+            // Add timestamp to avoid cache
+            if (noCache) {
+                httpOptions.params = { 'noCache': new Date().getTime() };
+            };
+
+            return $http(httpOptions)
+                .success(function (data) {
+                    for (var lang in data) {
+                        catalog.setStrings(lang, data[lang]);
+                    }
+                });
         }
     };
 
