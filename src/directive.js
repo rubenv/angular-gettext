@@ -62,7 +62,10 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         if (oldContents.length === 0){
                             return;
                         }
-
+                        
+                        if (!oldContents.html())
+                            $compile(oldContents)(scope);
+                        
                         // Avoid redundant swaps
                         if (translated === trim(oldContents.html())){
                             // Take care of unlinked content
