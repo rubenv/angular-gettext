@@ -103,7 +103,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             return addTranslatedMarkers(string);
         },
 
-        loadRemote: function (url) {
+        loadRemote: function (url, cb) {
             return $http({
                 method: 'GET',
                 url: url,
@@ -112,6 +112,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
                 for (var lang in data) {
                     catalog.setStrings(lang, data[lang]);
                 }
+                if (typeof cb === 'function')
+                    cb();
             });
         }
     };
