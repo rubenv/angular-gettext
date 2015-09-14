@@ -10,7 +10,7 @@ angular.module('gettext').constant('gettext', function (str) {
     return str;
 });
 
-angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$q", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $q, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -120,7 +120,12 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
                 method: 'GET',
                 url: url,
                 cache: catalog.cache
-            }).success(function (data) {
+            }).success(function(data) {
+                // ensure the response is a Javascript object
+                if(!data || typeof data !== 'object'){
+                    return $q.reject(new Error("Response must contain valid JSON"));
+                }
+
                 for (var lang in data) {
                     catalog.setStrings(lang, data[lang]);
                 }
