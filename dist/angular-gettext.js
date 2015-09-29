@@ -41,6 +41,14 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
+    function fallbackLanguage(lang) {
+        var parts = (lang || '').split('_');
+        if (parts.length > 1) {
+            return parts[0];
+        }
+        return null;
+    }
+
     catalog = {
         debug: false,
         debugPrefix: '[MISSING]: ',
@@ -93,7 +101,8 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         },
 
         getStringForm: function (string, n, context) {
-            var stringTable = this.strings[this.currentLanguage] || {};
+            var fallback = fallbackLanguage(this.currentLanguage);
+            var stringTable = this.strings[this.currentLanguage] || this.strings[fallback] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];

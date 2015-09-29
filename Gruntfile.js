@@ -82,6 +82,7 @@ module.exports = function (grunt) {
                     hostname: "0.0.0.0",
                     middleware: function (connect) {
                         return [
+                            // jscs:disable requireDotNotation
                             connect["static"](__dirname)
                         ];
                     }
