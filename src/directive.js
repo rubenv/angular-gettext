@@ -47,6 +47,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                     var pluralScope = null;
 
                     function update() {
+                        translateValues = scope.$eval(attrs.translate);
                         // Fetch correct translated string.
                         var translated;
                         if (translatePlural) {
@@ -68,6 +69,10 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
                     if (attrs.translateN) {
                         scope.$watch(attrs.translateN, update);
+                    }
+
+                    if (typeof translateValues !== 'undefined') {
+                        scope.$watch(attrs.translate, update);
                     }
 
                     scope.$on('gettextLanguageChanged', update);
