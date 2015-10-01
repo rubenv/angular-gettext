@@ -20,6 +20,12 @@ describe("Directive", function () {
         });
     }));
 
+    it("Should work on empty strings", function () {
+        var el = $compile("<div><h1 translate></h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "");
+    });
+
     it("Should return string unchanged when no translation is available", function () {
         var el = $compile("<div><h1 translate>Hello!</h1></div>")($rootScope);
         $rootScope.$digest();

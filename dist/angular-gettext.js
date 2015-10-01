@@ -17,8 +17,8 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
-    // IE9 reorders the attributes of tags.
-    var test = '<span title="test" class="tested">test</span>';
+    // IE9, IE10 and IE11 reorders the attributes of tags.
+    var test = '<span id="test" title="test" class="tested">test</span>';
     var isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
 
     var prefixDebug = function (string) {
@@ -178,6 +178,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                     var translateValues = scope.$eval(attrs.translate);
                     var countFn = $parse(attrs.translateN);
                     var pluralScope = null;
+                    var linking = true;
 
                     function update() {
                         translateValues = scope.$eval(attrs.translate);
@@ -191,11 +192,26 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                             translated = gettextCatalog.getString(msgid, translateValues || null, translateContext);
                         }
 
+                        var oldContents = element.contents();
+
+                        if (oldContents.length === 0){
+                            return;
+                        }
+
+                        // Avoid redundant swaps
+                        if (translated === trim(oldContents.html())){
+                            // Take care of unlinked content
+                            if (linking){
+                                $compile(oldContents)(scope);
+                            }
+                            return;
+                        }
+
                         // Swap in the translation
                         var newWrapper = angular.element('<span>' + translated + '</span>');
                         $compile(newWrapper.contents())(scope);
-                        var oldContents = element.contents();
                         var newContents = newWrapper.contents();
+
                         $animate.enter(newContents, element);
                         $animate.leave(oldContents);
                     }
@@ -211,6 +227,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                     scope.$on('gettextLanguageChanged', update);
 
                     update();
+                    linking = false;
                 }
             };
         }

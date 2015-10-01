@@ -45,6 +45,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                     var translateValues = scope.$eval(attrs.translate);
                     var countFn = $parse(attrs.translateN);
                     var pluralScope = null;
+                    var linking = true;
 
                     function update() {
                         translateValues = scope.$eval(attrs.translate);
@@ -58,11 +59,26 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                             translated = gettextCatalog.getString(msgid, translateValues || null, translateContext);
                         }
 
+                        var oldContents = element.contents();
+
+                        if (oldContents.length === 0){
+                            return;
+                        }
+
+                        // Avoid redundant swaps
+                        if (translated === trim(oldContents.html())){
+                            // Take care of unlinked content
+                            if (linking){
+                                $compile(oldContents)(scope);
+                            }
+                            return;
+                        }
+
                         // Swap in the translation
                         var newWrapper = angular.element('<span>' + translated + '</span>');
                         $compile(newWrapper.contents())(scope);
-                        var oldContents = element.contents();
                         var newContents = newWrapper.contents();
+
                         $animate.enter(newContents, element);
                         $animate.leave(oldContents);
                     }
@@ -78,6 +94,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                     scope.$on('gettextLanguageChanged', update);
 
                     update();
+                    linking = false;
                 }
             };
         }
