@@ -175,19 +175,21 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
             return {
                 post: function (scope, element, attrs) {
+                    var translateValues = scope.$eval(attrs.translate);
                     var countFn = $parse(attrs.translateN);
                     var pluralScope = null;
                     var linking = true;
 
                     function update() {
+                        translateValues = scope.$eval(attrs.translate);
                         // Fetch correct translated string.
                         var translated;
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, translateValues || null, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid,  null, translateContext);
+                            translated = gettextCatalog.getString(msgid, translateValues || null, translateContext);
                         }
 
                         var oldContents = element.contents();
@@ -216,6 +218,10 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 
                     if (attrs.translateN) {
                         scope.$watch(attrs.translateN, update);
+                    }
+
+                    if (typeof translateValues !== 'undefined') {
+                        scope.$watch(attrs.translate, update);
                     }
 
                     scope.$on('gettextLanguageChanged', update);
