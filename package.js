@@ -1,5 +1,9 @@
 var packageName = 'rubenv:angular-gettext';
 
+var options = {
+  "version": "2.1.1",
+  "where": "client"
+};
 var where = 'client';
 var version = '2.1.0';
 
