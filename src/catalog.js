@@ -106,7 +106,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         loadRemote: function (url, noCache) {
             // Default to false
             noCache = noCache || false;
-            
+
             var httpOptions = {
                 method: 'GET',
                 url: url,
@@ -115,7 +115,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
             // Add timestamp to avoid cache
             if (noCache) {
-                httpOptions.params = { 'noCache': new Date().getTime() };
+                httpOptions.params = { noCache: new Date().getTime() };
             }
 
             return $http(httpOptions)
