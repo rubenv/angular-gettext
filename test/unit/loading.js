@@ -64,6 +64,16 @@ describe("String loading", function () {
         assert(failedCalled);
     });
 
+    it("Exposes the loaded data in the promise", function () {
+        var responseIsPresent = null;
+        catalog.loadRemote("/strings/nl.json").then(function (response) {
+            responseIsPresent = response;
+        });
+        $httpBackend.expectGET("/strings/nl.json").respond(200);
+        $httpBackend.flush();
+        assert(responseIsPresent);
+    });
+
     it("Caches strings", function () {
         catalog.loadRemote("/strings/nl.json");
         $httpBackend.expectGET("/strings/nl.json").respond(200, {
