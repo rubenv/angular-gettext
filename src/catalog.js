@@ -104,16 +104,23 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         loadRemote: function (url) {
-            return $http({
+            var promise = $http({
                 method: 'GET',
                 url: url,
                 cache: catalog.cache
-            }).then(function (response) {
+            });
+
+            // note that if we returned $http.get(...).then,
+            // the response wouldn't be available to the next
+            // callback that gets registered
+            promise.then(function (response) {
                 var data = response.data;
                 for (var lang in data) {
                     catalog.setStrings(lang, data[lang]);
                 }
             });
+
+            return promise;
         }
     };
 
