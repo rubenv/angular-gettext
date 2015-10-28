@@ -125,6 +125,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
                 for (var lang in data) {
                     catalog.setStrings(lang, data[lang]);
                 }
+                return response;
             });
         }
     };
