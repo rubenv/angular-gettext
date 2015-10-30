@@ -29,6 +29,17 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
+    function baseLanguage() {
+        if (catalog.currentLanguage) {
+            var parts = catalog.currentLanguage.split('_');
+            if (parts.length > 0) {
+                return parts[0];
+            }
+            return catalog.currentLanguage;
+        }
+        return null;
+    }
+
     catalog = {
         debug: false,
         debugPrefix: '[MISSING]: ',
@@ -81,7 +92,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getStringForm: function (string, n, context) {
-            var stringTable = this.strings[this.currentLanguage] || {};
+            var stringTable = this.strings[this.currentLanguage] || this.strings[baseLanguage()] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];
@@ -94,7 +105,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
-            var form = gettextPlurals(this.currentLanguage, n);
+            var baseLang = baseLanguage();
+            var form = gettextPlurals(this.currentLanguage !== 'pt_BR' ? baseLang : this.currentLanguage, n);
             string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
