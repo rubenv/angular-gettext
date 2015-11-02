@@ -31,6 +31,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             var msgid = trim(element.html());
             var translatePlural = attrs.translatePlural;
             var translateContext = attrs.translateContext;
+            var namespace = attrs.translate;
 
             if (msie <= 8) {
                 // Workaround fix relating to angular adding a comment node to
@@ -52,9 +53,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext, namespace);
                         } else {
-                            translated = gettextCatalog.getString(msgid,  null, translateContext);
+                            translated = gettextCatalog.getString(msgid,  null, translateContext, namespace);
                         }
 
                         var oldContents = element.contents();

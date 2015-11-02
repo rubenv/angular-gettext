@@ -41,6 +41,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
+    function getInternalNamespaceName(namepsace) {
+        return namepsace ? ('$$_ns_' + namepsace) : namepsace;
+    }
+
     catalog = {
         debug: false,
         debugPrefix: '[MISSING]: ',
@@ -61,9 +65,15 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             return this.currentLanguage;
         },
 
-        setStrings: function (language, strings) {
+        setStrings: function (language, strings, namepsace) {
             if (!this.strings[language]) {
                 this.strings[language] = {};
+            }
+
+            namepsace = getInternalNamespaceName(namepsace);
+
+            if (namepsace && !this.strings[language][namepsace]) {
+                this.strings[language][namepsace] = {};
             }
 
             for (var key in strings) {
@@ -86,28 +96,37 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
                     var str = val[context];
                     val[context] = angular.isArray(str) ? str : [str];
                 }
-                this.strings[language][key] = val;
+
+                if (namepsace) {
+                    this.strings[language][namepsace][key] = val;
+                } else {
+                    this.strings[language][key] = val;
+                }
             }
 
             broadcastUpdated();
         },
 
-        getStringForm: function (string, n, context) {
+        getStringForm: function (string, n, context, namepsace) {
             var stringTable = this.strings[this.currentLanguage] || {};
+            namepsace = getInternalNamespaceName(namepsace);
+            if (namepsace) {
+                stringTable = stringTable[namepsace] || {};
+            }
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
             return plurals[n];
         },
 
-        getString: function (string, scope, context) {
-            string = this.getStringForm(string, 0, context) || prefixDebug(string);
+        getString: function (string, scope, context, namepsace) {
+            string = this.getStringForm(string, 0, context, namepsace) || prefixDebug(string);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
 
-        getPlural: function (n, string, stringPlural, scope, context) {
+        getPlural: function (n, string, stringPlural, scope, context, namepsace) {
             var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+            string = this.getStringForm(string, form, context, namepsace) || prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
                 string = $interpolate(string)(scope);
@@ -115,7 +134,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             return addTranslatedMarkers(string);
         },
 
-        loadRemote: function (url) {
+        loadRemote: function (url, namepsace) {
             return $http({
                 method: 'GET',
                 url: url,
@@ -123,7 +142,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             }).then(function (response) {
                 var data = response.data;
                 for (var lang in data) {
-                    catalog.setStrings(lang, data[lang]);
+                    catalog.setStrings(lang, data[lang], namepsace);
                 }
                 return response;
             });
@@ -166,6 +185,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             var msgid = trim(element.html());
             var translatePlural = attrs.translatePlural;
             var translateContext = attrs.translateContext;
+            var namespace = attrs.translate;
 
             if (msie <= 8) {
                 // Workaround fix relating to angular adding a comment node to
@@ -187,9 +207,9 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext, namespace);
                         } else {
-                            translated = gettextCatalog.getString(msgid,  null, translateContext);
+                            translated = gettextCatalog.getString(msgid,  null, translateContext, namespace);
                         }
 
                         var oldContents = element.contents();
@@ -231,8 +251,8 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 }]);
 
 angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
-    function filter(input, context) {
-        return gettextCatalog.getString(input, null, context);
+    function filter(input, context, namespace) {
+        return gettextCatalog.getString(input, null, context, namespace);
     }
     filter.$stateful = true;
     return filter;
