@@ -29,6 +29,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
+    function getInternalNamespaceName(namepsace) {
+        return namepsace ? ('$$_ns_' + namepsace) : namepsace;
+    }
+
     catalog = {
         debug: false,
         debugPrefix: '[MISSING]: ',
@@ -53,6 +57,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             if (!this.strings[language]) {
                 this.strings[language] = {};
             }
+
+            namepsace = getInternalNamespaceName(namepsace);
 
             if (namepsace && !this.strings[language][namepsace]) {
                 this.strings[language][namepsace] = {};
@@ -91,6 +97,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
         getStringForm: function (string, n, context, namepsace) {
             var stringTable = this.strings[this.currentLanguage] || {};
+            namepsace = getInternalNamespaceName(namepsace);
             if (namepsace) {
                 stringTable = stringTable[namepsace] || {};
             }
