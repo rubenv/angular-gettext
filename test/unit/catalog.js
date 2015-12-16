@@ -146,12 +146,21 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Archive", {}, "noun"), "Archief");
     });
 
-    it("Should return string from fallback language", function () {
+    it("Should return string from fallback language if current language has no translation", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);
         catalog.setCurrentLanguage("nl_NL");
-        // It should check strings for nl_NL, then strings for nl
         assert.equal(catalog.getString("Bye"), "Bye");
         assert.equal(catalog.getString("Hello"), "Hallo");
+    });
+
+    it("Should not return string from fallback language if current language has translation", function () {
+        var stringsEn   = { Baggage: "Baggage" };
+        var stringsEnGB = { Baggage: "Luggage" };
+        catalog.setStrings("en", stringsEn);
+        catalog.setStrings("en_GB", stringsEnGB);
+        catalog.setCurrentLanguage("en_GB");
+        assert.equal(catalog.getString("Bye"), "Bye");
+        assert.equal(catalog.getString("Baggage"), "Luggage");
     });
 });
