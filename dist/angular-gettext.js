@@ -103,23 +103,25 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
             broadcastUpdated();
         },
 
-        getStringForm: function (string, n, context) {
-            var stringTable = this.strings[this.currentLanguage] || this.strings[baseLanguage()] || {};
+        getStringFormFor: function (language, string, n, context) {
+            var stringTable = this.strings[language] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
-            return plurals[n];
+            return plurals[gettextPlurals(language, n)];
         },
 
         getString: function (string, scope, context) {
-            string = this.getStringForm(string, 0, context) || prefixDebug(string);
+            string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
+                     this.getStringFormFor(baseLanguage(), string, 1, context) ||
+                     prefixDebug(string);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
-            var baseLang = baseLanguage();
-            var form = gettextPlurals(this.currentLanguage !== 'pt_BR' ? baseLang : this.currentLanguage, n);
-            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+            string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
+                     this.getStringFormFor(baseLanguage(), string, n, context) ||
+                     prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
                 string = $interpolate(string)(scope);
