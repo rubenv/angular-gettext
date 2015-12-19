@@ -31,7 +31,7 @@ describe("Plurals", function () {
     it("Plural form of plural french is 1", function () {
         assert.equal(plurals("fr", 2), 1);
     });
-    it("Plural form of zero in french is 1", function () {
+    it("Plural form of zero in french is 0", function () {
         assert.equal(plurals("fr", 0), 0);
     });
     it("Plural form of 27 in arabic is 4", function () {
