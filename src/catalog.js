@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -27,17 +27,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
 
     function broadcastUpdated() {
         $rootScope.$broadcast('gettextLanguageChanged');
-    }
-
-    function baseLanguage() {
-        if (catalog.currentLanguage) {
-            var parts = catalog.currentLanguage.split('_');
-            if (parts.length > 0) {
-                return parts[0];
-            }
-            return catalog.currentLanguage;
-        }
-        return null;
     }
 
     catalog = {
@@ -92,6 +81,9 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getStringFormFor: function (language, string, n, context) {
+            if (!language) {
+                return null;
+            }
             var stringTable = this.strings[language] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
@@ -99,16 +91,18 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
         },
 
         getString: function (string, scope, context) {
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
-                     this.getStringFormFor(baseLanguage(), string, 1, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, 1, context) ||
                      prefixDebug(string);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
-                     this.getStringFormFor(baseLanguage(), string, n, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, n, context) ||
                      prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;

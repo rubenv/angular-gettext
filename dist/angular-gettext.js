@@ -10,7 +10,7 @@ angular.module('gettext').constant('gettext', function (str) {
     return str;
 });
 
-angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -39,17 +39,6 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
 
     function broadcastUpdated() {
         $rootScope.$broadcast('gettextLanguageChanged');
-    }
-
-    function baseLanguage() {
-        if (catalog.currentLanguage) {
-            var parts = catalog.currentLanguage.split('_');
-            if (parts.length > 0) {
-                return parts[0];
-            }
-            return catalog.currentLanguage;
-        }
-        return null;
     }
 
     catalog = {
@@ -104,6 +93,9 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         },
 
         getStringFormFor: function (language, string, n, context) {
+            if (!language) {
+                return null;
+            }
             var stringTable = this.strings[language] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
@@ -111,16 +103,18 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "$http", 
         },
 
         getString: function (string, scope, context) {
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
-                     this.getStringFormFor(baseLanguage(), string, 1, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, 1, context) ||
                      prefixDebug(string);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
-                     this.getStringFormFor(baseLanguage(), string, n, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, n, context) ||
                      prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
@@ -243,6 +237,19 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
         }
     };
 }]);
+
+angular.module("gettext").factory("gettextFallbackLanguage", function () {
+
+    var pattern = /([^_]+)_[^_]+$/;
+
+    return function (langCode) {
+        var matches = pattern.exec(langCode);
+        if (matches){
+            return matches[1];
+        }
+        return null;
+    };
+});
 
 angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
     function filter(input, context) {
