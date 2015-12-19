@@ -239,18 +239,23 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
 }]);
 
 angular.module("gettext").factory("gettextFallbackLanguage", function () {
-
+    var cache = {};
     var pattern = /([^_]+)_[^_]+$/;
 
     return function (langCode) {
+        if (cache[langCode]) {
+            return cache[langCode];
+        }
+
         var matches = pattern.exec(langCode);
-        if (matches){
+        if (matches) {
+            cache[langCode] = matches[1];
             return matches[1];
         }
+
         return null;
     };
 });
-
 angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
     function filter(input, context) {
         return gettextCatalog.getString(input, null, context);

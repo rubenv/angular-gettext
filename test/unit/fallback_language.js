@@ -16,4 +16,7 @@ describe("Fallback languages", function () {
     it("returns null for null", function () {
         assert.isNull(fallback(null));
     });
+    it("returns consistent values", function () {
+        assert.equal(fallback("de_CH"), fallback("de_CH"));
+    });
 });
