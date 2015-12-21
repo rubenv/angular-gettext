@@ -1,4 +1,4 @@
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -80,22 +80,30 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, $h
             broadcastUpdated();
         },
 
-        getStringForm: function (string, n, context) {
-            var stringTable = this.strings[this.currentLanguage] || {};
+        getStringFormFor: function (language, string, n, context) {
+            if (!language) {
+                return null;
+            }
+            var stringTable = this.strings[language] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
-            return plurals[n];
+            return plurals[gettextPlurals(language, n)];
         },
 
         getString: function (string, scope, context) {
-            string = this.getStringForm(string, 0, context) || prefixDebug(string);
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
+            string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, 1, context) ||
+                     prefixDebug(string);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
 
         getPlural: function (n, string, stringPlural, scope, context) {
-            var form = gettextPlurals(this.currentLanguage, n);
-            string = this.getStringForm(string, form, context) || prefixDebug(n === 1 ? string : stringPlural);
+            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
+            string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
+                     this.getStringFormFor(fallbackLanguage, string, n, context) ||
+                     prefixDebug(n === 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
                 string = $interpolate(string)(scope);
