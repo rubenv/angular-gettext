@@ -1,3 +1,15 @@
+/**
+ * @ngdoc service
+ * @module gettext
+ * @name gettextCatalog
+ * @requires gettextPlurals
+ * @requires gettextFallbackLanguage
+ * @requires https://docs.angularjs.org/api/ng/service/$http $http
+ * @requires https://docs.angularjs.org/api/ng/service/$cacheFactory $cacheFactory
+ * @requires https://docs.angularjs.org/api/ng/service/$interpolate $interpolate
+ * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
+ * @description Provides set of method to translate stings
+ */
 angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
@@ -26,29 +38,117 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
     };
 
     function broadcastUpdated() {
+        /**
+         * @ngdoc event
+         * @name gettextCatalog#gettextLanguageChanged
+         * @eventType broadcast on $rootScope
+         * @description Fires language change notification without any additional parameters.
+         */
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
     catalog = {
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#debug
+         * @type {Boolean} false
+         * @see gettextCatalog#debug
+         * @description Whether or not to prefix untranslated strings with `[MISSING]:` or a custom prefix.
+         */
         debug: false,
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#debugPrefix
+         * @type {String} [MISSING]:
+         * @description Custom prefix for untranslated strings when {@link gettextCatalog#debug gettextCatalog#debug} set to `true`.
+         */
         debugPrefix: '[MISSING]: ',
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#showTranslatedMarkers
+         * @type {Boolean} false
+         * @description Whether or not to wrap all processed text with markers.
+         *
+         * Example output: `[Welcome]`
+         */
         showTranslatedMarkers: false,
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#translatedMarkerPrefix
+         * @type {String} [
+         * @description Custom prefix to mark strings that have been run through {@link angular-gettext angular-gettext}.
+         */
         translatedMarkerPrefix: '[',
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#translatedMarkerSuffix
+         * @type {String} ]
+         * @description Custom suffix to mark strings that have been run through {@link angular-gettext angular-gettext}.
+         */
         translatedMarkerSuffix: ']',
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#strings
+         * @type {Object}
+         * @protected
+         * @description An object of loaded translation strings. Shouldn't be used directly.
+         */
         strings: {},
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#baseLanguage
+         * @type {String} en
+         * @deprecated since 1.4
+         * @description The default language, in which you're application is written.
+         *
+         * This defaults to English and it's generally a bad idea to use anything else:
+         * if your language has different pluralization rules you'll end up with incorrect translations.
+         */
         baseLanguage: 'en',
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#currentLanguage
+         * @type {String} en
+         * @description Active language.
+         */
         currentLanguage: 'en',
+        /**
+         * @ngdoc property
+         * @name gettextCatalog#cache
+         * @type {String} en
+         * @protected
+         * @description Language cache for lazy load
+         */
         cache: $cacheFactory('strings'),
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#setCurrentLanguage
+         * @param {String} lang language name
+         * @description Sets the current language and makes sure that all translations get updated correctly.
+         */
         setCurrentLanguage: function (lang) {
             this.currentLanguage = lang;
             broadcastUpdated();
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#getCurrentLanguage
+         * @returns {String} current language
+         * @description Returns the current language.
+         */
         getCurrentLanguage: function () {
             return this.currentLanguage;
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#setStrings
+         * @param {String} language language name
+         * @param {Object.<String>} strings set of strings where the key is the translation `key` and `value` is the translated text
+         * @description Processes an object of string definitions. {@link guide:manual-setstrings More details here}.
+         */
         setStrings: function (language, strings) {
             if (!this.strings[language]) {
                 this.strings[language] = {};
@@ -80,6 +180,17 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             broadcastUpdated();
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#getStringFormFor
+         * @param {String} language language name
+         * @param {String} string translation key
+         * @param {Number=} n number to build sting form for
+         * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
+         * @returns {String|Null} translated or annotated string or null if language is not set
+         * @protected
+         * @description Translate a string with the given language, count and context.
+         */
         getStringFormFor: function (language, string, n, context) {
             if (!language) {
                 return null;
@@ -90,6 +201,24 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return plurals[gettextPlurals(language, n)];
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#getString
+         * @param {String} string translation key
+         * @param {$rootScope.Scope=} scope scope to do interpolation against
+         * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
+         * @returns {String} translated or annotated string
+         * @description Translate a string with the given scope and context.
+         *
+         * First it tries {@link gettextCatalog#currentLanguage gettextCatalog#currentLanguage} (e.g. `en-US`) then {@link gettextFallbackLanguage fallback} (e.g. `en`).
+         *
+         * When `scope` is supplied it uses Angular.JS interpolation, so something like this will do what you expect:
+         * ```js
+         * var hello = gettextCatalog.getString("Hello {{name}}!", { name: "Ruben" });
+         * // var hello will be "Hallo Ruben!" in Dutch.
+         * ```
+         * Avoid using scopes - this skips interpolation and is a lot faster.
+         */
         getString: function (string, scope, context) {
             var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
@@ -99,6 +228,18 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return addTranslatedMarkers(string);
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#getPlural
+         * @param {Number} n number to build sting form for
+         * @param {String} string translation key
+         * @param {String} stringPlural plural translation key
+         * @param {$rootScope.Scope=} scope scope to do interpolation against
+         * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
+         * @returns {String} translated or annotated string
+         * @see {@link gettextCatalog#getString gettextCatalog#getString} for details
+         * @description Translate a plural string with the given context.
+         */
         getPlural: function (n, string, stringPlural, scope, context) {
             var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
@@ -111,6 +252,15 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return addTranslatedMarkers(string);
         },
 
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#loadRemote
+         * @param {String} url location of the translations
+         * @description Load a set of translation strings from a given URL.
+         *
+         * This should be a JSON catalog generated with [angular-gettext-tools](https://github.com/rubenv/angular-gettext-tools).
+         * {@link guide:lazy-loading More details here}.
+         */
         loadRemote: function (url) {
             return $http({
                 method: 'GET',

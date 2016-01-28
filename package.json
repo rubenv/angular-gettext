@@ -1,6 +1,7 @@
 {
   "name": "angular-gettext",
   "version": "2.2.0",
+  "title": "Angular Gettext",
   "description": "Gettext support for Angular.js",
   "main": "dist/angular-gettext.js",
   "directories": {
@@ -22,6 +23,7 @@
   "homepage": "http://angular-gettext.rocketeer.be/",
   "license": "MIT",
   "devDependencies": {
+    "dgeni-alive": "~0.0.9",
     "grunt": "~0.4.1",
     "grunt-bump": "0.0.13",
     "grunt-contrib-clean": "~0.5.0",
