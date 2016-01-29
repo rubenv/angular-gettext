@@ -1,3 +1,23 @@
+/**
+ * @ngdoc directive
+ * @module gettext
+ * @name translate
+ * @requies gettextCatalog
+ * @requies https://docs.angularjs.org/api/ng/service/$parse $parse
+ * @requies https://docs.angularjs.org/api/ng/service/$animate $animate
+ * @requies https://docs.angularjs.org/api/ng/service/$compile $compile
+ * @requies https://docs.angularjs.org/api/ng/service/$window $window
+ * @restrict AE
+ * @param {String} [translatePlural] plural form
+ * @param {Number} translateN value to watch to substitute correct plural form
+ * @param {String} translateContext context value, e.g. {@link doc:context Verb, Noun}
+ * @description Annotates and translates text inside directive
+ *
+ * Full interpolation support is available in translated strings, so the following will work as expected:
+ * ```js
+ * <div translate>Hello {{name}}!</div>
+ * ```
+ */
 angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile, $window) {
     // Trim polyfill for old browsers (instead of jQuery)
     // Based on AngularJS-v1.2.2 (angular.js#620)
@@ -85,6 +105,12 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         scope.$watch(attrs.translateN, update);
                     }
 
+                    /**
+                     * @ngdoc event
+                     * @name translate#gettextLanguageChanged
+                     * @eventType listen on scope
+                     * @descriptions Listens for language updates and changes translation accordingly
+                     */
                     scope.$on('gettextLanguageChanged', update);
 
                     update();

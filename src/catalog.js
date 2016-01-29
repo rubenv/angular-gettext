@@ -51,6 +51,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#debug
+         * @public
          * @type {Boolean} false
          * @see gettextCatalog#debug
          * @description Whether or not to prefix untranslated strings with `[MISSING]:` or a custom prefix.
@@ -59,6 +60,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#debugPrefix
+         * @public
          * @type {String} [MISSING]:
          * @description Custom prefix for untranslated strings when {@link gettextCatalog#debug gettextCatalog#debug} set to `true`.
          */
@@ -66,6 +68,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#showTranslatedMarkers
+         * @public
          * @type {Boolean} false
          * @description Whether or not to wrap all processed text with markers.
          *
@@ -75,6 +78,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#translatedMarkerPrefix
+         * @public
          * @type {String} [
          * @description Custom prefix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
@@ -82,6 +86,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#translatedMarkerSuffix
+         * @public
          * @type {String} ]
          * @description Custom suffix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
@@ -89,16 +94,18 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#strings
+         * @private
          * @type {Object}
-         * @protected
          * @description An object of loaded translation strings. Shouldn't be used directly.
          */
         strings: {},
         /**
          * @ngdoc property
          * @name gettextCatalog#baseLanguage
+         * @protected
+         * @deprecated
+         * @since 2.0
          * @type {String} en
-         * @deprecated since 1.4
          * @description The default language, in which you're application is written.
          *
          * This defaults to English and it's generally a bad idea to use anything else:
@@ -108,15 +115,16 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc property
          * @name gettextCatalog#currentLanguage
-         * @type {String} en
+         * @public
+         * @type {String}
          * @description Active language.
          */
         currentLanguage: 'en',
         /**
          * @ngdoc property
          * @name gettextCatalog#cache
+         * @public
          * @type {String} en
-         * @protected
          * @description Language cache for lazy load
          */
         cache: $cacheFactory('strings'),
@@ -124,6 +132,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#setCurrentLanguage
+         * @public
          * @param {String} lang language name
          * @description Sets the current language and makes sure that all translations get updated correctly.
          */
@@ -135,6 +144,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#getCurrentLanguage
+         * @public
          * @returns {String} current language
          * @description Returns the current language.
          */
@@ -145,6 +155,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#setStrings
+         * @public
          * @param {String} language language name
          * @param {Object.<String>} strings set of strings where the key is the translation `key` and `value` is the translated text
          * @description Processes an object of string definitions. {@link guide:manual-setstrings More details here}.
@@ -183,12 +194,12 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#getStringFormFor
+         * @protected
          * @param {String} language language name
          * @param {String} string translation key
          * @param {Number=} n number to build sting form for
          * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
          * @returns {String|Null} translated or annotated string or null if language is not set
-         * @protected
          * @description Translate a string with the given language, count and context.
          */
         getStringFormFor: function (language, string, n, context) {
@@ -204,6 +215,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#getString
+         * @public
          * @param {String} string translation key
          * @param {$rootScope.Scope=} scope scope to do interpolation against
          * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
@@ -231,6 +243,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#getPlural
+         * @public
          * @param {Number} n number to build sting form for
          * @param {String} string translation key
          * @param {String} stringPlural plural translation key
@@ -255,6 +268,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         /**
          * @ngdoc method
          * @name gettextCatalog#loadRemote
+         * @public
          * @param {String} url location of the translations
          * @description Load a set of translation strings from a given URL.
          *

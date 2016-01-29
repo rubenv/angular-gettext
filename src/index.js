@@ -7,6 +7,22 @@
  * A sample application can be found at https://github.com/rubenv/angular-gettext-example.
  * This is an adaptation of the [TodoMVC](http://todomvc.com/) example. You can use this as a guideline while adding {@link angular-gettext angular-gettext} to your own application.
  */
+/**
+ * @ngdoc factory
+ * @module gettext
+ * @name gettextPlurals
+ * @param {String} [langCode=en] language code
+ * @param {Number} [n=0] number to calculate form for
+ * @returns {Number} plural form number
+ * @description Provides correct plural form id for the given language
+ *
+ * Example
+ * ```js
+ * gettextPlurals('ru', 10); // 1
+ * gettextPlurals('en', 1);  // 0
+ * gettextPlurals();         // 1
+ * ```
+ */
 angular.module('gettext', []);
 /**
  * @ngdoc object
