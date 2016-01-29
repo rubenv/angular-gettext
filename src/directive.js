@@ -2,11 +2,11 @@
  * @ngdoc directive
  * @module gettext
  * @name translate
- * @requies gettextCatalog
- * @requies https://docs.angularjs.org/api/ng/service/$parse $parse
- * @requies https://docs.angularjs.org/api/ng/service/$animate $animate
- * @requies https://docs.angularjs.org/api/ng/service/$compile $compile
- * @requies https://docs.angularjs.org/api/ng/service/$window $window
+ * @requires gettextCatalog
+ * @requires https://docs.angularjs.org/api/ng/service/$parse $parse
+ * @requires https://docs.angularjs.org/api/ng/service/$animate $animate
+ * @requires https://docs.angularjs.org/api/ng/service/$compile $compile
+ * @requires https://docs.angularjs.org/api/ng/service/$window $window
  * @restrict AE
  * @param {String} [translatePlural] plural form
  * @param {Number} translateN value to watch to substitute correct plural form
@@ -109,7 +109,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                      * @ngdoc event
                      * @name translate#gettextLanguageChanged
                      * @eventType listen on scope
-                     * @descriptions Listens for language updates and changes translation accordingly
+                     * @description Listens for language updates and changes translation accordingly
                      */
                     scope.$on('gettextLanguageChanged', update);
 
