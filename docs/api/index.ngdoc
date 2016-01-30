@@ -1,0 +1,45 @@
+@ngdoc overview
+@name angular-gettext
+@area api
+@id api-index
+@description Super-simple translation support for Angular.JS
+
+## Effortless translations
+Angular-gettext let's you focus on developing your application.
+Just write everything in English and annotate which parts should be translated. The tools do the rest.
+
+Marking a string as translatable is as simple as adding an attribute:
+```html
+<a href="/" translate>Home</a>
+```
+
+No need to maintain translation codes or magic values, that just causes headaches!
+
+## Seamless Angular.JS integration
+Translating your application doesn't mean you have to give up any of the good stuff that Angular.JS provides.
+Interpolation and everything else we love and are used to just keep on working:
+
+```html
+<a href="/" translate>Hello {{name}}</a>
+```
+
+And with a minified footprint of less than 4kb, you don't have to worry about the size of your application.
+Add gzip compression and it amounts to less than 1.5kb.
+
+## Correct plurals in all languages
+Not every language works like English. Did you know that Polish uses three plural forms? Or that Irish uses five? No worries, `angular-gettext` handles all of this for you. Just provide a plural string where needed.
+
+```html
+<span translate translate-n="msgCount" translate-plural="{{$count}} new messages">1 new message</span>
+```
+
+The span above will always show a correctly pluralized message, even if the language uses wildly different pluralization rules.
+
+A full list of supported languages (over 130) can be found [here](http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms).
+
+## Rich tool support
+The widely used [gettext](http://en.wikipedia.org/wiki/Gettext) format is used in `angular-gettext` (hence the name).
+This means you can use widely established translation tools like [Poedit](http://www.poedit.net/).
+Or you can use an online translation platform like [Pootle](http://pootle.translatehouse.org/), [Transifex](https://www.transifex.com/), or [Zanata](http://www.zanata.org/).
+
+The upside of this? Non-technical users can help out by translating. Or you can use professional translation services. Better results, faster.

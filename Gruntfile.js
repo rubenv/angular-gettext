@@ -9,8 +9,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-jscs");
     grunt.loadNpmTasks("grunt-karma");
     grunt.loadNpmTasks("grunt-ng-annotate");
+    grunt.loadNpmTasks("dgeni-alive");
 
     grunt.initConfig({
+        pkg: grunt.file.readJSON("package.json"),
+
         jshint: {
             all: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"],
             options: {
@@ -140,6 +143,25 @@ module.exports = function (grunt) {
                 files: ["package.json", "bower.json"],
                 commitFiles: ["-a"],
                 pushTo: "origin"
+            }
+        },
+
+        "dgeni-alive": {
+            options: {
+                serve: {
+                    port: "10000",
+                    openBrowser: true
+                }
+            },
+            api: {
+                title: "<%= pkg.title %>",
+                version: "<%= pkg.version %>",
+                expand: false,
+                src: [
+                    "src/**/*.js",
+                    "docs/**/*.ngdoc"
+                ],
+                dest: "dist/docs"
             }
         }
     });
