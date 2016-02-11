@@ -13,7 +13,8 @@ describe("Directive", function () {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
             "One boat": ["Een boot", "{{count}} boten"],
-            Archive: { verb: "Archiveren", noun: "Archief" }
+            Archive: { verb: "Archiveren", noun: "Archief" },
+            '<input type="submit" value="Hello">': '<input type="submit" value="Hallo">'
         });
         catalog.setStrings("af", {
             "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
@@ -223,5 +224,12 @@ describe("Directive", function () {
         var el = $compile("<translate>Hello</translate>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
+    });
+
+    it("Should work when containing an <input> tag to be translated", function () {
+        catalog.currentLanguage = "nl";
+        var el = $compile('<translate><input type="submit" value="Hello"></translate>')($rootScope);
+        $rootScope.$digest();
+        assert.notStrictEqual(el.html().indexOf("Hallo"), -1);
     });
 });
