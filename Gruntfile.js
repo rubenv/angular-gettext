@@ -96,17 +96,17 @@ module.exports = function (grunt) {
         karma: {
             unit: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["PhantomJS2"],
                 background: true
             },
             unit_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["PhantomJS2"],
                 background: true
             },
             unitci: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["Firefox", "PhantomJS"],
+                browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
                 reporters: ["dots", "junit"],
                 junitReporter: {
@@ -115,7 +115,7 @@ module.exports = function (grunt) {
             },
             unitci_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["Firefox", "PhantomJS"],
+                browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
                 reporters: ["dots", "junit"],
                 junitReporter: {
@@ -124,12 +124,12 @@ module.exports = function (grunt) {
             },
             e2e: {
                 configFile: "test/configs/e2e.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["PhantomJS2"],
                 background: true
             },
             e2eci: {
                 configFile: "test/configs/e2e.conf.js",
-                browsers: ["Firefox", "PhantomJS"],
+                browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
                 reporters: ["dots", "junit"],
                 junitReporter: {
