@@ -165,7 +165,7 @@ describe("Catalog", function () {
     });
 
     it("Should not not modify a key", function () {
-        var strings = { "NAME & ADDRESS": "" };
+        var strings = { "NAME & ADDRESS": "Name & address" };
         catalog.setStrings("en", strings);
         catalog.setCurrentLanguage("en_GB");
         assert.equal(catalog.getString("NAME & ADDRESS"), "Name & address");
