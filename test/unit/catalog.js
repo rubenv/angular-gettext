@@ -163,4 +163,11 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Bye"), "Bye");
         assert.equal(catalog.getString("Baggage"), "Luggage");
     });
+
+    it("Should not not modify a key", function () {
+        var strings = { "NAME & ADDRESS": "" };
+        catalog.setStrings("en", strings);
+        catalog.setCurrentLanguage("en_GB");
+        assert.equal(catalog.getString("NAME & ADDRESS"), "Name & address");
+    });
 });
