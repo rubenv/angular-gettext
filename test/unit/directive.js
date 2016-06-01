@@ -12,11 +12,16 @@ describe("Directive", function () {
         catalog.setStrings("nl", {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
+            "Hello {{author}}!": "Hallo {{author}}!",
             "One boat": ["Een boot", "{{count}} boten"],
             Archive: { verb: "Archiveren", noun: "Archief" }
         });
         catalog.setStrings("af", {
             "This link: <a class=\"extra-class\" ng-href=\"{{url}}\">{{url}}</a> will have the 'ng-binding' class attached before the translate directive can capture it.": "Die skakel: <a ng-href=\"{{url}}\">{{url}}</a> sal die 'ng-binding' klass aangevoeg hê voor die translate directive dit kan vasvat."
+        });
+        catalog.setStrings("pl", {
+            "This product: {{product}} costs {{cost}}.": "Ten produkt: {{product}} kosztuje {{cost}}.",
+            "This product: {{product}} costs {{cost}}{{currency}}.": "Ten produkt: {{product}} kosztuje {{cost}}{{currency}}."
         });
     }));
 
@@ -223,5 +228,40 @@ describe("Directive", function () {
         var el = $compile("<translate>Hello</translate>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo");
+    });
+
+    it("Should translate with context param", function () {
+        $rootScope.name = "Ernest";
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<div><h1 translate translate-params-author=\"name\">Hello {{author}}!</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hallo Ernest!");
+    });
+
+    it("Should translate with filters used in translate params", function () {
+        $rootScope.name = "Ernest";
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<div><h1 translate translate-params-author=\"name | uppercase\">Hello {{author}}!</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hallo ERNEST!");
+    });
+
+    it("Should translate with multiple translate params", function () {
+        $rootScope.item = "Headphones";
+        $rootScope.cost = 5;
+        catalog.setCurrentLanguage("pl");
+        var el = $compile("<div><h1 translate translate-params-product=\"item | uppercase\" translate-params-cost=\"cost | currency\">This product: {{product}} costs {{cost}}.</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Ten produkt: HEADPHONES kosztuje $5.00.");
+    });
+
+    it("Should translate with multiple translate params along with normal scope interpolation", function () {
+        $rootScope.item = "Headphones";
+        $rootScope.cost = 5;
+        $rootScope.currency = "$";
+        catalog.setCurrentLanguage("pl");
+        var el = $compile("<div><h1 translate translate-params-product=\"item | uppercase\">This product: {{product}} costs {{cost}}{{currency}}.</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Ten produkt: HEADPHONES kosztuje 5$.");
     });
 });
