@@ -66,36 +66,25 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             return gettextUtil.startsWith(key, PARAMS_PREFIX) && key !== PARAMS_PREFIX;
         });
 
-        var interpolationContext = attributes.reduce(function (prev, current) {
-            var key = getCtxAttr(current);
-            prev[key] = $parse(attrs[current])(scope);
-            return prev;
-        }, {});
-
-        if (gettextUtil.isEmptyObject(interpolationContext)) {
-            interpolationContext = null;
-        } else {
-            interpolationContext = angular.extend({}, scope, interpolationContext);
-            var unwatchers = [];
-            attributes.forEach(function (attribute) {
-                var parser = $parse(attrs[attribute]);
-                var unwatch = scope.$watch(function () {
-                    return parser(scope);
-                }, function (newVal, oldVal) {
-                    if (newVal !== oldVal) {
-                        var key = getCtxAttr(attribute);
-                        interpolationContext[key] = newVal;
-                        update(interpolationContext);
-                    }
-                });
-                unwatchers.push(unwatch);
-            });
-            scope.$on('$destroy', function () {
-                unwatchers.forEach(function (unwatch) {
-                    unwatch();
-                });
-            });
+        if (!attributes.length) {
+            return null;
         }
+
+        var interpolationContext = angular.extend({}, scope);
+        var unwatchers = [];
+        attributes.forEach(function (attribute) {
+            var unwatch = scope.$watch(attrs[attribute], function (newVal) {
+                var key = getCtxAttr(attribute);
+                interpolationContext[key] = newVal;
+                update(interpolationContext);
+            });
+            unwatchers.push(unwatch);
+        });
+        scope.$on('$destroy', function () {
+            unwatchers.forEach(function (unwatch) {
+                unwatch();
+            });
+        });
         return interpolationContext;
     }
 

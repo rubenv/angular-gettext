@@ -413,36 +413,25 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             return gettextUtil.startsWith(key, PARAMS_PREFIX) && key !== PARAMS_PREFIX;
         });
 
-        var interpolationContext = attributes.reduce(function (prev, current) {
-            var key = getCtxAttr(current);
-            prev[key] = $parse(attrs[current])(scope);
-            return prev;
-        }, {});
-
-        if (gettextUtil.isEmptyObject(interpolationContext)) {
-            interpolationContext = null;
-        } else {
-            interpolationContext = angular.extend({}, scope, interpolationContext);
-            var unwatchers = [];
-            attributes.forEach(function (attribute) {
-                var parser = $parse(attrs[attribute]);
-                var unwatch = scope.$watch(function () {
-                    return parser(scope);
-                }, function (newVal, oldVal) {
-                    if (newVal !== oldVal) {
-                        var key = getCtxAttr(attribute);
-                        interpolationContext[key] = newVal;
-                        update(interpolationContext);
-                    }
-                });
-                unwatchers.push(unwatch);
-            });
-            scope.$on('$destroy', function () {
-                unwatchers.forEach(function (unwatch) {
-                    unwatch();
-                });
-            });
+        if (!attributes.length) {
+            return null;
         }
+
+        var interpolationContext = angular.extend({}, scope);
+        var unwatchers = [];
+        attributes.forEach(function (attribute) {
+            var unwatch = scope.$watch(attrs[attribute], function (newVal) {
+                var key = getCtxAttr(attribute);
+                interpolationContext[key] = newVal;
+                update(interpolationContext);
+            });
+            unwatchers.push(unwatch);
+        });
+        scope.$on('$destroy', function () {
+            unwatchers.forEach(function (unwatch) {
+                unwatch();
+            });
+        });
         return interpolationContext;
     }
 
@@ -764,44 +753,6 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
 
     /**
      * @ngdoc method
-     * @name gettextUtil#isEmptyObject
-     * @public
-     * @param {Object} obj Object to check.
-     * @returns {Boolean} Returns true if object has no ownProperties. For arrays returns true if length == 0.
-     * @description Checks if given object or array is empty.
-     *
-     * Example
-     * ```js
-     * gettextUtil.isEmptyObject({}); //true
-     * gettextUtil.isEmptyObject({name: 'Ernest'}); //false
-     * gettextUtil.isEmptyObject([]); //true
-     * gettextUtil.isEmptyObject([1,2]); //false
-     * ```
-     */
-    function isEmptyObject(obj) {
-        if (!obj) {
-            return true;
-        }
-
-        if (obj.length > 0) {
-            return false;
-        }
-
-        if (obj.length === 0) {
-            return true;
-        }
-
-        for (var key in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @ngdoc method
      * @name gettextUtil#startsWith
      * @public
      * @param {string} target String on which checking will occur.
@@ -841,7 +792,6 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
     return {
         trim: trim,
         assert: assert,
-        isEmptyObject: isEmptyObject,
         startsWith: startsWith,
         lcFirst: lcFirst
     };

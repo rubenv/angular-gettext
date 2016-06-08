@@ -52,44 +52,6 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
 
     /**
      * @ngdoc method
-     * @name gettextUtil#isEmptyObject
-     * @public
-     * @param {Object} obj Object to check.
-     * @returns {Boolean} Returns true if object has no ownProperties. For arrays returns true if length == 0.
-     * @description Checks if given object or array is empty.
-     *
-     * Example
-     * ```js
-     * gettextUtil.isEmptyObject({}); //true
-     * gettextUtil.isEmptyObject({name: 'Ernest'}); //false
-     * gettextUtil.isEmptyObject([]); //true
-     * gettextUtil.isEmptyObject([1,2]); //false
-     * ```
-     */
-    function isEmptyObject(obj) {
-        if (!obj) {
-            return true;
-        }
-
-        if (obj.length > 0) {
-            return false;
-        }
-
-        if (obj.length === 0) {
-            return true;
-        }
-
-        for (var key in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @ngdoc method
      * @name gettextUtil#startsWith
      * @public
      * @param {string} target String on which checking will occur.
@@ -129,7 +91,6 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
     return {
         trim: trim,
         assert: assert,
-        isEmptyObject: isEmptyObject,
         startsWith: startsWith,
         lcFirst: lcFirst
     };
