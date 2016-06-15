@@ -39,7 +39,6 @@
     "karma": "~0.13.22",
     "karma-chai": "~0.1.0",
     "karma-firefox-launcher": "~1.0.0",
-    "karma-junit-reporter": "~1.0.0",
     "karma-mocha": "~1.0.1",
     "karma-ng-scenario": "~1.0.0",
     "karma-phantomjs2-launcher": "^0.5.0",

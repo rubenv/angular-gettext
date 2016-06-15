@@ -107,19 +107,13 @@ module.exports = function (grunt) {
                 configFile: "test/configs/unit.conf.js",
                 browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
-                reporters: ["dots", "junit"],
-                junitReporter: {
-                    outputFile: "unit-results.xml"
-                }
+                reporters: ["dots"]
             },
             unitci_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
                 browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
-                reporters: ["dots", "junit"],
-                junitReporter: {
-                    outputFile: "unit-results.xml"
-                }
+                reporters: ["dots"]
             },
             e2e: {
                 configFile: "test/configs/e2e.conf.js",
@@ -130,10 +124,7 @@ module.exports = function (grunt) {
                 configFile: "test/configs/e2e.conf.js",
                 browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
-                reporters: ["dots", "junit"],
-                junitReporter: {
-                    outputFile: "e2e-results.xml"
-                }
+                reporters: ["dots"]
             }
         },
 
