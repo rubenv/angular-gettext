@@ -5,18 +5,18 @@
  * @description Utility service for common operations and polyfills.
  */
 angular.module('gettext').factory('gettextUtil', function gettextUtil() {
-  /**
-   * @ngdoc method
-   * @name gettextUtil#trim
-   * @public
-   * @param {string} value String to be trimmed.
-   * @description Trim polyfill for old browsers (instead of jQuery). Based on AngularJS-v1.2.2 (angular.js#620).
-   *
-   * Example
-   * ```js
-   * gettextUtil.assert('  no blanks  '); // "no blanks"
-   * ```
-   */
+    /**
+     * @ngdoc method
+     * @name gettextUtil#trim
+     * @public
+     * @param {string} value String to be trimmed.
+     * @description Trim polyfill for old browsers (instead of jQuery). Based on AngularJS-v1.2.2 (angular.js#620).
+     *
+     * Example
+     * ```js
+     * gettextUtil.assert('  no blanks  '); // "no blanks"
+     * ```
+     */
     var trim = (function () {
         if (!String.prototype.trim) {
             return function (value) {

@@ -1,3 +1,5 @@
+var serveStatic = require("serve-static");
+
 module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-bump");
     grunt.loadNpmTasks("grunt-contrib-clean");
@@ -83,11 +85,8 @@ module.exports = function (grunt) {
                 options: {
                     port: 9000,
                     hostname: "0.0.0.0",
-                    middleware: function (connect) {
-                        return [
-                            // jscs:disable requireDotNotation
-                            connect["static"](__dirname)
-                        ];
+                    middleware: function () {
+                        return [serveStatic(__dirname)];
                     }
                 }
             }
