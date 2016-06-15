@@ -21,7 +21,8 @@ describe("Directive", function () {
         });
         catalog.setStrings("pl", {
             "This product: {{product}} costs {{cost}}.": "Ten produkt: {{product}} kosztuje {{cost}}.",
-            "This product: {{product}} costs {{cost}}{{currency}}.": "Ten produkt: {{product}} kosztuje {{cost}}{{currency}}."
+            "This product: {{product}} costs {{cost}}{{currency}}.": "Ten produkt: {{product}} kosztuje {{cost}}{{currency}}.",
+            "Product of the week: {{product}}.": "Produkt tygodnia: {{product}}."
         });
     }));
 
@@ -263,5 +264,17 @@ describe("Directive", function () {
         var el = $compile("<div><h1 translate translate-params-product=\"item | uppercase\">This product: {{product}} costs {{cost}}{{currency}}.</h1></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Ten produkt: HEADPHONES kosztuje 5$.");
+    });
+
+    it("Should update translation with translate params when context changes", function () {
+        $rootScope.item = "Headphones";
+        catalog.setCurrentLanguage("pl");
+        var el = $compile("<div><h1 translate translate-params-product=\"item | uppercase\">Product of the week: {{product}}.</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Produkt tygodnia: HEADPHONES.");
+
+        $rootScope.item = "Smart TV";
+        $rootScope.$digest();
+        assert.equal(el.text(), "Produkt tygodnia: SMART TV.");
     });
 });
