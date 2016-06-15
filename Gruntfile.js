@@ -130,7 +130,7 @@ module.exports = function (grunt) {
                         directConnect: true
                     }
                 }
-            }
+            },
             ci: {
                 options: {
                     args: {
