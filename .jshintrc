@@ -22,6 +22,7 @@
         "before",
         "beforeEach",
         "browser",
+        "by",
         "describe",
         "element",
         "expect",

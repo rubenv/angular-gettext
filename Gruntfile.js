@@ -96,23 +96,23 @@ module.exports = function (grunt) {
         karma: {
             unit: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["PhantomJS2"],
+                browsers: ["PhantomJS"],
                 background: true
             },
             unit_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["PhantomJS2"],
+                browsers: ["PhantomJS"],
                 background: true
             },
             unitci: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["Firefox", "PhantomJS2"],
+                browsers: ["Firefox", "PhantomJS"],
                 singleRun: true,
                 reporters: ["dots"]
             },
             unitci_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["Firefox", "PhantomJS2"],
+                browsers: ["Firefox", "PhantomJS"],
                 singleRun: true,
                 reporters: ["dots"]
             }
