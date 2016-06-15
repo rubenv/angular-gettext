@@ -1,8 +1,8 @@
 var tests = {
     "Should not allow XSS": function (file) {
         return function () {
-            browser().navigateTo("/test/fixtures/xss" + file + ".html");
-            expect(element("body").text()).not().toBe("fail");
+            browser.get("http://localhost:9000/test/fixtures/xss" + file + ".html");
+            expect(element(by.css("body")).getText()).not.toBe("fail");
         };
     }
 };

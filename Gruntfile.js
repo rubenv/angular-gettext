@@ -11,6 +11,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-jscs");
     grunt.loadNpmTasks("grunt-karma");
     grunt.loadNpmTasks("grunt-ng-annotate");
+    grunt.loadNpmTasks("grunt-protractor-runner");
     grunt.loadNpmTasks("dgeni-alive");
 
     grunt.initConfig({
@@ -60,7 +61,7 @@ module.exports = function (grunt) {
             },
             all: {
                 files: ["src/**.js", "test/*/*"],
-                tasks: ["build", "karma:unit:run", "karma:unit_nojquery:run", "karma:e2e:run"]
+                tasks: ["build", "karma:unit:run", "karma:unit_nojquery:run", "protractor:dev"]
             },
             unit: {
                 files: ["src/**.js", "test/unit/*"],
@@ -68,7 +69,7 @@ module.exports = function (grunt) {
             },
             e2e: {
                 files: ["src/**.js", "test/{e2e,fixtures}/*"],
-                tasks: ["build", "karma:e2e:run"]
+                tasks: ["build", "protractor:dev"]
             }
         },
 
@@ -114,17 +115,28 @@ module.exports = function (grunt) {
                 browsers: ["Firefox", "PhantomJS2"],
                 singleRun: true,
                 reporters: ["dots"]
+            }
+        },
+
+        protractor: {
+            options: {
+                noColor: false,
+                configFile: "test/configs/e2e.conf.js"
             },
-            e2e: {
-                configFile: "test/configs/e2e.conf.js",
-                browsers: ["PhantomJS2"],
-                background: true
-            },
-            e2eci: {
-                configFile: "test/configs/e2e.conf.js",
-                browsers: ["Firefox", "PhantomJS2"],
-                singleRun: true,
-                reporters: ["dots"]
+            dev: {
+                options: {
+                    keepAlive: true,
+                    args: {
+                        directConnect: true
+                    }
+                }
+            }
+            ci: {
+                options: {
+                    args: {
+                        browser: "firefox"
+                    }
+                }
             }
         },
 
@@ -158,8 +170,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask("default", ["test"]);
     grunt.registerTask("build", ["clean", "jshint", "jscs", "concat", "ngAnnotate", "uglify"]);
-    grunt.registerTask("test", ["build", "connect:e2e", "karma:unit", "karma:unit_nojquery", "karma:e2e", "watch:all"]);
+    grunt.registerTask("test", ["build", "connect:e2e", "karma:unit", "karma:unit_nojquery", "protractor:dev", "watch:all"]);
     grunt.registerTask("test_unit", ["build", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
-    grunt.registerTask("test_e2e", ["build", "connect:e2e", "karma:e2e", "watch:e2e"]);
-    grunt.registerTask("ci", ["build", "karma:unitci", "karma:unitci_nojquery", "connect:e2e", "karma:e2eci"]);
+    grunt.registerTask("test_e2e", ["build", "connect:e2e", "protractor:dev", "watch:e2e"]);
+    grunt.registerTask("ci", ["build", "karma:unitci", "karma:unitci_nojquery", "connect:e2e", "protractor:ci"]);
 };

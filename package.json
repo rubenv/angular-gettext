@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "grunt ci",
+    "install": "./node_modules/protractor/bin/webdriver-manager update",
     "prepublish": "grunt build"
   },
   "keywords": [
@@ -36,6 +37,7 @@
     "grunt-jscs": "^3.0.0",
     "grunt-karma": "~2.0.0",
     "grunt-ng-annotate": "^2.0.2",
+    "grunt-protractor-runner": "^3.2.0",
     "karma": "~0.13.22",
     "karma-chai": "~0.1.0",
     "karma-firefox-launcher": "~1.0.0",
