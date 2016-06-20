@@ -277,4 +277,132 @@ describe("Directive", function () {
         $rootScope.$digest();
         assert.equal(el.text(), "Produkt tygodnia: SMART TV.");
     });
+
+    describe("Translation's with plurals", function () {
+        var sourceString;
+
+        beforeEach(inject(function () {
+            sourceString = "Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.";
+
+            catalog.setStrings("pl", {
+                "Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.": [
+                    "Dziś {{someone}} spotyka się z {{someoneElse}} przez jedną minutę.",
+                    "Dziś {{someone}} spotyka się z {{someoneElse}} przez {{duration}} minuty.",
+                    "Dziś {{someone}} spotyka się z {{someoneElse}} przez {{duration}} minut."
+                ]
+            });
+        }));
+
+        it("Should properly handle plural translation for 1", function () {
+            catalog.setCurrentLanguage("pl");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 1;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez jedną minutę.");
+        });
+
+        it("Should properly handle plural translation for 0, 5, 6, 7, ...", function () {
+            catalog.setCurrentLanguage("pl");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 0;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 0 minut.");
+
+            $rootScope.duration = 5;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 5 minut.");
+
+            $rootScope.duration = 26;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 26 minut.");
+        });
+
+        it("Should properly handle plural translation for 2, 3, 4, 22, ...", function () {
+            catalog.setCurrentLanguage("pl");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 2;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 2 minuty.");
+
+            $rootScope.duration = 3;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 3 minuty.");
+
+            $rootScope.duration = 4;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 4 minuty.");
+
+            $rootScope.duration = 22;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 22 minuty.");
+        });
+
+        it("Should properly handle plural translation for 1 with language code that includes locale (e.g. pl_PL, en_US)", function () {
+            catalog.setCurrentLanguage("pl_PL");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 1;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez jedną minutę.");
+        });
+
+        it("Should properly handle plural translation for 0, 5, 6, 7, ... with language code that includes locale (e.g. pl_PL, en_US)", function () {
+            catalog.setCurrentLanguage("pl_PL");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 0;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 0 minut.");
+
+            $rootScope.duration = 5;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 5 minut.");
+
+            $rootScope.duration = 26;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 26 minut.");
+        });
+
+        it("Should properly handle plural translation for 2, 3, 4, 22, ... with language code that includes locale (e.g. pl_PL, en_US)", function () {
+            catalog.setCurrentLanguage("pl_PL");
+            $rootScope.someone = "Ruben";
+            $rootScope.someoneElse = "Ernest";
+
+            var el = $compile("<h1 translate translate-n=\"duration\" translate-plural=\"Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.\">Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.</h1>")($rootScope);
+
+            $rootScope.duration = 2;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 2 minuty.");
+
+            $rootScope.duration = 3;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 3 minuty.");
+
+            $rootScope.duration = 4;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 4 minuty.");
+
+            $rootScope.duration = 22;
+            $rootScope.$digest();
+            assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 22 minuty.");
+        });
+    });
 });
