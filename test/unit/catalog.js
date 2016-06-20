@@ -163,4 +163,17 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Bye"), "Bye");
         assert.equal(catalog.getString("Baggage"), "Luggage");
     });
+
+    it("Should translate translations keys with ampersand, lower and greater than", function () {
+        var strings = {
+            "Hello & Hello": "Hallo & Hallo",
+            "forward >": "vooruit >",
+            "Hello & forward >": "Hallo & vooruit >"
+        };
+        catalog.setStrings("nl", strings);
+        catalog.setCurrentLanguage("nl");
+        assert.equal(catalog.getString("Hello & Hello"), "Hallo & Hallo");
+        assert.equal(catalog.getString("forward >"), "vooruit >");
+        assert.equal(catalog.getString("Hello & forward >"), "Hallo & vooruit >");
+    });
 });

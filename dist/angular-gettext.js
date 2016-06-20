@@ -223,6 +223,12 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
                 if (isHTMLModified) {
                     // Use the DOM engine to render any HTML in the key (#131).
                     key = angular.element('<span>' + key + '</span>').html();
+
+                    // Replace HTML special chars to make them usable in keys (#139).
+                    key = key
+                        .replace(/&amp;/g, '&')
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>');
                 }
 
                 if (angular.isString(val) || angular.isArray(val)) {
