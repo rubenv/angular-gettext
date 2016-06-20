@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "grunt ci",
-    "install": "test -x ./node_modules/protractor/bin/webdriver-manager && ./node_modules/protractor/bin/webdriver-manager update",
+    "install": "if [ -x ./node_modules/protractor/bin/webdriver-manager ]; then ./node_modules/protractor/bin/webdriver-manager update; fi",
     "prepublish": "grunt build"
   },
   "keywords": [
