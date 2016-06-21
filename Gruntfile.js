@@ -1,6 +1,7 @@
 var serveStatic = require("serve-static");
 
 module.exports = function (grunt) {
+    grunt.loadNpmTasks("dgeni-alive");
     grunt.loadNpmTasks("grunt-bump");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-concat");
@@ -12,7 +13,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-karma");
     grunt.loadNpmTasks("grunt-ng-annotate");
     grunt.loadNpmTasks("grunt-protractor-runner");
-    grunt.loadNpmTasks("dgeni-alive");
+    grunt.loadNpmTasks("grunt-shell");
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -148,6 +149,15 @@ module.exports = function (grunt) {
             }
         },
 
+        shell: {
+            protractor_update: {
+                command: "./node_modules/.bin/webdriver-manager update",
+                options: {
+                    stdout: true
+                }
+            }
+        },
+
         "dgeni-alive": {
             options: {
                 serve: {
@@ -170,8 +180,8 @@ module.exports = function (grunt) {
 
     grunt.registerTask("default", ["test"]);
     grunt.registerTask("build", ["clean", "jshint", "jscs", "concat", "ngAnnotate", "uglify"]);
-    grunt.registerTask("test", ["build", "connect:e2e", "karma:unit", "karma:unit_nojquery", "protractor:dev", "watch:all"]);
-    grunt.registerTask("test_unit", ["build", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
-    grunt.registerTask("test_e2e", ["build", "connect:e2e", "protractor:dev", "watch:e2e"]);
-    grunt.registerTask("ci", ["build", "karma:unitci", "karma:unitci_nojquery", "connect:e2e", "protractor:ci"]);
+    grunt.registerTask("test", ["build", "shell:protractor_update", "connect:e2e", "karma:unit", "karma:unit_nojquery", "protractor:dev", "watch:all"]);
+    grunt.registerTask("test_unit", ["build", "shell:protractor_update", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
+    grunt.registerTask("test_e2e", ["build", "shell:protractor_update", "connect:e2e", "protractor:dev", "watch:e2e"]);
+    grunt.registerTask("ci", ["build", "shell:protractor_update", "karma:unitci", "karma:unitci_nojquery", "connect:e2e", "protractor:ci"]);
 };
