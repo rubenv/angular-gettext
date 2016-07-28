@@ -150,9 +150,13 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         $animate.leave(oldContents);
                     }
 
+                    var interpolationContext = handleInterpolationContext(scope, attrs, update);
+                    update(interpolationContext);
+                    linking = false;
+
                     if (attrs.translateN) {
                         scope.$watch(attrs.translateN, function () {
-                            update();
+                            update(interpolationContext);
                         });
                     }
 
@@ -163,12 +167,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                      * @description Listens for language updates and changes translation accordingly
                      */
                     scope.$on('gettextLanguageChanged', function () {
-                        update();
+                        update(interpolationContext);
                     });
 
-                    var interpolationContext = handleInterpolationContext(scope, attrs, update);
-                    update(interpolationContext);
-                    linking = false;
                 }
             };
         }
