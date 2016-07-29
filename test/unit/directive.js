@@ -188,6 +188,17 @@ describe("Directive", function () {
         assert.equal(el.text(), "Hello");
     });
 
+    it("Changing language should translate again not loosing scope", function () {
+        catalog.setCurrentLanguage("nl");
+        $rootScope.name = "Ruben";
+        var el = $compile("<div><div translate>Hello {{name}}!</div></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hallo Ruben!");
+        catalog.setCurrentLanguage("en");
+        $rootScope.$digest();
+        assert.equal(el.text(), "Hello Ruben!");
+    });
+
     it("Should warn if you forget to add attributes (n)", function () {
         assert.throws(function () {
             $compile("<div translate translate-plural=\"Hello {{name}} ({{count}} messages)!\">Hello {{name}} (one message)!</div>")($rootScope);
