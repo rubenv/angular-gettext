@@ -10,7 +10,7 @@
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate stings
  */
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $cacheFactory, $interpolate, $rootScope, $injector) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -276,7 +276,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * {@link guide:lazy-loading More details here}.
          */
         loadRemote: function (url) {
-            return $http({
+            return $injector.get('$http')({
                 method: 'GET',
                 url: url,
                 cache: catalog.cache
