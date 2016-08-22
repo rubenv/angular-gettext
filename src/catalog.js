@@ -112,7 +112,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * if your language has different pluralization rules you'll end up with incorrect translations.
          */
         baseLanguage: 'en',
-        
         /**
          * @ngdoc property
          * @name gettextCatalog#currentLanguage
@@ -121,7 +120,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Active language.
          */
         currentLanguage: 'en',
-        
         /**
          * @ngdoc property
          * @name gettextCatalog#localeSeparator
@@ -130,7 +128,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Language code locale separator. As example "en-US".
          */
         localeSeparator: '-',
-        
         /**
          * @ngdoc property
          * @name gettextCatalog#cache
