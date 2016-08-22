@@ -123,7 +123,7 @@ angular.module("gettext").factory("gettextPlurals", function () {
      */
     function getLanguageCode(langCode) {
         if (!languageCodes[langCode]) {
-            languageCodes[langCode] = langCode.split('_').shift();
+            languageCodes[langCode] = langCode.split(/\-|_/).shift();
         }
         return languageCodes[langCode];
     }
