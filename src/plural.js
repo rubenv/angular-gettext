@@ -3,8 +3,8 @@ angular.module("gettext").factory("gettextPlurals", function () {
     var languageCodes = {
         "pt_BR": "pt_BR"
     };
-    return function (langCode, n, separator) {
-        switch (getLanguageCode(langCode, separator)) {
+    return function (langCode, n) {
+        switch (getLanguageCode(langCode)) {
             case "ay":  // Aymará
             case "bo":  // Tibetan
             case "cgg": // Chiga
@@ -121,9 +121,9 @@ angular.module("gettext").factory("gettextPlurals", function () {
      * @param {String} langCode
      * @returns {String} iso639-2 language Code
      */
-    function getLanguageCode(langCode, separator) {
+    function getLanguageCode(langCode) {
         if (!languageCodes[langCode]) {
-            languageCodes[langCode] = langCode.split(separator).shift();
+            languageCodes[langCode] = langCode.split('_').shift();
         }
         return languageCodes[langCode];
     }
