@@ -120,7 +120,6 @@ angular.module("gettext").factory("gettextPlurals", function () {
      * Method extracts iso639-2 language code from code with locale e.g. pl_PL, en_US, etc.
      * If it's provided with standalone iso639-2 language code it simply returns it.
      * @param {String} langCode
-     * @param {List} exeptions
      * @returns {String} iso639-2 language Code
      */
     function getLanguageCode(langCode) {
