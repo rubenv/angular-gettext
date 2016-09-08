@@ -21,6 +21,13 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Hello"), "Hallo");
     });
 
+    it("Can set and retrieve strings when default plural is not zero", function () {
+        var strings = { Hello: "Hallo" };
+        catalog.setStrings("ar", strings);
+        catalog.setCurrentLanguage("ar");
+        assert.equal(catalog.getString("Hello"), "Hallo");
+    });
+
     it("Should return original for unknown strings", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);
