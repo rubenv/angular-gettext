@@ -217,6 +217,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
                 this.strings[language] = {};
             }
 
+            var defaultPlural = gettextPlurals(language, 1);
             for (var key in strings) {
                 var val = strings[key];
 
@@ -235,7 +236,10 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
                 // Expand single strings for each context.
                 for (var context in val) {
                     var str = val[context];
-                    val[context] = angular.isArray(str) ? str : [str];
+                    if (!angular.isArray(str)) {
+                        val[context] = [];
+                        val[context][defaultPlural] = str;
+                    }
                 }
                 this.strings[language][key] = val;
             }
