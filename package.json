@@ -3,7 +3,7 @@
   "version": "2.3.7",
   "title": "Angular Gettext",
   "description": "Gettext support for Angular.js",
-  "main": "dist/angular-gettext.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
