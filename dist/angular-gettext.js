@@ -313,7 +313,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
             var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
                      this.getStringFormFor(fallbackLanguage, string, n, context) ||
-                     prefixDebug(n === 1 ? string : stringPlural);
+                     prefixDebug(n == 1 ? string : stringPlural);
             if (scope) {
                 scope.$count = n;
                 string = $interpolate(string)(scope);
