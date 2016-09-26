@@ -69,8 +69,16 @@ describe("Catalog", function () {
         assert.equal(catalog.getPlural(1, "Bird", "Birds"), "Bird");
     });
 
+    it("Should return singular when n is 1 in string", function () {
+        assert.equal(catalog.getPlural("1", "Bird", "Birds"), "Bird");
+    });
+
     it("Should return plural for unknown plural strings", function () {
         assert.equal(catalog.getPlural(2, "Bird", "Birds"), "Birds");
+    });
+
+    it("Should return plural when n is more than 1 in string", function () {
+        assert.equal(catalog.getPlural("2", "Bird", "Birds"), "Birds");
     });
 
     it("Should return singular for singular strings", function () {
