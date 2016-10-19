@@ -258,6 +258,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Translate a plural string with the given context.
          */
         getPlural: function (n, string, stringPlural, scope, context) {
+            if (typeof n !== 'number' && typeof n !== 'undefined') {
+                throw new Error('n has to be a number. Found ' + typeof n + ' instead.');
+            }
+
             var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
             string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
                      this.getStringFormFor(fallbackLanguage, string, n, context) ||
