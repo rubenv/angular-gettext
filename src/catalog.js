@@ -189,7 +189,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
                         this.strings[language][key][context] = [];
                         this.strings[language][key][context][defaultPlural] = str;
                     } else {
-                        this.strings[language][key] = str;
+                        this.strings[language][key][context] = str;
                     }
                 }
             }
