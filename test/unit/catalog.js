@@ -178,5 +178,4 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Multibillion-Dollar", null, "rich"), "nothing");
         assert.equal(catalog.getString("Multibillion-Dollar", null, "poor"), "dream");
     });
-
 });
