@@ -170,4 +170,13 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Bye"), "Bye");
         assert.equal(catalog.getString("Baggage"), "Luggage");
     });
+    
+    it("Should handle multiple context when loaded from separate files", function () {
+        catalog.setStrings("en", { "Multibillion-Dollar": { rich: "nothing" } });
+        catalog.setStrings("en", { "Multibillion-Dollar": { poor: "dream" } });
+        catalog.setCurrentLanguage("en");
+        assert.equal(catalog.getString("Multibillion-Dollar", null, "rich"), "nothing");
+        assert.equal(catalog.getString("Multibillion-Dollar", null, "poor"), "dream");
+    });
+
 });
