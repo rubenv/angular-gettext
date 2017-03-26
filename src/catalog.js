@@ -182,7 +182,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
                 }
 
                 this.strings[language][key] = this.strings[language][key] || {};
-                
                 // Expand single strings for each context.
                 for (var context in val) {
                     var str = val[context];
