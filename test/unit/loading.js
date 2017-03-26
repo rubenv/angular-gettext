@@ -30,12 +30,6 @@ describe("String loading", function () {
         assert.notEqual(void 0, catalog.strings.nl);
     });
 
-    it("Gracefully handles failure", function () {
-        catalog.loadRemote("/strings/nl.json");
-        $httpBackend.expectGET("/strings/nl.json").respond(404);
-        $httpBackend.flush();
-    });
-
     it("Returns a promise", function () {
         var called;
         called = false;
