@@ -13,6 +13,7 @@ describe("Directive", function () {
             Hello: "Hallo",
             "Hello {{name}}!": "Hallo {{name}}!",
             "Hello {{author}}!": "Hallo {{author}}!",
+            "{{author}}": "{{author}}",
             "One boat": ["Een boot", "{{count}} boten"],
             Archive: { verb: "Archiveren", noun: "Archief" }
         });
@@ -248,6 +249,14 @@ describe("Directive", function () {
         var el = $compile("<div><h1 translate translate-params-author=\"name\">Hello {{author}}!</h1></div>")($rootScope);
         $rootScope.$digest();
         assert.equal(el.text(), "Hallo Ernest!");
+    });
+
+    it("Should translate with pure context param", function () {
+        $rootScope.name = "Ernest";
+        catalog.setCurrentLanguage("nl");
+        var el = $compile("<div><h1 translate translate-params-author=\"name\">{{author}}</h1></div>")($rootScope);
+        $rootScope.$digest();
+        assert.equal(el.text(), "Ernest");
     });
 
     it("Should translate with filters used in translate params", function () {

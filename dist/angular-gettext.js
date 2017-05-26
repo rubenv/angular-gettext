@@ -484,7 +484,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         }
                         var oldContents = element.contents();
 
-                        if (oldContents.length === 0){
+                        if (!oldContents && !translated){
                             return;
                         }
 

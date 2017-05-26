@@ -109,6 +109,14 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Hello {{name}}!", { name: "Andrew" }), "Hallo Andrew!");
     });
 
+    it("Can return a pure interpolated string", function () {
+        var strings = { "{{name}}": "{{name}}" };
+        assert.deepEqual(catalog.strings, {});
+        catalog.setCurrentLanguage("nl");
+        catalog.setStrings("nl", strings);
+        assert.equal(catalog.getString("{{name}}", { name: "Andrew" }), "Andrew");
+    });
+
     it("Can return an interpolated plural string", function () {
         assert.deepEqual(catalog.strings, {});
         catalog.setCurrentLanguage("en");
