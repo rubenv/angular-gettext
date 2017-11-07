@@ -135,7 +135,7 @@ module.exports = function (grunt) {
             ci: {
                 options: {
                     args: {
-                        browser: "firefox"
+                        browser: "chrome"
                     }
                 }
             }
