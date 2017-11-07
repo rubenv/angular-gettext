@@ -107,13 +107,13 @@ module.exports = function (grunt) {
             },
             unitci: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["Firefox", "PhantomJS"],
+                browsers: ["PhantomJS"],
                 singleRun: true,
                 reporters: ["dots"]
             },
             unitci_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["Firefox", "PhantomJS"],
+                browsers: ["PhantomJS"],
                 singleRun: true,
                 reporters: ["dots"]
             }
