@@ -122,6 +122,14 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         currentLanguage: 'en',
         /**
          * @ngdoc property
+         * @name gettextCatalog#fallbackLanguages
+         * @public
+         * @type {Object.<Array>.<String>}
+         * @description Fallback languages.
+         */
+        fallbackLanguages: {},
+        /**
+         * @ngdoc property
          * @name gettextCatalog#cache
          * @public
          * @type {String} en
@@ -150,6 +158,28 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          */
         getCurrentLanguage: function () {
             return this.currentLanguage;
+        },
+
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#setFallbackLanguages
+         * @public
+         * @param {Object.<Array>.<String>} fallbacks set of string arrays where the key is the source language, and the strings in the array the fallback langauges to try, in order
+         * @description Sets the fallback languages.
+         */
+        setFallbackLanguages: function (fallbacks) {
+            this.fallbackLanguages = fallbacks || {};
+        },
+
+        /**
+         * @ngdoc method
+         * @name gettextCatalog#getFallbackLanguages
+         * @public
+         * @returns {Object.<Array>.<String>} fallback languages
+         * @description Returns the fallback languages.
+         */
+        getFallbackLanguages: function () {
+            return this.fallbackLanguages;
         },
 
         /**
@@ -223,6 +253,32 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
 
         /**
          * @ngdoc method
+         * @name gettextCatalog#getFallbackStringFormFor
+         * @protected
+         * @param {String} language language name
+         * @param {String} string translation key
+         * @param {Number=} n number to build string form for
+         * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
+         * @param {String=} stringPlural plural translation key
+         * @returns {String|Null} translated or annotated string or null if language is not set
+         * @description Translate a string with the given language, count and context.
+         *
+         * First it tries a language (e.g. `en-US`) then {@link gettextCatalog#fallbackLanguages language}, if any, then {@link gettextFallbackLanguage fallback} (e.g. `en`).
+         */
+        getFallbackStringFormFor: function (language, string, n, context, stringPlural) {
+            var fallbackLanguages = this.fallbackLanguages[language] || [];
+            var defaultFallbackLanguage = gettextFallbackLanguage(language);
+            if (defaultFallbackLanguage) { fallbackLanguages.push(defaultFallbackLanguage); }
+
+            var output = this.getStringFormFor(language, string, n, context);
+            for (var i = 0; i < fallbackLanguages.length; i++) {
+                output = output || this.getStringFormFor(fallbackLanguages[i], string, n, context);
+            }
+            return output || prefixDebug(n === 1 ? string : stringPlural);
+        },
+
+        /**
+         * @ngdoc method
          * @name gettextCatalog#getString
          * @public
          * @param {String} string translation key
@@ -230,8 +286,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
          * @returns {String} translated or annotated string
          * @description Translate a string with the given scope and context.
-         *
-         * First it tries {@link gettextCatalog#currentLanguage gettextCatalog#currentLanguage} (e.g. `en-US`) then {@link gettextFallbackLanguage fallback} (e.g. `en`).
          *
          * When `scope` is supplied it uses Angular.JS interpolation, so something like this will do what you expect:
          * ```js
@@ -241,10 +295,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * Avoid using scopes - this skips interpolation and is a lot faster.
          */
         getString: function (string, scope, context) {
-            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
-            string = this.getStringFormFor(this.currentLanguage, string, 1, context) ||
-                     this.getStringFormFor(fallbackLanguage, string, 1, context) ||
-                     prefixDebug(string);
+            string = this.getFallbackStringFormFor(this.currentLanguage, string, 1, context);
             string = scope ? $interpolate(string)(scope) : string;
             return addTranslatedMarkers(string);
         },
@@ -263,10 +314,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Translate a plural string with the given context.
          */
         getPlural: function (n, string, stringPlural, scope, context) {
-            var fallbackLanguage = gettextFallbackLanguage(this.currentLanguage);
-            string = this.getStringFormFor(this.currentLanguage, string, n, context) ||
-                     this.getStringFormFor(fallbackLanguage, string, n, context) ||
-                     prefixDebug(n === 1 ? string : stringPlural);
+            string = this.getFallbackStringFormFor(this.currentLanguage, string, n, context, stringPlural);
             if (scope) {
                 scope.$count = n;
                 string = $interpolate(string)(scope);

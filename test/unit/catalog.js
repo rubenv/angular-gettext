@@ -164,12 +164,32 @@ describe("Catalog", function () {
     it("Should return string from fallback language if current language has no translation", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);
+        catalog.setCurrentLanguage("de");
+        catalog.setFallbackLanguages({ de: ["nl"] });
+        assert.equal(catalog.getString("Bye"), "Bye");
+        assert.equal(catalog.getString("Hello"), "Hallo");
+    });
+
+    it("Should return string from first available fallback language if current language has no translation", function () {
+        var stringsNl = { Hello: "Hallo" };
+        var stringsFr = { Hello: "Bonjour" };
+        catalog.setStrings("nl", stringsNl);
+        catalog.setStrings("fr", stringsFr);
+        catalog.setCurrentLanguage("de");
+        catalog.setFallbackLanguages({ de: ["en", "fr", "nl"] });
+        assert.equal(catalog.getString("Bye"), "Bye");
+        assert.equal(catalog.getString("Hello"), "Bonjour");
+    });
+
+    it("Should return string from default fallback language if current language has no translation", function () {
+        var strings = { Hello: "Hallo" };
+        catalog.setStrings("nl", strings);
         catalog.setCurrentLanguage("nl_NL");
         assert.equal(catalog.getString("Bye"), "Bye");
         assert.equal(catalog.getString("Hello"), "Hallo");
     });
 
-    it("Should not return string from fallback language if current language has translation", function () {
+    it("Should not return string from default fallback language if current language has translation", function () {
         var stringsEn   = { Baggage: "Baggage" };
         var stringsEnGB = { Baggage: "Luggage" };
         catalog.setStrings("en", stringsEn);
