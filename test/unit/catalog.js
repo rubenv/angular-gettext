@@ -181,6 +181,21 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Hello"), "Bonjour");
     });
 
+    it("Should not modify original object used to set fallback languages when translating", function () {
+        var fallbackLanguages = { en_US: ["fr"] };
+        var originalFallbacks = JSON.stringify(fallbackLanguages);
+        catalog.setFallbackLanguages(fallbackLanguages);
+        catalog.getFallbackStringFormFor("en_US", "Hello");
+        assert.equal(JSON.stringify(fallbackLanguages), originalFallbacks);
+    });
+
+    it("Should not modify internal fallback languages object when translating", function () {
+        var fallbackLanguages = { en_US: ["fr"] };
+        catalog.setFallbackLanguages(fallbackLanguages);
+        catalog.getFallbackStringFormFor("en_US", "Hello");
+        assert.equal(JSON.stringify(catalog.getFallbackLanguages()), JSON.stringify(fallbackLanguages));
+    });
+
     it("Should return string from default fallback language if current language has no translation", function () {
         var strings = { Hello: "Hallo" };
         catalog.setStrings("nl", strings);

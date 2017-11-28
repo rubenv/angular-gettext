@@ -27,6 +27,7 @@
         "element",
         "expect",
         "inject",
-        "it"
+        "it",
+        "JSON"
     ]
 }

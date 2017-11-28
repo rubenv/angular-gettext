@@ -62,7 +62,7 @@ angular.module('gettext').constant('gettext', function (str) {
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate strings
  */
-angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "gettextUtil", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, gettextUtil, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -220,7 +220,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @description Sets the fallback languages.
          */
         setFallbackLanguages: function (fallbacks) {
-            this.fallbackLanguages = fallbacks || {};
+            this.fallbackLanguages = gettextUtil.copy(fallbacks || {});
         },
 
         /**
@@ -231,7 +231,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @description Returns the fallback languages.
          */
         getFallbackLanguages: function () {
-            return this.fallbackLanguages;
+            return gettextUtil.copy(this.fallbackLanguages);
         },
 
         /**
@@ -318,7 +318,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * First it tries a language (e.g. `en-US`) then {@link gettextCatalog#fallbackLanguages language}, if any, then {@link gettextFallbackLanguage fallback} (e.g. `en`).
          */
         getFallbackStringFormFor: function (language, string, n, context, stringPlural) {
-            var fallbackLanguages = this.fallbackLanguages[language] || [];
+            var fallbackLanguages = (this.fallbackLanguages[language] || []).slice();
             var defaultFallbackLanguage = gettextFallbackLanguage(language);
             if (defaultFallbackLanguage) { fallbackLanguages.push(defaultFallbackLanguage); }
 
@@ -864,10 +864,31 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
         return first + target.substr(1);
     }
 
+    /**
+     * @ngdoc method
+     * @name gettextUtil#copy
+     * @public
+     * @param {object} o Object to copy.
+     * @returns {object} A copy of the object.
+     * @description Makes a deep copy of an object, making sure to not keep any references to the original object.
+     */
+    function copy(o) {
+        var output;
+        var v;
+        var key;
+        output = Array.isArray(o) ? [] : {};
+        for (key in o) {
+            v = o[key];
+            output[key] = (typeof v === 'object') ? copy(v) : v;
+        }
+        return output;
+    }
+
     return {
         trim: trim,
         assert: assert,
         startsWith: startsWith,
-        lcFirst: lcFirst
+        lcFirst: lcFirst,
+        copy: copy
     };
 });

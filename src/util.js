@@ -88,10 +88,31 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
         return first + target.substr(1);
     }
 
+    /**
+     * @ngdoc method
+     * @name gettextUtil#copy
+     * @public
+     * @param {object} o Object to copy.
+     * @returns {object} A copy of the object.
+     * @description Makes a deep copy of an object, making sure to not keep any references to the original object.
+     */
+    function copy(o) {
+        var output;
+        var v;
+        var key;
+        output = Array.isArray(o) ? [] : {};
+        for (key in o) {
+            v = o[key];
+            output[key] = (typeof v === 'object') ? copy(v) : v;
+        }
+        return output;
+    }
+
     return {
         trim: trim,
         assert: assert,
         startsWith: startsWith,
-        lcFirst: lcFirst
+        lcFirst: lcFirst,
+        copy: copy
     };
 });

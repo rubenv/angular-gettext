@@ -10,7 +10,7 @@
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate strings
  */
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, gettextUtil, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
     var noContext = '$$noContext';
 
@@ -168,7 +168,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Sets the fallback languages.
          */
         setFallbackLanguages: function (fallbacks) {
-            this.fallbackLanguages = fallbacks || {};
+            this.fallbackLanguages = gettextUtil.copy(fallbacks || {});
         },
 
         /**
@@ -179,7 +179,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @description Returns the fallback languages.
          */
         getFallbackLanguages: function () {
-            return this.fallbackLanguages;
+            return gettextUtil.copy(this.fallbackLanguages);
         },
 
         /**
@@ -266,7 +266,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * First it tries a language (e.g. `en-US`) then {@link gettextCatalog#fallbackLanguages language}, if any, then {@link gettextFallbackLanguage fallback} (e.g. `en`).
          */
         getFallbackStringFormFor: function (language, string, n, context, stringPlural) {
-            var fallbackLanguages = this.fallbackLanguages[language] || [];
+            var fallbackLanguages = (this.fallbackLanguages[language] || []).slice();
             var defaultFallbackLanguage = gettextFallbackLanguage(language);
             if (defaultFallbackLanguage) { fallbackLanguages.push(defaultFallbackLanguage); }
 
