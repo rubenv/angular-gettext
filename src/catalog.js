@@ -60,7 +60,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return match;
         }
 
-        for (var i = 0, len = originalKeyParts.length; i < len; i++) {
+        var i = 0;
+        for (i = 0, len = originalKeyParts.length; i < len; i++) {
             //get the next part, which will start with "amp;" if this was an occurrence of an encoded &
             var nextPart = (originalKeyParts.length-1 >= i+1) ? originalKeyParts[i+1] : "";
 
