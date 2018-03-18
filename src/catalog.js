@@ -49,8 +49,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
 
     function rollBackOvercorrections (originalKey, key) {
         var originalKeyParts = originalKey.split('&');
-        var keyParts = key.split('&');
-
         var re = /&amp;/gi; //replacement match regex
 
         for (var i = 0, len = originalKeyParts.length; i < len; i++) {
@@ -59,17 +57,19 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
 
             if (nextPart.length < 4 || nextPart.substring(0, 5) !== "amp;") { //unencoded & in original, needs to be rolled back in key
                 var nth = 0;
-                key = key.replace(re, function (match, a, original) {
-                    nth++;
-                    if(nth === i+1) {
-                        return '&';
-                    }
-                    return match;
-                });
+                key = key.replace(re, replaceNth);
             }
         }
 
         return key;
+    }
+
+    function replaceNth (match) {
+        nth++;
+        if(nth === i+1) {
+            return '&';
+        }
+        return match;
     }
 
     catalog = {
