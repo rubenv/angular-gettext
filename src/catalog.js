@@ -52,6 +52,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         var re = /&amp;/gi; //replacement match regex
 
         var nth = 0;
+        var i = 0;
+        
         function replaceNth (match) {
             nth++;
             if(nth === i+1) {
@@ -59,8 +61,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             }
             return match;
         }
-
-        var i = 0;
 
         for (i = 0; i < originalKeyParts.length; i++) {
             //get the next part, which will start with "amp;" if this was an occurrence of an encoded &
