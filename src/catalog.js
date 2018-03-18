@@ -64,7 +64,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
 
         for (i = 0; i < originalKeyParts.length; i++) {
             //get the next part, which will start with "amp;" if this was an occurrence of an encoded &
-            var nextPart = (originalKeyParts.length-1 >= i + 1) ? originalKeyParts[i + 1] : '';
+            var nextPart = (originalKeyParts.length - 1 >= i + 1) ? originalKeyParts[i + 1] : '';
 
             if (nextPart.length < 4 || nextPart.substring(0, 5) !== 'amp;') { //unencoded & in original, needs to be rolled back in key
                 key = key.replace(re, replaceNth);
