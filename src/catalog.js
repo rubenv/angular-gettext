@@ -177,6 +177,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return this.currentLanguage;
         },
 
+        rollBackOvercorrections: rollBackOvercorrections,
+
         /**
          * @ngdoc method
          * @name gettextCatalog#setStrings
@@ -195,14 +197,10 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
                 var val = strings[key];
 
                 if (isHTMLModified) {
-
-                    //keep a copy of the original key for comparison later
+                    //save the original before we change it
                     var originalKey = key;
-
                     // Use the DOM engine to render any HTML in the key (#131).
                     key = angular.element('<span>' + key + '</span>').html();
-
-                    //now that we have a "corrected" key, rollback the overcorrections for & character
                     key = rollBackOvercorrections(originalKey, key);
                 }
 
