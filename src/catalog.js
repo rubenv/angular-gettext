@@ -50,7 +50,6 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
     function rollBackOvercorrections(originalKey, key) {
         var originalKeyParts = originalKey.split('&');
         var re = /&amp;/gi;//replacement match regex
-
         var nth = 0;
         var i = 0;
 
