@@ -51,25 +51,25 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         var originalKeyParts = originalKey.split('&');
         var re = /&amp;/gi; //replacement match regex
 
+        var nth = 0;
+        function replaceNth (match) {
+            nth++;
+            if(nth === i+1) {
+                return '&';
+            }
+            return match;
+        }
+
         for (var i = 0, len = originalKeyParts.length; i < len; i++) {
             //get the next part, which will start with "amp;" if this was an occurrence of an encoded &
             var nextPart = (originalKeyParts.length-1 >= i+1) ? originalKeyParts[i+1] : "";
 
             if (nextPart.length < 4 || nextPart.substring(0, 5) !== "amp;") { //unencoded & in original, needs to be rolled back in key
-                var nth = 0;
                 key = key.replace(re, replaceNth);
             }
         }
 
         return key;
-    }
-
-    function replaceNth (match) {
-        nth++;
-        if(nth === i+1) {
-            return '&';
-        }
-        return match;
     }
 
     catalog = {
