@@ -413,7 +413,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
     function isString(value) { return typeof value === 'string'; }
     var lowercase = function (string) { return isString(string) ? string.toLowerCase() : string; };
 
-    var msie = parseInt((/msie (\d+)/.exec(angular.lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var msie = parseInt((/msie (\d+)/.exec(lowercase($window.navigator.userAgent)) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
