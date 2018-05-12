@@ -60,7 +60,7 @@ angular.module('gettext').constant('gettext', function (str) {
  * @requires https://docs.angularjs.org/api/ng/service/$cacheFactory $cacheFactory
  * @requires https://docs.angularjs.org/api/ng/service/$interpolate $interpolate
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
- * @description Provides set of method to translate stings
+ * @description Provides set of method to translate strings
  */
 angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
@@ -258,7 +258,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @protected
          * @param {String} language language name
          * @param {String} string translation key
-         * @param {Number=} n number to build sting form for
+         * @param {Number=} n number to build string form for
          * @param {String=} context translation key context, e.g. {@link doc:context Verb, Noun}
          * @returns {String|Null} translated or annotated string or null if language is not set
          * @description Translate a string with the given language, count and context.
@@ -305,7 +305,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @ngdoc method
          * @name gettextCatalog#getPlural
          * @public
-         * @param {Number} n number to build sting form for
+         * @param {Number} n number to build string form for
          * @param {String} string translation key
          * @param {String} stringPlural plural translation key
          * @param {$rootScope.Scope=} scope scope to do interpolation against
@@ -410,7 +410,8 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
  * ```
  */
 angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
-    var msie = parseInt((/msie (\d+)/.exec(angular.lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var lowercase = angular.$$lowercase || angular.lowercase;
+    var msie = parseInt((/msie (\d+)/.exec(lowercase($window.navigator.userAgent)) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
