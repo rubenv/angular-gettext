@@ -2,6 +2,8 @@ language: node_js
 node_js:
   - "node"
 sudo: false
+addons:
+    chrome: stable
 before_install:
   - npm install -g grunt-cli bower
   - bower install
