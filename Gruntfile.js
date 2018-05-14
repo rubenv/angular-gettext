@@ -135,7 +135,12 @@ module.exports = function (grunt) {
             ci: {
                 options: {
                     args: {
-                        browser: "chrome"
+                        capabilities:  {
+                            browserName:   "chrome",
+                            chromeOptions: {
+                                args: ["headless", "window-size=1920,1080"]
+                            }
+                        }
                     }
                 }
             }
