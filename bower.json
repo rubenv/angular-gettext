@@ -1,6 +1,6 @@
 {
   "name": "angular-gettext",
-  "version": "2.3.11",
+  "version": "2.4.0",
   "main": "dist/angular-gettext.js",
   "ignore": [
     "**/.*",
