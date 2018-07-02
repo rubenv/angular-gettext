@@ -71,7 +71,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             return null;
         }
 
-        var interpolationContext = angular.extend({}, scope);
+        var interpolationContext = scope.$new();
         var unwatchers = [];
         attributes.forEach(function (attribute) {
             var unwatch = scope.$watch(attrs[attribute], function (newVal) {
@@ -85,6 +85,8 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             unwatchers.forEach(function (unwatch) {
                 unwatch();
             });
+
+            interpolationContext.$destroy();
         });
         return interpolationContext;
     }
@@ -123,9 +125,9 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         if (translatePlural) {
                             scope = pluralScope || (pluralScope = scope.$new());
                             scope.$count = countFn(scope);
-                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, interpolationContext, translateContext);
+                            translated = gettextCatalog.getPlural(scope.$count, msgid, translatePlural, null, translateContext);
                         } else {
-                            translated = gettextCatalog.getString(msgid, interpolationContext, translateContext);
+                            translated = gettextCatalog.getString(msgid, null, translateContext);
                         }
                         var oldContents = element.contents();
 
@@ -144,7 +146,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
 
                         // Swap in the translation
                         var newWrapper = angular.element('<span>' + translated + '</span>');
-                        $compile(newWrapper.contents())(scope);
+                        $compile(newWrapper.contents())(interpolationContext || scope);
                         var newContents = newWrapper.contents();
 
                         $animate.enter(newContents, element);
