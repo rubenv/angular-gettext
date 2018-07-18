@@ -54,8 +54,7 @@
  * ```
  */
 angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
-    var lowercase = angular.$$lowercase || angular.lowercase;
-    var msie = parseInt((/msie (\d+)/.exec(lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
