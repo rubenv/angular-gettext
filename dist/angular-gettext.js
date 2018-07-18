@@ -410,8 +410,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
  * ```
  */
 angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
-    var lowercase = angular.$$lowercase || angular.lowercase;
-    var msie = parseInt((/msie (\d+)/.exec(lowercase($window.navigator.userAgent)) || [])[1], 10);
+    var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
     var PARAMS_PREFIX = 'translateParams';
 
     function getCtxAttr(key) {
