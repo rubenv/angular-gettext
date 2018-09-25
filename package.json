@@ -38,7 +38,7 @@
     "grunt-ng-annotate": "^3.0.0",
     "grunt-protractor-runner": "^5.0.0",
     "grunt-shell": "^2.1.0",
-    "karma": "~2.0.2",
+    "karma": "~3.0.0",
     "karma-chai": "~0.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "~1.3.0",
