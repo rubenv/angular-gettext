@@ -10,16 +10,34 @@
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate strings
  */
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope, $window) {
     var catalog;
+    var isHTMLModified;
     var noContext = '$$noContext';
 
+    function isEqualOrLowerIE8() {
+        /**
+         * @ngdoc function
+         * @name gettextCatalog#isEqualOrLowerIE8
+         * @description Checks if browser is IE 8.0 or older
+         */
+        var userAgent = $window.navigator.userAgent;
+        var browsers = [/MSIE 8.0/, /MSIE 7.0/, /MSIE 6.0/];
+
+        for (var key in browsers) {
+            if (browsers[key].test(userAgent)) {
+                return true;
+            }
+        }
+    }
     // IE8 returns UPPER CASE tags, even though the source is lower case.
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
     // IE9, IE10 and IE11 reorders the attributes of tags.
-    var test = '<span id="test" title="test" class="tested">test</span>';
-    var isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
+    if (isEqualOrLowerIE8()) {
+        var test = '<span id="test" title="test" class="tested">test</span>';
+        isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
+    }
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
