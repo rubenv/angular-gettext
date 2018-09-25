@@ -12,7 +12,7 @@
  */
 angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope, $window) {
     var catalog;
-    var isHTMLModified;
+    var isOldIE;
     var noContext = '$$noContext';
 
     function isEqualOrLowerIE8() {
@@ -34,10 +34,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
     // IE9, IE10 and IE11 reorders the attributes of tags.
-    if (isEqualOrLowerIE8()) {
-        var test = '<span id="test" title="test" class="tested">test</span>';
-        isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
-    }
+    isOldIE = isEqualOrLowerIE8();
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -187,7 +184,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             for (var key in strings) {
                 var val = strings[key];
 
-                if (isHTMLModified) {
+                if (isOldIE) {
                     // Use the DOM engine to render any HTML in the key (#131).
                     key = angular.element('<span>' + key + '</span>').html();
                 }

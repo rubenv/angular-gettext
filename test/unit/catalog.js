@@ -186,4 +186,11 @@ describe("Catalog", function () {
         assert.equal(catalog.getString("Multibillion-Dollar", null, "rich"), "nothing");
         assert.equal(catalog.getString("Multibillion-Dollar", null, "poor"), "dream");
     });
+
+    it("Should not transform uppercase tags for other browsers than IE8", function () {
+        var strings = { "<SPAN><b>Hello</b> Ruben</SPAN>": "Hello Ruben" };
+        assert.deepEqual(catalog.strings, {});
+        catalog.setStrings("nl", strings);
+        assert.deepEqual(catalog.strings.nl["<SPAN><b>Hello</b> Ruben</SPAN>"].$$noContext[0], "Hello Ruben");
+    });
 });
