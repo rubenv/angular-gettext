@@ -1,14 +1,36 @@
 {
+  "env": {
+    "mocha": true,
+    "node": true
+  },
+  "globals": {
+    "angular": "readonly",
+    "assert": "readonly",
+    "browser": "readonly",
+    "by": "readonly",
+    "element": "readonly",
+    "expect": "readonly",
+    "inject": "readonly"
+  },
   "rules": {
-    "curly": [
-      2,
-      "all"
-    ],
+    "no-bitwise": 2,
+    "curly": 2,
+    "eqeqeq": 2,
     "keyword-spacing": [
       2,
       {}
     ],
-    "wrap-iife": [2, "inside"],
+    "no-extend-native": 2,
+    "wrap-iife": [
+      2,
+      "any"
+    ],
+    "no-use-before-define": [
+      2,
+      {
+        "functions": false
+      }
+    ],
     "space-before-function-paren": [
       2,
       {
@@ -64,7 +86,11 @@
         "SwitchCase": 1
       }
     ],
+    "new-cap": 2,
+    "no-caller": 2,
     "no-trailing-spaces": 2,
+    "no-undef": 2,
+    "no-unused-vars": 2,
     "brace-style": [
       2,
       "1tbs",

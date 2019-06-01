@@ -7,7 +7,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-connect");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-eslint");
@@ -18,13 +17,6 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
-
-        jshint: {
-            all: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"],
-            options: {
-                jshintrc: ".jshintrc"
-            }
-        },
 
         eslint: {
             target: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"]
@@ -178,7 +170,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("default", ["test"]);
-    grunt.registerTask("build", ["clean", "jshint", "eslint", "concat", "ngAnnotate", "uglify"]);
+    grunt.registerTask("build", ["clean", "eslint", "concat", "ngAnnotate", "uglify"]);
     grunt.registerTask("test", ["build", "shell:protractor_update", "connect:e2e", "karma:unit", "karma:unit_nojquery", "protractor:dev", "watch:all"]);
     grunt.registerTask("test_unit", ["build", "shell:protractor_update", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
     grunt.registerTask("test_e2e", ["build", "shell:protractor_update", "connect:e2e", "protractor:dev", "watch:e2e"]);

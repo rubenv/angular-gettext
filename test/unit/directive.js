@@ -299,10 +299,10 @@ describe("Directive", function () {
     });
 
     describe("Translation's with plurals", function () {
-        var sourceString;
+        // var sourceString;
 
         beforeEach(inject(function () {
-            sourceString = "Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.";
+            // sourceString = "Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.";
 
             catalog.setStrings("pl", {
                 "Today {{someone}} meets with {{someoneElse}} for {{duration}} minute.": [
