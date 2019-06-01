@@ -1,4 +1,5 @@
 var serveStatic = require("serve-static");
+process.env.CHROMIUM_BIN = require("puppeteer").executablePath();
 
 module.exports = function (grunt) {
     grunt.loadNpmTasks("dgeni-alive");
@@ -97,23 +98,23 @@ module.exports = function (grunt) {
         karma: {
             unit: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["ChromiumHeadless"],
                 background: true
             },
             unit_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["ChromiumHeadless"],
                 background: true
             },
             unitci: {
                 configFile: "test/configs/unit.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["ChromiumHeadless"],
                 singleRun: true,
                 reporters: ["dots"]
             },
             unitci_nojquery: {
                 configFile: "test/configs/unit-nojquery.conf.js",
-                browsers: ["PhantomJS"],
+                browsers: ["ChromiumHeadless"],
                 singleRun: true,
                 reporters: ["dots"]
             }
