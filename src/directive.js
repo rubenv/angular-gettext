@@ -53,12 +53,12 @@
  * <div translate translate-params-cost="cost | currency">This product: {{product}} costs {{cost}}.</div>
  * ```
  */
-angular.module('gettext').directive('translate', function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
+angular.module("gettext").directive("translate", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
     var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
-    var PARAMS_PREFIX = 'translateParams';
+    var PARAMS_PREFIX = "translateParams";
 
     function getCtxAttr(key) {
-        return gettextUtil.lcFirst(key.replace(PARAMS_PREFIX, ''));
+        return gettextUtil.lcFirst(key.replace(PARAMS_PREFIX, ""));
     }
 
     function handleInterpolationContext(scope, attrs, update) {
@@ -80,7 +80,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             });
             unwatchers.push(unwatch);
         });
-        scope.$on('$destroy', function () {
+        scope.$on("$destroy", function () {
             unwatchers.forEach(function (unwatch) {
                 unwatch();
             });
@@ -91,12 +91,12 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
     }
 
     return {
-        restrict: 'AE',
+        restrict: "AE",
         terminal: true,
         compile: function compile(element, attrs) {
             // Validate attributes
-            gettextUtil.assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
-            gettextUtil.assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
+            gettextUtil.assert(!attrs.translatePlural || attrs.translateN, "translate-n", "translate-plural");
+            gettextUtil.assert(!attrs.translateN || attrs.translatePlural, "translate-plural", "translate-n");
 
             var msgid = gettextUtil.trim(element.html());
             var translatePlural = attrs.translatePlural;
@@ -105,7 +105,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             if (msie <= 8) {
                 // Workaround fix relating to angular adding a comment node to
                 // anchors. angular/angular.js/#1949 / angular/angular.js/#2013
-                if (msgid.slice(-13) === '<!--IE fix-->') {
+                if (msgid.slice(-13) === "<!--IE fix-->") {
                     msgid = msgid.slice(0, -13);
                 }
             }
@@ -144,7 +144,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                         }
 
                         // Swap in the translation
-                        var newWrapper = angular.element('<span>' + translated + '</span>');
+                        var newWrapper = angular.element("<span>" + translated + "</span>");
                         $compile(newWrapper.contents())(interpolationContext || scope);
                         var newContents = newWrapper.contents();
 
@@ -168,7 +168,7 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
                      * @eventType listen on scope
                      * @description Listens for language updates and changes translation accordingly
                      */
-                    scope.$on('gettextLanguageChanged', function () {
+                    scope.$on("gettextLanguageChanged", function () {
                         update(interpolationContext);
                     });
 

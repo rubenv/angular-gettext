@@ -23,7 +23,7 @@
  * gettextPlurals();         // 1
  * ```
  */
-angular.module('gettext', []);
+angular.module("gettext", []);
 /**
  * @ngdoc object
  * @module gettext
@@ -40,7 +40,7 @@ angular.module('gettext', []);
  * })
  * ```
  */
-angular.module('gettext').constant('gettext', function (str) {
+angular.module("gettext").constant("gettext", function (str) {
     /*
      * Does nothing, simply returns the input string.
      *
@@ -62,16 +62,16 @@ angular.module('gettext').constant('gettext', function (str) {
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate strings
  */
-angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module("gettext").factory("gettextCatalog", ["gettextPlurals", "gettextFallbackLanguage", "$http", "$cacheFactory", "$interpolate", "$rootScope", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
-    var noContext = '$$noContext';
+    var noContext = "$$noContext";
 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
     // IE9, IE10 and IE11 reorders the attributes of tags.
     var test = '<span id="test" title="test" class="tested">test</span>';
-    var isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
+    var isHTMLModified = (angular.element("<span>" + test + "</span>").html() !== test);
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -96,7 +96,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @eventType broadcast on $rootScope
          * @description Fires language change notification without any additional parameters.
          */
-        $rootScope.$broadcast('gettextLanguageChanged');
+        $rootScope.$broadcast("gettextLanguageChanged");
     }
 
     catalog = {
@@ -116,7 +116,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @type {String} [MISSING]:
          * @description Custom prefix for untranslated strings when {@link gettextCatalog#debug gettextCatalog#debug} set to `true`.
          */
-        debugPrefix: '[MISSING]: ',
+        debugPrefix: "[MISSING]: ",
         /**
          * @ngdoc property
          * @name gettextCatalog#showTranslatedMarkers
@@ -134,7 +134,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @type {String} [
          * @description Custom prefix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
-        translatedMarkerPrefix: '[',
+        translatedMarkerPrefix: "[",
         /**
          * @ngdoc property
          * @name gettextCatalog#translatedMarkerSuffix
@@ -142,7 +142,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @type {String} ]
          * @description Custom suffix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
-        translatedMarkerSuffix: ']',
+        translatedMarkerSuffix: "]",
         /**
          * @ngdoc property
          * @name gettextCatalog#strings
@@ -163,7 +163,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * This defaults to English and it's generally a bad idea to use anything else:
          * if your language has different pluralization rules you'll end up with incorrect translations.
          */
-        baseLanguage: 'en',
+        baseLanguage: "en",
         /**
          * @ngdoc property
          * @name gettextCatalog#currentLanguage
@@ -171,7 +171,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @type {String}
          * @description Active language.
          */
-        currentLanguage: 'en',
+        currentLanguage: "en",
         /**
          * @ngdoc property
          * @name gettextCatalog#cache
@@ -179,7 +179,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          * @type {String} en
          * @description Language cache for lazy load
          */
-        cache: $cacheFactory('strings'),
+        cache: $cacheFactory("strings"),
 
         /**
          * @ngdoc method
@@ -223,7 +223,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
 
                 if (isHTMLModified) {
                     // Use the DOM engine to render any HTML in the key (#131).
-                    key = angular.element('<span>' + key + '</span>').html();
+                    key = angular.element("<span>" + key + "</span>").html();
                 }
 
                 if (angular.isString(val) || angular.isArray(val)) {
@@ -338,7 +338,7 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
          */
         loadRemote: function (url) {
             return $http({
-                method: 'GET',
+                method: "GET",
                 url: url,
                 cache: catalog.cache
             }).then(function (response) {
@@ -409,12 +409,12 @@ angular.module('gettext').factory('gettextCatalog', ["gettextPlurals", "gettextF
  * <div translate translate-params-cost="cost | currency">This product: {{product}} costs {{cost}}.</div>
  * ```
  */
-angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
+angular.module("gettext").directive("translate", ["gettextCatalog", "$parse", "$animate", "$compile", "$window", "gettextUtil", function (gettextCatalog, $parse, $animate, $compile, $window, gettextUtil) {
     var msie = parseInt((/msie (\d+)/i.exec($window.navigator.userAgent) || [])[1], 10);
-    var PARAMS_PREFIX = 'translateParams';
+    var PARAMS_PREFIX = "translateParams";
 
     function getCtxAttr(key) {
-        return gettextUtil.lcFirst(key.replace(PARAMS_PREFIX, ''));
+        return gettextUtil.lcFirst(key.replace(PARAMS_PREFIX, ""));
     }
 
     function handleInterpolationContext(scope, attrs, update) {
@@ -436,7 +436,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             });
             unwatchers.push(unwatch);
         });
-        scope.$on('$destroy', function () {
+        scope.$on("$destroy", function () {
             unwatchers.forEach(function (unwatch) {
                 unwatch();
             });
@@ -447,12 +447,12 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
     }
 
     return {
-        restrict: 'AE',
+        restrict: "AE",
         terminal: true,
         compile: function compile(element, attrs) {
             // Validate attributes
-            gettextUtil.assert(!attrs.translatePlural || attrs.translateN, 'translate-n', 'translate-plural');
-            gettextUtil.assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
+            gettextUtil.assert(!attrs.translatePlural || attrs.translateN, "translate-n", "translate-plural");
+            gettextUtil.assert(!attrs.translateN || attrs.translatePlural, "translate-plural", "translate-n");
 
             var msgid = gettextUtil.trim(element.html());
             var translatePlural = attrs.translatePlural;
@@ -461,7 +461,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
             if (msie <= 8) {
                 // Workaround fix relating to angular adding a comment node to
                 // anchors. angular/angular.js/#1949 / angular/angular.js/#2013
-                if (msgid.slice(-13) === '<!--IE fix-->') {
+                if (msgid.slice(-13) === "<!--IE fix-->") {
                     msgid = msgid.slice(0, -13);
                 }
             }
@@ -500,7 +500,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                         }
 
                         // Swap in the translation
-                        var newWrapper = angular.element('<span>' + translated + '</span>');
+                        var newWrapper = angular.element("<span>" + translated + "</span>");
                         $compile(newWrapper.contents())(interpolationContext || scope);
                         var newContents = newWrapper.contents();
 
@@ -524,7 +524,7 @@ angular.module('gettext').directive('translate', ["gettextCatalog", "$parse", "$
                      * @eventType listen on scope
                      * @description Listens for language updates and changes translation accordingly
                      */
-                    scope.$on('gettextLanguageChanged', function () {
+                    scope.$on("gettextLanguageChanged", function () {
                         update(interpolationContext);
                     });
 
@@ -588,7 +588,7 @@ angular.module("gettext").factory("gettextFallbackLanguage", function () {
  *
  * You may want to use {@link guide:custom-annotations custom annotations} to avoid using the `translate` filter all the time. * Is
  */
-angular.module('gettext').filter('translate', ["gettextCatalog", function (gettextCatalog) {
+angular.module("gettext").filter("translate", ["gettextCatalog", function (gettextCatalog) {
     function filter(input, context) {
         return gettextCatalog.getString(input, null, context);
     }
@@ -734,7 +734,7 @@ angular.module("gettext").factory("gettextPlurals", function () {
  * @name gettextUtil
  * @description Utility service for common operations and polyfills.
  */
-angular.module('gettext').factory('gettextUtil', function gettextUtil() {
+angular.module("gettext").factory("gettextUtil", function gettextUtil() {
     /**
      * @ngdoc method
      * @name gettextUtil#trim
@@ -750,11 +750,11 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
     var trim = (function () {
         if (!String.prototype.trim) {
             return function (value) {
-                return (typeof value === 'string') ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
+                return (typeof value === "string") ? value.replace(/^\s*/, "").replace(/\s*$/, "") : value;
             };
         }
         return function (value) {
-            return (typeof value === 'string') ? value.trim() : value;
+            return (typeof value === "string") ? value.trim() : value;
         };
     })();
 
@@ -776,7 +776,7 @@ angular.module('gettext').factory('gettextUtil', function gettextUtil() {
      */
     function assert(condition, missing, found) {
         if (!condition) {
-            throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
+            throw new Error("You should add a " + missing + " attribute whenever you add a " + found + " attribute.");
         }
     }
 

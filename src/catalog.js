@@ -10,16 +10,16 @@
  * @requires https://docs.angularjs.org/api/ng/service/$rootScope $rootScope
  * @description Provides set of method to translate strings
  */
-angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
+angular.module("gettext").factory("gettextCatalog", function (gettextPlurals, gettextFallbackLanguage, $http, $cacheFactory, $interpolate, $rootScope) {
     var catalog;
-    var noContext = '$$noContext';
+    var noContext = "$$noContext";
 
     // IE8 returns UPPER CASE tags, even though the source is lower case.
     // This can causes the (key) string in the DOM to have a different case to
     // the string in the `po` files.
     // IE9, IE10 and IE11 reorders the attributes of tags.
     var test = '<span id="test" title="test" class="tested">test</span>';
-    var isHTMLModified = (angular.element('<span>' + test + '</span>').html() !== test);
+    var isHTMLModified = (angular.element("<span>" + test + "</span>").html() !== test);
 
     var prefixDebug = function (string) {
         if (catalog.debug && catalog.currentLanguage !== catalog.baseLanguage) {
@@ -44,7 +44,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @eventType broadcast on $rootScope
          * @description Fires language change notification without any additional parameters.
          */
-        $rootScope.$broadcast('gettextLanguageChanged');
+        $rootScope.$broadcast("gettextLanguageChanged");
     }
 
     catalog = {
@@ -64,7 +64,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @type {String} [MISSING]:
          * @description Custom prefix for untranslated strings when {@link gettextCatalog#debug gettextCatalog#debug} set to `true`.
          */
-        debugPrefix: '[MISSING]: ',
+        debugPrefix: "[MISSING]: ",
         /**
          * @ngdoc property
          * @name gettextCatalog#showTranslatedMarkers
@@ -82,7 +82,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @type {String} [
          * @description Custom prefix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
-        translatedMarkerPrefix: '[',
+        translatedMarkerPrefix: "[",
         /**
          * @ngdoc property
          * @name gettextCatalog#translatedMarkerSuffix
@@ -90,7 +90,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @type {String} ]
          * @description Custom suffix to mark strings that have been run through {@link angular-gettext angular-gettext}.
          */
-        translatedMarkerSuffix: ']',
+        translatedMarkerSuffix: "]",
         /**
          * @ngdoc property
          * @name gettextCatalog#strings
@@ -111,7 +111,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * This defaults to English and it's generally a bad idea to use anything else:
          * if your language has different pluralization rules you'll end up with incorrect translations.
          */
-        baseLanguage: 'en',
+        baseLanguage: "en",
         /**
          * @ngdoc property
          * @name gettextCatalog#currentLanguage
@@ -119,7 +119,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @type {String}
          * @description Active language.
          */
-        currentLanguage: 'en',
+        currentLanguage: "en",
         /**
          * @ngdoc property
          * @name gettextCatalog#cache
@@ -127,7 +127,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          * @type {String} en
          * @description Language cache for lazy load
          */
-        cache: $cacheFactory('strings'),
+        cache: $cacheFactory("strings"),
 
         /**
          * @ngdoc method
@@ -171,7 +171,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
 
                 if (isHTMLModified) {
                     // Use the DOM engine to render any HTML in the key (#131).
-                    key = angular.element('<span>' + key + '</span>').html();
+                    key = angular.element("<span>" + key + "</span>").html();
                 }
 
                 if (angular.isString(val) || angular.isArray(val)) {
@@ -286,7 +286,7 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
          */
         loadRemote: function (url) {
             return $http({
-                method: 'GET',
+                method: "GET",
                 url: url,
                 cache: catalog.cache
             }).then(function (response) {
