@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-jscs");
+    grunt.loadNpmTasks("grunt-eslint");
     grunt.loadNpmTasks("grunt-karma");
     grunt.loadNpmTasks("grunt-ng-annotate");
     grunt.loadNpmTasks("grunt-protractor-runner");
@@ -26,15 +26,8 @@ module.exports = function (grunt) {
             }
         },
 
-        jscs: {
-            src: {
-                options: {
-                    config: ".jscs.json"
-                },
-                files: {
-                    src: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"]
-                }
-            }
+        eslint: {
+            target: ["Gruntfile.js", "{src,test}/**/*.js", "!src/plural.js"]
         },
 
         concat: {
@@ -136,8 +129,8 @@ module.exports = function (grunt) {
             ci: {
                 options: {
                     args: {
-                        capabilities:  {
-                            browserName:   "chrome",
+                        capabilities: {
+                            browserName: "chrome",
                             chromeOptions: {
                                 args: ["headless", "window-size=1920,1080"]
                             }
@@ -185,7 +178,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask("default", ["test"]);
-    grunt.registerTask("build", ["clean", "jshint", "jscs", "concat", "ngAnnotate", "uglify"]);
+    grunt.registerTask("build", ["clean", "jshint", "eslint", "concat", "ngAnnotate", "uglify"]);
     grunt.registerTask("test", ["build", "shell:protractor_update", "connect:e2e", "karma:unit", "karma:unit_nojquery", "protractor:dev", "watch:all"]);
     grunt.registerTask("test_unit", ["build", "shell:protractor_update", "karma:unit", "karma:unit_nojquery", "watch:unit"]);
     grunt.registerTask("test_e2e", ["build", "shell:protractor_update", "connect:e2e", "protractor:dev", "watch:e2e"]);
