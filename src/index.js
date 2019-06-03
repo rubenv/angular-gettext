@@ -23,7 +23,7 @@
  * gettextPlurals();         // 1
  * ```
  */
-angular.module("gettext", []);
+angular.module('gettext', []);
 /**
  * @ngdoc object
  * @module gettext
@@ -40,7 +40,7 @@ angular.module("gettext", []);
  * })
  * ```
  */
-angular.module("gettext").constant("gettext", function (str) {
+angular.module('gettext').constant('gettext', function (str) {
     /*
      * Does nothing, simply returns the input string.
      *

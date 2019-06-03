@@ -4,7 +4,7 @@
  * @name gettextUtil
  * @description Utility service for common operations and polyfills.
  */
-angular.module("gettext").factory("gettextUtil", function gettextUtil() {
+angular.module('gettext').factory('gettextUtil', function gettextUtil() {
     /**
      * @ngdoc method
      * @name gettextUtil#trim
@@ -20,11 +20,11 @@ angular.module("gettext").factory("gettextUtil", function gettextUtil() {
     var trim = (function () {
         if (!String.prototype.trim) {
             return function (value) {
-                return (typeof value === "string") ? value.replace(/^\s*/, "").replace(/\s*$/, "") : value;
+                return (typeof value === 'string') ? value.replace(/^\s*/, '').replace(/\s*$/, '') : value;
             };
         }
         return function (value) {
-            return (typeof value === "string") ? value.trim() : value;
+            return (typeof value === 'string') ? value.trim() : value;
         };
     })();
 
@@ -46,7 +46,7 @@ angular.module("gettext").factory("gettextUtil", function gettextUtil() {
      */
     function assert(condition, missing, found) {
         if (!condition) {
-            throw new Error("You should add a " + missing + " attribute whenever you add a " + found + " attribute.");
+            throw new Error('You should add a ' + missing + ' attribute whenever you add a ' + found + ' attribute.');
         }
     }
 
