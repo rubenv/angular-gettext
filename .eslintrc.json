@@ -72,13 +72,6 @@
       }
     ],
     "space-infix-ops": 2,
-    "quotes": [
-      2,
-      "double",
-      {
-        "avoidEscape": true
-      }
-    ],
     "indent": [
       2,
       4,
