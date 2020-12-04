@@ -425,4 +425,29 @@ describe("Directive", function () {
             assert.equal(el.text(), "Dziś Ruben spotyka się z Ernest przez 22 minuty.");
         });
     });
+
+    describe("Passthrough native HTML translate attribute", function () {
+        it("Should ignore translate='no' attribute", function () {
+            catalog.setCurrentLanguage("nl");
+            var el = $compile("<div><h1 translate='no'>Hello</h1></div>")($rootScope);
+            $rootScope.$digest();
+            assert.equal(el.text(), "Hello");
+            assert.equal(el.find("h1").attr("translate"), "no");
+        });
+
+        it("Should ignore translate='yes' attribute", function () {
+            catalog.setCurrentLanguage("nl");
+            var el = $compile("<div><h1 translate='yes'>Hello</h1></div>")($rootScope);
+            $rootScope.$digest();
+            assert.equal(el.text(), "Hello");
+            assert.equal(el.find("h1").attr("translate"), "yes");
+        });
+
+        it.only("Should not ignore the XHTML boolean form translate='translate'", function () {
+            catalog.setCurrentLanguage("nl");
+            var el = $compile("<div><h1 translate='translate'>Hello</h1></div>")($rootScope);
+            $rootScope.$digest();
+            assert.equal(el.text(), "Hallo");
+        });
+    });
 });
