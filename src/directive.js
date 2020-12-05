@@ -109,6 +109,8 @@ angular.module('gettext').directive('translate', function (gettextCatalog, $pars
             gettextUtil.assert(!attrs.translateN || attrs.translatePlural, 'translate-plural', 'translate-n');
 
             var msgid = gettextUtil.trim(element.html());
+            var originalText = element.context && element.context.innerText ? element.context.innerText : element.html();
+            msgid = gettextCatalog.rollBackOvercorrections(originalText, msgid);
             var translatePlural = attrs.translatePlural;
             var translateContext = attrs.translateContext;
 
