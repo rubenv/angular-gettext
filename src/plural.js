@@ -8,6 +8,7 @@ angular.module("gettext").factory("gettextPlurals", function () {
         switch (getLanguageCode(langCode)) {
             case "ay":  // Aymará
             case "bo":  // Tibetan
+            case "ba":  // Bashkir
             case "cgg": // Chiga
             case "dz":  // Dzongkha
             case "fa":  // Persian
