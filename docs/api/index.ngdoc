@@ -39,7 +39,7 @@ A full list of supported languages (over 130) can be found [here](http://docs.tr
 
 ## Rich tool support
 The widely used [gettext](http://en.wikipedia.org/wiki/Gettext) format is used in `angular-gettext` (hence the name).
-This means you can use widely established translation tools like [Poedit](http://www.poedit.net/).
+This means you can use widely established translation tools like [Poedit](http://www.poedit.net/) or online [Free PO editor](https://pofile.net/free-po-editor).
 Or you can use an online translation platform like [Pootle](http://pootle.translatehouse.org/), [Transifex](https://www.transifex.com/), or [Zanata](http://www.zanata.org/).
 
 The upside of this? Non-technical users can help out by translating. Or you can use professional translation services. Better results, faster.
