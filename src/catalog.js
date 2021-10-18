@@ -215,6 +215,9 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             if (!language) {
                 return null;
             }
+			if (isHTMLModified) {
+				string = angular.element( '<span>' + string + '</span>' ).html()
+			}
             var stringTable = this.strings[language] || {};
             var contexts = stringTable[string] || {};
             var plurals = contexts[context || noContext] || [];
