@@ -47,6 +47,32 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
         $rootScope.$broadcast('gettextLanguageChanged');
     }
 
+    function rollBackOvercorrections(originalKey, key) {
+        var originalKeyParts = originalKey.split('&');
+        var re = /&amp;/gi;//replacement match regex
+        var nth = 0;
+        var i = 0;
+
+        function replaceNth(match) {
+            nth++;
+            if (nth === i + 1) {
+                return '&';
+            }
+            return match;
+        }
+
+        for (i = 0; i < originalKeyParts.length; i++) {
+            //get the next part, which will start with "amp;" if this was an occurrence of an encoded &
+            var nextPart = (originalKeyParts.length - 1 >= i + 1) ? originalKeyParts[i + 1] : '';
+
+            if (nextPart.length < 4 || nextPart.substring(0, 5) !== 'amp;') { //unencoded & in original, needs to be rolled back in key
+                key = key.replace(re, replaceNth);
+            }
+        }
+
+        return key;
+    }
+
     catalog = {
         /**
          * @ngdoc property
@@ -152,6 +178,8 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
             return this.currentLanguage;
         },
 
+        rollBackOvercorrections: rollBackOvercorrections,
+
         /**
          * @ngdoc method
          * @name gettextCatalog#setStrings
@@ -170,8 +198,11 @@ angular.module('gettext').factory('gettextCatalog', function (gettextPlurals, ge
                 var val = strings[key];
 
                 if (isHTMLModified) {
+                    //save the original before we change it
+                    var originalKey = key;
                     // Use the DOM engine to render any HTML in the key (#131).
                     key = angular.element('<span>' + key + '</span>').html();
+                    key = rollBackOvercorrections(originalKey, key);
                 }
 
                 if (angular.isString(val) || angular.isArray(val)) {
