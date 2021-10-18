@@ -189,7 +189,7 @@ describe("Directive", function () {
         assert.equal(el.text(), "Hello");
     });
 
-    it("Changing language should translate again not loosing scope", function () {
+    it("Changing language should translate again not losing scope", function () {
         catalog.setCurrentLanguage("nl");
         $rootScope.providedName = "Ruben";
         var el = $compile("<div><div translate translate-params-name='providedName'>Hello {{name}}!</div></div>")($rootScope);
